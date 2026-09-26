@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DELFINADA — Szkoła Pływania dla dzieci i dorosłych 🐬</title>
-  <meta name="description" content="DELFINADA — radosna szkoła pływania dla niemowląt, dzieci i dorosłych. Nauka przez zabawę, mali instruktorzy z sercem. Zapisz swoje dziecko online!" />
+  <meta name="description" content="DELFINADA — nauka pływania i obozy sportowe dla niemowląt, dzieci i dorosłych. Nauka przez zabawę, instruktorzy z sercem. Zapisz się online!" />
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,19 +25,22 @@
             display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           },
           colors: {
+            // Paleta z logo DELFINADA — TURKUS (baza)
             sky: {
-              50:  '#f0f9ff',
-              100: '#e0f4fe',
-              200: '#bae6fd',
-              300: '#7dd3fc',
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
+              50:  '#eafafc',
+              100: '#d2f2f6',
+              200: '#a6e5ec',
+              300: '#6fd2dd',
+              400: '#33b7c7',
+              500: '#189aad',
+              600: '#0e7c8b',
+              700: '#0b6270',
             },
-            coral: { light: '#ffb4a2', DEFAULT: '#ff7a59', dark: '#f4623a' },
-            sunny: { light: '#ffe27a', DEFAULT: '#ffcf3f', dark: '#f5b800' },
-            mint:  { light: '#a7f3d0', DEFAULT: '#34d399', dark: '#10b981' },
+            // Paleta z logo — POMARAŃCZ (delfin)
+            coral: { light: '#fdb94e', DEFAULT: '#f0641e', dark: '#d8500f' },
+            sunny: { light: '#fdd27a', DEFAULT: '#f5911e', dark: '#e07712' },
+            // Miętowo-turkusowy akcent spójny z falą
+            mint:  { light: '#bdeef0', DEFAULT: '#22b8c0', dark: '#0e9aa2' },
           },
           keyframes: {
             'float': { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-18px)' } },
@@ -58,18 +61,18 @@
   </script>
 
   <style>
-    body { background-color: #f0f9ff; }
-    /* Wesołe tło z „bąbelkami" */
+    body { background-color: #eafafc; }
+    /* Wesołe tło z „bąbelkami" — kolory z logo (turkus + pomarańcz) */
     .playful-bg {
       background:
-        radial-gradient(60px 60px at 12% 20%, rgba(255,207,63,.35), transparent 70%),
-        radial-gradient(90px 90px at 85% 15%, rgba(255,122,89,.25), transparent 70%),
-        radial-gradient(70px 70px at 75% 80%, rgba(52,211,153,.25), transparent 70%),
-        linear-gradient(180deg, #e0f4fe 0%, #f0f9ff 60%, #ffffff 100%);
+        radial-gradient(60px 60px at 12% 20%, rgba(245,145,30,.30), transparent 70%),
+        radial-gradient(90px 90px at 85% 15%, rgba(240,100,30,.22), transparent 70%),
+        radial-gradient(70px 70px at 75% 80%, rgba(34,184,192,.28), transparent 70%),
+        linear-gradient(180deg, #d2f2f6 0%, #eafafc 60%, #ffffff 100%);
     }
     .wave-divider svg { display:block; width:100%; height:100%; }
-    .bubble { position:absolute; bottom:-20px; border-radius:9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(125,211,252,.5) 60%, transparent 72%); animation: rise linear infinite; pointer-events:none; }
-    .card-shadow { box-shadow: 0 18px 40px -18px rgba(2,132,199,.35); }
+    .bubble { position:absolute; bottom:-20px; border-radius:9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(111,210,221,.55) 60%, transparent 72%); animation: rise linear infinite; pointer-events:none; }
+    .card-shadow { box-shadow: 0 18px 40px -18px rgba(14,124,139,.35); }
     input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
   </style>
 </head>
@@ -81,11 +84,38 @@
     <div class="bg-white/85 backdrop-blur-md border-b border-sky-100">
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 md:h-20">
-          <a href="#top" class="flex items-center gap-2 group">
-            <span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white card-shadow group-hover:scale-110 transition-transform">
-              <i data-lucide="fish" class="w-6 h-6"></i>
+          <a href="#top" class="flex items-center gap-3 group" aria-label="DELFINADA — strona główna">
+            <!-- Logo DELFINADA (delfin + fala + promienie) -->
+            <span class="shrink-0 group-hover:scale-105 transition-transform">
+              <svg class="w-12 h-12 md:w-14 md:h-14" viewBox="0 0 1024 400" role="img" aria-hidden="true">
+                <defs>
+                  <linearGradient id="navDolphin" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#FDB94E"/><stop offset=".55" stop-color="#F5911E"/><stop offset="1" stop-color="#F0641E"/>
+                  </linearGradient>
+                  <linearGradient id="navWave" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#16A9BE"/><stop offset="1" stop-color="#0E7C8B"/>
+                  </linearGradient>
+                </defs>
+                <g stroke-linecap="round">
+                  <g stroke="#16A9BE" stroke-width="14">
+                    <line x1="512" y1="66" x2="512" y2="12"/><line x1="632" y1="94" x2="662" y2="44"/><line x1="392" y1="94" x2="362" y2="44"/>
+                    <line x1="716" y1="150" x2="760" y2="118"/><line x1="308" y1="150" x2="264" y2="118"/>
+                  </g>
+                  <g stroke="#F5911E" stroke-width="14">
+                    <line x1="572" y1="74" x2="592" y2="24"/><line x1="452" y1="74" x2="432" y2="24"/>
+                    <line x1="676" y1="118" x2="714" y2="78"/><line x1="348" y1="118" x2="310" y2="78"/>
+                  </g>
+                </g>
+                <path d="M232 300 C360 270 430 326 560 314 C650 306 720 270 800 292 C740 330 660 342 560 336 C440 329 372 342 300 342 C270 342 244 326 232 300 Z" fill="url(#navWave)"/>
+                <path fill="url(#navDolphin)" stroke="#E85D18" stroke-width="5" stroke-linejoin="round"
+                  d="M356 300 C352 278 360 260 384 244 C356 240 336 228 322 210 C348 214 372 218 396 228 C420 186 456 154 508 136 C470 128 452 110 444 90 C476 110 502 124 528 128 C566 106 612 96 660 106 C712 117 748 148 762 192 C772 224 766 258 742 284 C716 312 676 328 632 330 C660 308 674 284 672 258 C660 278 640 292 614 298 C640 274 650 248 642 224 C624 252 596 270 560 278 C512 288 468 280 430 292 C404 300 378 308 356 300 Z"/>
+                <circle cx="690" cy="174" r="10" fill="#7A3410"/>
+              </svg>
             </span>
-            <span class="text-xl md:text-2xl font-display font-extrabold tracking-wide text-sky-700">DELFIN<span class="text-coral">ADA</span></span>
+            <span class="leading-none">
+              <span class="block text-xl md:text-2xl font-display font-extrabold tracking-wide text-sky-700">DELFIN<span class="text-coral">ADA</span></span>
+              <span class="hidden sm:block text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] text-sky-600/80 mt-0.5">Nauka pływania &amp; obozy sportowe</span>
+            </span>
           </a>
 
           <div class="hidden md:flex items-center gap-7">
@@ -465,9 +495,37 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="grid gap-12 md:grid-cols-3">
         <div>
-          <a href="#top" class="flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-sky-600"><i data-lucide="fish" class="w-6 h-6"></i></span>
-            <span class="text-2xl font-display font-extrabold text-white">DELFIN<span class="text-sunny">ADA</span></span>
+          <a href="#top" class="flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white p-1.5 card-shadow">
+              <svg class="w-full h-full" viewBox="0 0 1024 400" role="img" aria-hidden="true">
+                <defs>
+                  <linearGradient id="ftDolphin" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#FDB94E"/><stop offset=".55" stop-color="#F5911E"/><stop offset="1" stop-color="#F0641E"/>
+                  </linearGradient>
+                  <linearGradient id="ftWave" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#16A9BE"/><stop offset="1" stop-color="#0E7C8B"/>
+                  </linearGradient>
+                </defs>
+                <g stroke-linecap="round">
+                  <g stroke="#16A9BE" stroke-width="14">
+                    <line x1="512" y1="66" x2="512" y2="12"/><line x1="632" y1="94" x2="662" y2="44"/><line x1="392" y1="94" x2="362" y2="44"/>
+                    <line x1="716" y1="150" x2="760" y2="118"/><line x1="308" y1="150" x2="264" y2="118"/>
+                  </g>
+                  <g stroke="#F5911E" stroke-width="14">
+                    <line x1="572" y1="74" x2="592" y2="24"/><line x1="452" y1="74" x2="432" y2="24"/>
+                    <line x1="676" y1="118" x2="714" y2="78"/><line x1="348" y1="118" x2="310" y2="78"/>
+                  </g>
+                </g>
+                <path d="M232 300 C360 270 430 326 560 314 C650 306 720 270 800 292 C740 330 660 342 560 336 C440 329 372 342 300 342 C270 342 244 326 232 300 Z" fill="url(#ftWave)"/>
+                <path fill="url(#ftDolphin)" stroke="#E85D18" stroke-width="5" stroke-linejoin="round"
+                  d="M356 300 C352 278 360 260 384 244 C356 240 336 228 322 210 C348 214 372 218 396 228 C420 186 456 154 508 136 C470 128 452 110 444 90 C476 110 502 124 528 128 C566 106 612 96 660 106 C712 117 748 148 762 192 C772 224 766 258 742 284 C716 312 676 328 632 330 C660 308 674 284 672 258 C660 278 640 292 614 298 C640 274 650 248 642 224 C624 252 596 270 560 278 C512 288 468 280 430 292 C404 300 378 308 356 300 Z"/>
+                <circle cx="690" cy="174" r="10" fill="#7A3410"/>
+              </svg>
+            </span>
+            <span class="leading-none">
+              <span class="block text-2xl font-display font-extrabold text-white">DELFIN<span class="text-sunny">ADA</span></span>
+              <span class="block text-[10px] font-bold uppercase tracking-[0.18em] text-sky-100/80 mt-1">Nauka pływania &amp; obozy sportowe</span>
+            </span>
           </a>
           <p class="mt-4 text-sky-200 leading-relaxed max-w-xs">Uczymy pływać z pewnością siebie i uśmiechem — niemowlęta, dzieci i dorosłych, na każdym poziomie.</p>
           <div class="mt-6 flex items-center gap-3">

@@ -1,10 +1,20 @@
 # DELFINADA — Szkoła Pływania 🐬
 
 Nowoczesna, responsywna strona docelowa (landing page) szkoły pływania **DELFINADA**.
-Motyw: **jasny, kolorowy i zabawowy** („Playful Kids") — dla rodziców i dzieci.
-Ciepłe akcenty (**koral, słoneczna żółć, mięta**) na jasnym **błękicie**, zaokrąglone
-„bąbelkowe" kształty, **faliste przejścia** między sekcjami, maskotka-delfin i animowane bąbelki.
-Interfejs w języku polskim. Zawiera **działający formularz zapisu online** z walidacją.
+Motyw: **jasny, kolorowy i zabawowy** („Playful Kids") w **kolorach logo** — dla rodziców i dzieci.
+Paleta: **pomarańcz delfina** (`#F5911E` → `#F0641E`) i **turkus fali/promieni** (`#16A9BE` → `#0E7C8B`)
+na bieli, zaokrąglone „bąbelkowe" kształty, **faliste przejścia** między sekcjami i animowane bąbelki.
+W nagłówku i stopce widnieje **logo DELFINADA** (delfin + fala + promienie) z taglinem
+„Nauka pływania & obozy sportowe". Interfejs w języku polskim, z **działającym formularzem zapisu**.
+
+## 🐬 Logo
+
+Logo jest odwzorowane jako **inline SVG** (delfin, fala, promienie słońca) — nie wymaga
+zewnętrznego pliku, skaluje się bez utraty jakości i używa dokładnych kolorów marki.
+Wersja samodzielna: [`assets/logo-delfinada.svg`](assets/logo-delfinada.svg).
+
+> Chcesz użyć oryginalnej grafiki zamiast wersji SVG? Wgraj plik do `assets/` (np. `assets/logo.png`)
+> i podmień znacznik `<svg …>` w nagłówku/stopce na `<img src="assets/logo.png" alt="DELFINADA" class="h-12 md:h-14" />`.
 
 ## 🏊 Sekcje
 
