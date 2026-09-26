@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Szkoła Pływania — Pływaj z pewnością siebie!</title>
+  <meta name="description" content="Profesjonalna nauka pływania dla dzieci i dorosłych na każdym poziomie zaawansowania." />
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    // Water-themed Tailwind configuration
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            water: {
+              50:  '#f0fbff',
+              100: '#e0f6ff',
+              200: '#baecff',
+              300: '#7ddcff',
+              400: '#38c6f4',
+              500: '#0eade0',
+              600: '#028abd',
+              700: '#076e99',
+              800: '#0d5c7d',
+              900: '#114d69',
+            },
+          },
+          keyframes: {
+            'float': {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            'fade-up': {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'fade-up': 'fade-up 0.7s ease-out both',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Subtle water gradient used behind the hero when no image loads */
+    .hero-fallback {
+      background:
+        linear-gradient(135deg, rgba(2,138,189,0.55), rgba(14,173,224,0.35)),
+        radial-gradient(circle at 20% 20%, rgba(125,220,255,0.6), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(255,255,255,0.35), transparent 40%),
+        linear-gradient(180deg, #076e99, #0d5c7d);
+    }
+    /* Wavy divider */
+    .wave-divider svg { display: block; width: 100%; height: 100%; }
+  </style>
+</head>
+
+<body class="font-sans text-slate-700 bg-white antialiased">
+
+  <!-- ============ NAVBAR ============ -->
+  <header id="top" class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-100">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <!-- Logo -->
+        <a href="#top" class="flex items-center gap-2 group">
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30 group-hover:scale-105 transition-transform">
+            <i data-lucide="waves" class="w-6 h-6"></i>
+          </span>
+          <span class="text-lg md:text-xl font-extrabold tracking-tight text-water-800">Szkoła Pływania</span>
+        </a>
+
+        <!-- Desktop links -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#oferta" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Oferta</a>
+          <a href="#cennik" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Cennik</a>
+          <a href="#kontakt" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Kontakt</a>
+          <a href="#kontakt" class="inline-flex items-center gap-2 rounded-full bg-water-600 hover:bg-water-700 text-white text-sm font-semibold px-5 py-2.5 shadow-lg shadow-water-600/30 transition-colors">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            Zapisz się
+          </a>
+        </div>
+
+        <!-- Mobile toggle -->
+        <button id="menu-btn" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-water-700 hover:bg-water-50 transition-colors">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-md">
+      <div class="px-4 py-4 space-y-1">
+        <a href="#oferta" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Oferta</a>
+        <a href="#cennik" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Cennik</a>
+        <a href="#kontakt" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Kontakt</a>
+        <a href="#kontakt" class="mt-2 flex items-center justify-center gap-2 rounded-full bg-water-600 hover:bg-water-700 text-white font-semibold px-5 py-3">
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          Zapisz się
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative min-h-screen flex items-center pt-16 md:pt-20 overflow-hidden">
+    <!-- Background image placeholder (swimming pool) with graceful gradient fallback -->
+    <div class="absolute inset-0 hero-fallback">
+      <img
+        src="https://images.unsplash.com/photo-1560090995-01632a28895b?auto=format&fit=crop&w=1920&q=80"
+        alt="Basen — nauka pływania"
+        class="w-full h-full object-cover opacity-70"
+        onerror="this.style.display='none'"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-water-900/70 via-water-800/50 to-water-900/80"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+      <div class="max-w-3xl">
+        <span class="animate-fade-up inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-sm font-semibold text-water-50 ring-1 ring-white/25">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          Nauka pływania dla każdego
+        </span>
+
+        <h1 class="animate-fade-up mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white drop-shadow-sm">
+          Pływaj z <span class="text-water-300">pewnością siebie!</span>
+        </h1>
+
+        <p class="animate-fade-up mt-6 text-lg sm:text-xl text-water-50/90 max-w-2xl">
+          Profesjonalna nauka pływania dla dzieci i dorosłych na każdym poziomie zaawansowania.
+        </p>
+
+        <div class="animate-fade-up mt-10 flex flex-col sm:flex-row gap-4">
+          <a href="#oferta" class="inline-flex items-center justify-center gap-2 rounded-full bg-water-500 hover:bg-water-400 text-white font-semibold px-8 py-4 text-base shadow-xl shadow-water-900/30 transition-colors">
+            Sprawdź ofertę
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </a>
+          <a href="#kontakt" class="inline-flex items-center justify-center gap-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white font-semibold px-8 py-4 text-base ring-1 ring-white/30 transition-colors">
+            <i data-lucide="phone" class="w-5 h-5"></i>
+            Skontaktuj się
+          </a>
+        </div>
+
+        <!-- Quick trust badges -->
+        <div class="animate-fade-up mt-12 flex flex-wrap gap-x-8 gap-y-3 text-water-50/90 text-sm font-medium">
+          <span class="inline-flex items-center gap-2"><i data-lucide="badge-check" class="w-5 h-5 text-water-300"></i> Wykwalifikowani instruktorzy</span>
+          <span class="inline-flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-water-300"></i> Małe grupy</span>
+          <span class="inline-flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-water-300"></i> Bezpieczeństwo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wave divider -->
+    <div class="wave-divider absolute bottom-0 inset-x-0 text-white">
+      <svg viewBox="0 0 1440 90" fill="currentColor" preserveAspectRatio="none">
+        <path d="M0,64 C240,10 480,10 720,42 C960,74 1200,74 1440,32 L1440,90 L0,90 Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ OFERTA / SERVICES ============ -->
+  <section id="oferta" class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="text-sm font-bold uppercase tracking-wider text-water-600">Oferta</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Zajęcia dopasowane do Ciebie</h2>
+        <p class="mt-4 text-lg text-slate-500">Wybierz program idealny dla siebie lub swojego dziecka — od pierwszego kontaktu z wodą po zaawansowany trening.</p>
+      </div>
+
+      <div class="mt-16 grid gap-8 md:grid-cols-3">
+        <!-- Card 1 -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-gradient-to-b from-water-50/60 to-white p-8 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
+            <i data-lucide="baby" class="w-7 h-7"></i>
+          </span>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Dla dzieci</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Nauka przez zabawę i bezpieczne oswajanie z wodą. Budujemy pozytywne skojarzenia i pewność siebie od pierwszych zajęć.</p>
+          <a href="#kontakt" class="mt-6 inline-flex items-center gap-1.5 text-water-600 font-semibold group-hover:gap-2.5 transition-all">
+            Dowiedz się więcej <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-gradient-to-b from-water-50/60 to-white p-8 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
+            <i data-lucide="user-round" class="w-7 h-7"></i>
+          </span>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Dla dorosłych</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Przełamywanie strachu i nauka od podstaw. Spokojne, indywidualne podejście w komfortowej i przyjaznej atmosferze.</p>
+          <a href="#kontakt" class="mt-6 inline-flex items-center gap-1.5 text-water-600 font-semibold group-hover:gap-2.5 transition-all">
+            Dowiedz się więcej <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-gradient-to-b from-water-50/60 to-white p-8 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
+            <i data-lucide="trophy" class="w-7 h-7"></i>
+          </span>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Doskonalenie</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Trening techniki i przygotowanie do zawodów. Dopracowujemy styl, wydolność i starty dla pływaków średniozaawansowanych i zaawansowanych.</p>
+          <a href="#kontakt" class="mt-6 inline-flex items-center gap-1.5 text-water-600 font-semibold group-hover:gap-2.5 transition-all">
+            Dowiedz się więcej <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CENNIK / PRICING ============ -->
+  <section id="cennik" class="py-20 md:py-28 bg-water-50/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="text-sm font-bold uppercase tracking-wider text-water-600">Cennik</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Proste i przejrzyste ceny</h2>
+        <p class="mt-4 text-lg text-slate-500">Bez ukrytych kosztów. Zapłać za to, czego naprawdę potrzebujesz.</p>
+      </div>
+
+      <div class="mt-16 grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+        <!-- Group -->
+        <div class="relative rounded-3xl bg-white border border-slate-100 p-8 shadow-sm hover:shadow-lg transition-shadow">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-water-100 text-water-700">
+              <i data-lucide="users" class="w-6 h-6"></i>
+            </span>
+            <h3 class="text-xl font-bold text-slate-900">Zajęcia grupowe</h3>
+          </div>
+          <p class="mt-6 flex items-baseline gap-2">
+            <span class="text-sm font-medium text-slate-400">od</span>
+            <span class="text-4xl font-extrabold text-slate-900">75 PLN</span>
+            <span class="text-slate-400 font-medium">/ h</span>
+          </p>
+          <ul class="mt-6 space-y-3 text-slate-600">
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-water-500 mt-0.5"></i> Małe grupy do 6 osób</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-water-500 mt-0.5"></i> Podział wg poziomu zaawansowania</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-water-500 mt-0.5"></i> Świetna zabawa i motywacja w grupie</li>
+          </ul>
+          <a href="#kontakt" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-water-50 hover:bg-water-100 text-water-700 font-semibold px-6 py-3 transition-colors">
+            Zapisz się
+          </a>
+        </div>
+
+        <!-- Individual (highlighted) -->
+        <div class="relative rounded-3xl bg-gradient-to-b from-water-600 to-water-800 p-8 shadow-xl shadow-water-700/30 text-white overflow-hidden">
+          <span class="absolute top-5 right-5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">Najszybsze postępy</span>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/15 text-white">
+              <i data-lucide="user-round" class="w-6 h-6"></i>
+            </span>
+            <h3 class="text-xl font-bold">Zajęcia indywidualne</h3>
+          </div>
+          <p class="mt-6 flex items-baseline gap-2">
+            <span class="text-sm font-medium text-water-100">od</span>
+            <span class="text-4xl font-extrabold">160 PLN</span>
+            <span class="text-water-100 font-medium">/ h</span>
+          </p>
+          <ul class="mt-6 space-y-3 text-water-50">
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-water-200 mt-0.5"></i> Pełna uwaga instruktora 1:1</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-water-200 mt-0.5"></i> Elastyczne godziny zajęć</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-water-200 mt-0.5"></i> Program w 100% dopasowany do Ciebie</li>
+          </ul>
+          <a href="#kontakt" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white hover:bg-water-50 text-water-700 font-semibold px-6 py-3 transition-colors">
+            Zapisz się
+          </a>
+        </div>
+      </div>
+
+      <p class="mt-8 text-center text-sm text-slate-400">Karnety i pakiety rodzinne dostępne — skontaktuj się po indywidualną wycenę.</p>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER & CONTACT ============ -->
+  <footer id="kontakt" class="bg-water-900 text-water-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid gap-12 md:grid-cols-3">
+        <!-- Brand -->
+        <div>
+          <a href="#top" class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-water-400 to-water-600 text-white">
+              <i data-lucide="waves" class="w-6 h-6"></i>
+            </span>
+            <span class="text-xl font-extrabold text-white">Szkoła Pływania</span>
+          </a>
+          <p class="mt-4 text-water-200/80 leading-relaxed max-w-xs">
+            Uczymy pływać z pewnością siebie — dzieci i dorosłych, na każdym poziomie zaawansowania.
+          </p>
+          <!-- Social media placeholders -->
+          <div class="mt-6 flex items-center gap-3">
+            <a href="#" aria-label="Facebook" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-water-500 transition-colors">
+              <i data-lucide="facebook" class="w-5 h-5"></i>
+            </a>
+            <a href="#" aria-label="Instagram" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-water-500 transition-colors">
+              <i data-lucide="instagram" class="w-5 h-5"></i>
+            </a>
+            <a href="#" aria-label="YouTube" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-water-500 transition-colors">
+              <i data-lucide="youtube" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="text-white font-bold text-lg">Kontakt</h4>
+          <ul class="mt-4 space-y-3">
+            <li class="flex items-center gap-3">
+              <i data-lucide="phone" class="w-5 h-5 text-water-400"></i>
+              <a href="tel:+48000000000" class="hover:text-white transition-colors">+48 000 000 000</a>
+            </li>
+            <li class="flex items-center gap-3">
+              <i data-lucide="mail" class="w-5 h-5 text-water-400"></i>
+              <a href="mailto:kontakt@szkolaplywania.pl" class="hover:text-white transition-colors">kontakt@szkolaplywania.pl</a>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="map-pin" class="w-5 h-5 text-water-400 mt-0.5"></i>
+              <span>Pływalnia Miejska<br />ul. Wodna 12, 00-000 Miasto</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Hours / Links -->
+        <div>
+          <h4 class="text-white font-bold text-lg">Godziny otwarcia</h4>
+          <ul class="mt-4 space-y-3">
+            <li class="flex items-center justify-between max-w-xs"><span>Poniedziałek – Piątek</span><span class="text-water-300 font-medium">7:00 – 21:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Sobota</span><span class="text-water-300 font-medium">8:00 – 18:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Niedziela</span><span class="text-water-300 font-medium">9:00 – 15:00</span></li>
+          </ul>
+          <a href="#kontakt" class="mt-6 inline-flex items-center gap-2 rounded-full bg-water-500 hover:bg-water-400 text-white font-semibold px-6 py-3 transition-colors">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            Zapisz się na zajęcia
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-water-300/70">
+        <p>&copy; <span id="year"></span> Szkoła Pływania. Wszelkie prawa zastrzeżone.</p>
+        <p class="flex items-center gap-1.5">Zbudowane z <i data-lucide="heart" class="w-4 h-4 text-water-400"></i> nad wodą.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Render Lucide icons
+    if (window.lucide) lucide.createIcons();
+
+    // Mobile menu toggle
+    const btn = document.getElementById('menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    btn?.addEventListener('click', () => menu.classList.toggle('hidden'));
+    menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.add('hidden')));
+
+    // Current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
