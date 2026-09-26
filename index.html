@@ -156,30 +156,10 @@
         </div>
       </div>
 
-      <!-- Zdjęcie instruktorki / wizual -->
-      <div class="relative order-first lg:order-none">
-        <div class="relative mx-auto w-64 h-64 sm:w-80 sm:h-80 lg:w-[26rem] lg:h-[26rem]">
-          <!-- Kolorowe koło (tło pod zdjęciem) -->
-          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-sky-300 to-sky-500 card-shadow animate-float"></div>
-          <div class="absolute inset-0 rounded-full ring-8 ring-white/60"></div>
-          <!-- Zdjęcie instruktorki — jasne tło wtopione w koło przez mix-blend-multiply -->
-          <div class="absolute inset-0 rounded-full overflow-hidden animate-float" style="animation-delay:.3s">
-            <img src="assets/ada.JPG" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="eager"
-              class="absolute bottom-0 left-1/2 -translate-x-1/2 h-[118%] max-w-none w-auto object-cover [mix-blend-mode:multiply]" />
-          </div>
-          <!-- wesołe plakietki -->
-          <div class="absolute -top-2 right-4 bg-white rounded-3xl px-4 py-3 card-shadow animate-float" style="animation-delay:.6s">
-            <p class="text-2xl font-display font-extrabold text-sky-700 leading-none">12+</p>
-            <p class="text-xs text-slate-500 font-semibold">lat radości</p>
-          </div>
-          <div class="absolute bottom-2 -left-2 bg-white rounded-3xl px-4 py-3 card-shadow animate-float" style="animation-delay:1.2s">
-            <p class="text-2xl font-display font-extrabold text-coral leading-none">3000+</p>
-            <p class="text-xs text-slate-500 font-semibold">małych pływaków</p>
-          </div>
-          <div class="absolute top-1/2 -right-4 bg-sunny rounded-2xl px-3 py-2 card-shadow animate-float" style="animation-delay:.9s">
-            <i data-lucide="smile" class="w-6 h-6 text-slate-800"></i>
-          </div>
-        </div>
+      <!-- Zdjęcie instruktorki (bez tła, nieruchome) -->
+      <div class="relative order-first lg:order-none flex justify-center">
+        <img src="assets/ada.svg" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="eager"
+          class="w-72 sm:w-96 lg:w-full max-w-lg h-auto drop-shadow-2xl" />
       </div>
     </div>
 
