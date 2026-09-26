@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DELFINADA — Szkoła Pływania | Pływaj z pewnością siebie!</title>
-  <meta name="description" content="DELFINADA — szkoła pływania dla niemowląt, dzieci i dorosłych. Kinowy klimat, radosna atmosfera i doświadczeni instruktorzy. Zapisz się online!" />
+  <title>DELFINADA — Szkoła Pływania dla dzieci i dorosłych 🐬</title>
+  <meta name="description" content="DELFINADA — radosna szkoła pływania dla niemowląt, dzieci i dorosłych. Nauka przez zabawę, mali instruktorzy z sercem. Zapisz swoje dziecko online!" />
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,46 +14,43 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
             display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           },
           colors: {
-            // Ciemna, kinowa baza (nocny basen)
-            abyss: {
-              950: '#040b1a',
-              900: '#071227',
-              800: '#0b1c3d',
-              700: '#122a56',
+            sky: {
+              50:  '#f0f9ff',
+              100: '#e0f4fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
             },
-            // Neonowy cyjan / błękit
-            aqua: {
-              300: '#7ff0ff',
-              400: '#38dcff',
-              500: '#12c2f0',
-              600: '#039bd0',
-            },
-            // Energetyczne, zabawowe akcenty
-            coral: '#ff7a59',
-            sunny: '#ffd24c',
-            mint:  '#4be0b8',
+            coral: { light: '#ffb4a2', DEFAULT: '#ff7a59', dark: '#f4623a' },
+            sunny: { light: '#ffe27a', DEFAULT: '#ffcf3f', dark: '#f5b800' },
+            mint:  { light: '#a7f3d0', DEFAULT: '#34d399', dark: '#10b981' },
           },
           keyframes: {
-            'float': { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-16px)' } },
-            'rise':  { '0%': { transform: 'translateY(0) scale(1)', opacity: '0' }, '10%': { opacity: '.6' }, '100%': { transform: 'translateY(-120px) scale(1.3)', opacity: '0' } },
+            'float': { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-18px)' } },
+            'rise':  { '0%': { transform: 'translateY(0) scale(.6)', opacity: '0' }, '15%': { opacity: '.7' }, '100%': { transform: 'translateY(-140px) scale(1.2)', opacity: '0' } },
             'fade-up': { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-            'wiggle': { '0%,100%': { transform: 'rotate(-4deg)' }, '50%': { transform: 'rotate(4deg)' } },
+            'wiggle': { '0%,100%': { transform: 'rotate(-5deg)' }, '50%': { transform: 'rotate(5deg)' } },
+            'pop': { '0%': { transform: 'scale(.9)' }, '60%': { transform: 'scale(1.05)' }, '100%': { transform: 'scale(1)' } },
           },
           animation: {
             'float': 'float 6s ease-in-out infinite',
             'fade-up': 'fade-up .7s ease-out both',
-            'wiggle': 'wiggle 3s ease-in-out infinite',
+            'wiggle': 'wiggle 3.5s ease-in-out infinite',
+            'pop': 'pop .4s ease-out both',
           },
         },
       },
@@ -61,64 +58,59 @@
   </script>
 
   <style>
-    body { background-color: #040b1a; }
-    /* Kinowy gradient tła */
-    .cinematic {
+    body { background-color: #f0f9ff; }
+    /* Wesołe tło z „bąbelkami" */
+    .playful-bg {
       background:
-        radial-gradient(1200px 600px at 15% -10%, rgba(56,220,255,0.22), transparent 60%),
-        radial-gradient(1000px 500px at 90% 0%, rgba(75,224,184,0.14), transparent 55%),
-        radial-gradient(900px 700px at 50% 120%, rgba(255,122,89,0.14), transparent 60%),
-        linear-gradient(180deg, #071227 0%, #040b1a 100%);
+        radial-gradient(60px 60px at 12% 20%, rgba(255,207,63,.35), transparent 70%),
+        radial-gradient(90px 90px at 85% 15%, rgba(255,122,89,.25), transparent 70%),
+        radial-gradient(70px 70px at 75% 80%, rgba(52,211,153,.25), transparent 70%),
+        linear-gradient(180deg, #e0f4fe 0%, #f0f9ff 60%, #ffffff 100%);
     }
-    .glass { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10); backdrop-filter: blur(14px); }
-    .neon-text { text-shadow: 0 0 24px rgba(56,220,255,0.55); }
-    .neon-ring { box-shadow: 0 0 0 1px rgba(56,220,255,0.35), 0 10px 40px -10px rgba(18,194,240,0.55); }
-    /* Bąbelki */
-    .bubble { position: absolute; bottom: -20px; border-radius: 9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(127,240,255,.25) 60%, transparent 70%); animation: rise linear infinite; pointer-events: none; }
     .wave-divider svg { display:block; width:100%; height:100%; }
-    /* Ukryj strzałki number input */
-    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .bubble { position:absolute; bottom:-20px; border-radius:9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(125,211,252,.5) 60%, transparent 72%); animation: rise linear infinite; pointer-events:none; }
+    .card-shadow { box-shadow: 0 18px 40px -18px rgba(2,132,199,.35); }
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
   </style>
 </head>
 
-<body class="font-sans text-slate-200 antialiased selection:bg-aqua-400 selection:text-abyss-950">
+<body class="font-sans text-slate-700 antialiased selection:bg-sunny selection:text-slate-900">
 
   <!-- ============ NAVBAR ============ -->
   <header id="top" class="fixed top-0 inset-x-0 z-50">
-    <div class="glass border-b border-white/10">
+    <div class="bg-white/85 backdrop-blur-md border-b border-sky-100">
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 md:h-20">
           <a href="#top" class="flex items-center gap-2 group">
-            <span class="relative inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-aqua-400 to-aqua-600 text-abyss-950 neon-ring group-hover:scale-105 transition-transform">
+            <span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white card-shadow group-hover:scale-110 transition-transform">
               <i data-lucide="fish" class="w-6 h-6"></i>
             </span>
-            <span class="text-xl md:text-2xl font-display font-extrabold tracking-wide text-white">DELFIN<span class="text-aqua-400">ADA</span></span>
+            <span class="text-xl md:text-2xl font-display font-extrabold tracking-wide text-sky-700">DELFIN<span class="text-coral">ADA</span></span>
           </a>
 
           <div class="hidden md:flex items-center gap-7">
-            <a href="#oferta" class="text-sm font-semibold text-slate-300 hover:text-aqua-300 transition-colors">Oferta</a>
-            <a href="#dlaczego" class="text-sm font-semibold text-slate-300 hover:text-aqua-300 transition-colors">Dlaczego my</a>
-            <a href="#jak" class="text-sm font-semibold text-slate-300 hover:text-aqua-300 transition-colors">Jak to działa</a>
-            <a href="#cennik" class="text-sm font-semibold text-slate-300 hover:text-aqua-300 transition-colors">Cennik</a>
-            <a href="#zapisy" class="inline-flex items-center gap-2 rounded-full bg-coral hover:brightness-110 text-white text-sm font-bold px-5 py-2.5 shadow-lg shadow-coral/30 transition-all hover:-translate-y-0.5">
-              <i data-lucide="waves" class="w-4 h-4"></i>
-              Zapisz się
+            <a href="#oferta" class="text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors">Oferta</a>
+            <a href="#dlaczego" class="text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors">Dlaczego my</a>
+            <a href="#jak" class="text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors">Jak to działa</a>
+            <a href="#cennik" class="text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors">Cennik</a>
+            <a href="#zapisy" class="inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white text-sm font-bold px-5 py-2.5 shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
+              <i data-lucide="waves" class="w-4 h-4"></i> Zapisz się
             </a>
           </div>
 
-          <button id="menu-btn" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-aqua-300 hover:bg-white/10 transition-colors">
+          <button id="menu-btn" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full text-sky-600 hover:bg-sky-50 transition-colors">
             <i data-lucide="menu" class="w-6 h-6"></i>
           </button>
         </div>
       </nav>
     </div>
 
-    <div id="mobile-menu" class="hidden md:hidden glass border-b border-white/10">
+    <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-b border-sky-100">
       <div class="px-4 py-4 space-y-1">
-        <a href="#oferta" class="block px-3 py-2 rounded-lg font-semibold text-slate-200 hover:bg-white/10 hover:text-aqua-300">Oferta</a>
-        <a href="#dlaczego" class="block px-3 py-2 rounded-lg font-semibold text-slate-200 hover:bg-white/10 hover:text-aqua-300">Dlaczego my</a>
-        <a href="#jak" class="block px-3 py-2 rounded-lg font-semibold text-slate-200 hover:bg-white/10 hover:text-aqua-300">Jak to działa</a>
-        <a href="#cennik" class="block px-3 py-2 rounded-lg font-semibold text-slate-200 hover:bg-white/10 hover:text-aqua-300">Cennik</a>
+        <a href="#oferta" class="block px-3 py-2 rounded-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Oferta</a>
+        <a href="#dlaczego" class="block px-3 py-2 rounded-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Dlaczego my</a>
+        <a href="#jak" class="block px-3 py-2 rounded-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Jak to działa</a>
+        <a href="#cennik" class="block px-3 py-2 rounded-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Cennik</a>
         <a href="#zapisy" class="mt-2 flex items-center justify-center gap-2 rounded-full bg-coral text-white font-bold px-5 py-3">
           <i data-lucide="waves" class="w-4 h-4"></i> Zapisz się
         </a>
@@ -127,210 +119,221 @@
   </header>
 
   <!-- ============ HERO ============ -->
-  <section class="relative min-h-screen flex items-center overflow-hidden cinematic pt-16 md:pt-20">
-    <!-- bąbelki -->
+  <section class="relative min-h-screen flex items-center overflow-hidden playful-bg pt-16 md:pt-20">
     <div id="bubbles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-12 items-center py-16">
       <!-- Copy -->
       <div>
-        <span class="animate-fade-up inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-sm font-semibold text-aqua-200">
-          <i data-lucide="sparkles" class="w-4 h-4 text-sunny"></i>
+        <span class="animate-fade-up inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-sky-600 card-shadow">
+          <i data-lucide="sparkles" class="w-4 h-4 text-sunny-dark"></i>
           Niemowlęta • Dzieci • Dorośli
         </span>
 
-        <h1 class="animate-fade-up mt-6 font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] text-white">
-          Pływaj z <span class="text-aqua-400 neon-text">pewnością</span> siebie!
+        <h1 class="animate-fade-up mt-6 font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] text-sky-700">
+          Pływaj z <span class="text-coral">pewnością</span> siebie!
         </h1>
 
-        <p class="animate-fade-up mt-6 text-lg sm:text-xl text-slate-300 max-w-xl">
-          Profesjonalna nauka pływania dla dzieci i dorosłych na każdym poziomie zaawansowania — w energetycznej, przyjaznej atmosferze DELFINADY.
+        <p class="animate-fade-up mt-6 text-lg sm:text-xl text-slate-600 max-w-xl">
+          Profesjonalna nauka pływania dla dzieci i dorosłych na każdym poziomie zaawansowania — w radosnej, przyjaznej atmosferze DELFINADY. 🐬
         </p>
 
         <div class="animate-fade-up mt-9 flex flex-col sm:flex-row gap-4">
-          <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:brightness-110 text-white font-bold px-8 py-4 text-base shadow-xl shadow-coral/30 transition-all hover:-translate-y-0.5">
+          <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-base shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
             <i data-lucide="waves" class="w-5 h-5"></i> Zapisz się
           </a>
-          <a href="#oferta" class="inline-flex items-center justify-center gap-2 rounded-full glass hover:bg-white/10 text-white font-semibold px-8 py-4 text-base transition-colors">
+          <a href="#oferta" class="inline-flex items-center justify-center gap-2 rounded-full bg-white hover:bg-sky-50 text-sky-700 font-bold px-8 py-4 text-base card-shadow transition-colors">
             Sprawdź ofertę <i data-lucide="arrow-right" class="w-5 h-5"></i>
           </a>
         </div>
 
-        <div class="animate-fade-up mt-10 flex flex-wrap gap-x-7 gap-y-3 text-slate-300 text-sm font-medium">
-          <span class="inline-flex items-center gap-2"><i data-lucide="badge-check" class="w-5 h-5 text-mint"></i> Licencjonowani instruktorzy</span>
-          <span class="inline-flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-aqua-400"></i> Małe grupy</span>
-          <span class="inline-flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-sunny"></i> Bezpieczeństwo</span>
+        <div class="animate-fade-up mt-10 flex flex-wrap gap-x-7 gap-y-3 text-slate-600 text-sm font-bold">
+          <span class="inline-flex items-center gap-2"><i data-lucide="badge-check" class="w-5 h-5 text-mint-dark"></i> Licencjonowani instruktorzy</span>
+          <span class="inline-flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-sky-500"></i> Małe grupy</span>
+          <span class="inline-flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-sunny-dark"></i> Bezpieczeństwo</span>
         </div>
       </div>
 
       <!-- Delfin / wizual -->
       <div class="relative hidden lg:block">
         <div class="relative mx-auto w-[26rem] h-[26rem]">
-          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-aqua-500/30 to-mint/20 blur-2xl"></div>
-          <div class="absolute inset-6 rounded-full glass neon-ring flex items-center justify-center animate-float">
-            <i data-lucide="fish" class="w-52 h-52 text-aqua-300 neon-text animate-wiggle"></i>
+          <div class="absolute inset-0 rounded-[42%_58%_60%_40%/40%_45%_55%_60%] bg-gradient-to-br from-sky-300 to-sky-500 card-shadow animate-float"></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <i data-lucide="fish" class="w-52 h-52 text-white animate-wiggle drop-shadow-lg"></i>
           </div>
-          <!-- pływające plakietki -->
-          <div class="absolute -top-2 right-6 glass rounded-2xl px-4 py-3 animate-float" style="animation-delay:.6s">
-            <p class="text-2xl font-display font-extrabold text-white leading-none">12+</p>
-            <p class="text-xs text-slate-300">lat na basenie</p>
+          <!-- wesołe plakietki -->
+          <div class="absolute -top-2 right-4 bg-white rounded-3xl px-4 py-3 card-shadow animate-float" style="animation-delay:.6s">
+            <p class="text-2xl font-display font-extrabold text-sky-700 leading-none">12+</p>
+            <p class="text-xs text-slate-500 font-semibold">lat radości</p>
           </div>
-          <div class="absolute bottom-2 -left-2 glass rounded-2xl px-4 py-3 animate-float" style="animation-delay:1.2s">
-            <p class="text-2xl font-display font-extrabold text-white leading-none">3000+</p>
-            <p class="text-xs text-slate-300">kursantów</p>
+          <div class="absolute bottom-2 -left-2 bg-white rounded-3xl px-4 py-3 card-shadow animate-float" style="animation-delay:1.2s">
+            <p class="text-2xl font-display font-extrabold text-coral leading-none">3000+</p>
+            <p class="text-xs text-slate-500 font-semibold">małych pływaków</p>
+          </div>
+          <div class="absolute top-1/2 -right-4 bg-sunny rounded-2xl px-3 py-2 card-shadow animate-float" style="animation-delay:.9s">
+            <i data-lucide="smile" class="w-6 h-6 text-slate-800"></i>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="wave-divider absolute bottom-0 inset-x-0 text-abyss-950">
-      <svg viewBox="0 0 1440 90" fill="currentColor" preserveAspectRatio="none">
-        <path d="M0,64 C240,10 480,10 720,42 C960,74 1200,74 1440,32 L1440,90 L0,90 Z"></path>
+    <div class="wave-divider absolute bottom-0 inset-x-0 text-white">
+      <svg viewBox="0 0 1440 110" fill="currentColor" preserveAspectRatio="none">
+        <path d="M0,48 C180,110 360,110 540,70 C720,30 900,30 1080,66 C1260,102 1350,88 1440,60 L1440,110 L0,110 Z"></path>
       </svg>
     </div>
   </section>
 
   <!-- ============ OFERTA ============ -->
-  <section id="oferta" class="py-20 md:py-28 bg-abyss-950">
+  <section id="oferta" class="py-20 md:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
-        <span class="text-sm font-bold uppercase tracking-widest text-aqua-400">Oferta</span>
-        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">Zajęcia dla każdego</h2>
-        <p class="mt-4 text-lg text-slate-400">Od pierwszego pluska w wodzie po zawodowy trening — wybierz swój program.</p>
+        <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Oferta</span>
+        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Zajęcia dla każdego</h2>
+        <p class="mt-4 text-lg text-slate-500">Od pierwszego pluska w wodzie po zawodowy trening — wybierz swój program.</p>
       </div>
 
       <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <article class="group rounded-3xl glass p-7 hover:-translate-y-1.5 hover:neon-ring transition-all duration-300">
-          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/30"><i data-lucide="baby" class="w-7 h-7"></i></span>
-          <h3 class="mt-6 text-xl font-display font-bold text-white">Niemowlęta</h3>
-          <p class="mt-3 text-slate-400 leading-relaxed">Zajęcia z rodzicem i oswajanie z wodą przez zabawę od najmłodszych lat.</p>
+        <article class="group rounded-[2rem] bg-sky-50 p-7 hover:-translate-y-1.5 hover:bg-white hover:card-shadow transition-all duration-300 animate-pop">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-sky-400 text-white shadow-lg shadow-sky-400/40 group-hover:animate-wiggle"><i data-lucide="baby" class="w-8 h-8"></i></span>
+          <h3 class="mt-6 text-xl font-display font-bold text-sky-700">Niemowlęta</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Zajęcia z rodzicem i oswajanie z wodą przez zabawę od najmłodszych lat.</p>
         </article>
-        <article class="group rounded-3xl glass p-7 hover:-translate-y-1.5 hover:neon-ring transition-all duration-300">
-          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-mint/15 text-mint ring-1 ring-mint/30"><i data-lucide="smile" class="w-7 h-7"></i></span>
-          <h3 class="mt-6 text-xl font-display font-bold text-white">Dla dzieci</h3>
-          <p class="mt-3 text-slate-400 leading-relaxed">Nauka przez zabawę, budowanie pewności siebie i pozytywnych skojarzeń z wodą.</p>
+        <article class="group rounded-[2rem] bg-mint-light/40 p-7 hover:-translate-y-1.5 hover:bg-white hover:card-shadow transition-all duration-300 animate-pop">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-mint text-white shadow-lg shadow-mint/40 group-hover:animate-wiggle"><i data-lucide="smile" class="w-8 h-8"></i></span>
+          <h3 class="mt-6 text-xl font-display font-bold text-sky-700">Dla dzieci</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Nauka przez zabawę, budowanie pewności siebie i pozytywnych skojarzeń z wodą.</p>
         </article>
-        <article class="group rounded-3xl glass p-7 hover:-translate-y-1.5 hover:neon-ring transition-all duration-300">
-          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sunny/15 text-sunny ring-1 ring-sunny/30"><i data-lucide="user-round" class="w-7 h-7"></i></span>
-          <h3 class="mt-6 text-xl font-display font-bold text-white">Dla dorosłych</h3>
-          <p class="mt-3 text-slate-400 leading-relaxed">Przełamywanie strachu i nauka od podstaw w spokojnej, komfortowej atmosferze.</p>
+        <article class="group rounded-[2rem] bg-sunny-light/40 p-7 hover:-translate-y-1.5 hover:bg-white hover:card-shadow transition-all duration-300 animate-pop">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-sunny text-slate-800 shadow-lg shadow-sunny/40 group-hover:animate-wiggle"><i data-lucide="user-round" class="w-8 h-8"></i></span>
+          <h3 class="mt-6 text-xl font-display font-bold text-sky-700">Dla dorosłych</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Przełamywanie strachu i nauka od podstaw w spokojnej, komfortowej atmosferze.</p>
         </article>
-        <article class="group rounded-3xl glass p-7 hover:-translate-y-1.5 hover:neon-ring transition-all duration-300">
-          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-coral/15 text-coral ring-1 ring-coral/30"><i data-lucide="trophy" class="w-7 h-7"></i></span>
-          <h3 class="mt-6 text-xl font-display font-bold text-white">Doskonalenie</h3>
-          <p class="mt-3 text-slate-400 leading-relaxed">Trening techniki i przygotowanie do zawodów dla zaawansowanych pływaków.</p>
+        <article class="group rounded-[2rem] bg-coral-light/30 p-7 hover:-translate-y-1.5 hover:bg-white hover:card-shadow transition-all duration-300 animate-pop">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-coral text-white shadow-lg shadow-coral/40 group-hover:animate-wiggle"><i data-lucide="trophy" class="w-8 h-8"></i></span>
+          <h3 class="mt-6 text-xl font-display font-bold text-sky-700">Doskonalenie</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Trening techniki i przygotowanie do zawodów dla zaawansowanych pływaków.</p>
         </article>
       </div>
     </div>
   </section>
 
   <!-- ============ DLACZEGO MY ============ -->
-  <section id="dlaczego" class="py-20 md:py-28 cinematic">
+  <section id="dlaczego" class="py-20 md:py-28 playful-bg relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
-        <span class="text-sm font-bold uppercase tracking-widest text-aqua-400">Dlaczego my</span>
-        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">DELFINADA to więcej niż nauka</h2>
-        <p class="mt-4 text-lg text-slate-400">Skuteczna metodyka i radosna atmosfera — realne postępy bez stresu.</p>
+        <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Dlaczego my</span>
+        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">DELFINADA to więcej niż nauka</h2>
+        <p class="mt-4 text-lg text-slate-500">Skuteczna metodyka i radosna atmosfera — realne postępy bez stresu.</p>
       </div>
 
       <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-3xl glass p-7 text-center">
-          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-aqua-500/15 text-aqua-300"><i data-lucide="graduation-cap" class="w-7 h-7"></i></span>
-          <h3 class="mt-5 font-display font-bold text-white">Doświadczona kadra</h3>
-          <p class="mt-2 text-sm text-slate-400">Instruktorzy z licencjami i pasją.</p>
+        <div class="rounded-[2rem] bg-white p-7 text-center card-shadow">
+          <span class="mx-auto inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-sky-100 text-sky-600"><i data-lucide="graduation-cap" class="w-8 h-8"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Doświadczona kadra</h3>
+          <p class="mt-2 text-sm text-slate-500">Instruktorzy z licencjami i sercem do dzieci.</p>
         </div>
-        <div class="rounded-3xl glass p-7 text-center">
-          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-mint/15 text-mint"><i data-lucide="users" class="w-7 h-7"></i></span>
-          <h3 class="mt-5 font-display font-bold text-white">Małe grupy</h3>
-          <p class="mt-2 text-sm text-slate-400">Więcej uwagi dla każdego kursanta.</p>
+        <div class="rounded-[2rem] bg-white p-7 text-center card-shadow">
+          <span class="mx-auto inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-mint-light text-mint-dark"><i data-lucide="users" class="w-8 h-8"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Małe grupy</h3>
+          <p class="mt-2 text-sm text-slate-500">Więcej uwagi dla każdego malucha.</p>
         </div>
-        <div class="rounded-3xl glass p-7 text-center">
-          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sunny/15 text-sunny"><i data-lucide="clipboard-check" class="w-7 h-7"></i></span>
-          <h3 class="mt-5 font-display font-bold text-white">Autorska metodyka</h3>
-          <p class="mt-2 text-sm text-slate-400">Program krok po kroku do celu.</p>
+        <div class="rounded-[2rem] bg-white p-7 text-center card-shadow">
+          <span class="mx-auto inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-sunny-light text-sunny-dark"><i data-lucide="gamepad-2" class="w-8 h-8"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Nauka przez zabawę</h3>
+          <p class="mt-2 text-sm text-slate-500">Gry i wyzwania, które motywują do postępów.</p>
         </div>
-        <div class="rounded-3xl glass p-7 text-center">
-          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-coral/15 text-coral"><i data-lucide="shield-check" class="w-7 h-7"></i></span>
-          <h3 class="mt-5 font-display font-bold text-white">Bezpieczeństwo</h3>
-          <p class="mt-2 text-sm text-slate-400">Pełen nadzór na każdych zajęciach.</p>
+        <div class="rounded-[2rem] bg-white p-7 text-center card-shadow">
+          <span class="mx-auto inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-coral-light/50 text-coral-dark"><i data-lucide="shield-check" class="w-8 h-8"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Bezpieczeństwo</h3>
+          <p class="mt-2 text-sm text-slate-500">Pełen nadzór na każdych zajęciach.</p>
         </div>
       </div>
+    </div>
+
+    <div class="wave-divider absolute bottom-0 inset-x-0 text-white">
+      <svg viewBox="0 0 1440 90" fill="currentColor" preserveAspectRatio="none">
+        <path d="M0,60 C240,10 480,10 720,42 C960,74 1200,74 1440,30 L1440,90 L0,90 Z"></path>
+      </svg>
     </div>
   </section>
 
   <!-- ============ JAK TO DZIAŁA ============ -->
-  <section id="jak" class="py-20 md:py-28 bg-abyss-950">
+  <section id="jak" class="py-20 md:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
-        <span class="text-sm font-bold uppercase tracking-widest text-aqua-400">Jak to działa</span>
-        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">Zaczynasz w 3 krokach</h2>
+        <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Jak to działa</span>
+        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Zaczynasz w 3 krokach</h2>
       </div>
 
-      <div class="mt-16 grid gap-8 md:grid-cols-3">
-        <div class="relative rounded-3xl glass p-8">
-          <span class="absolute -top-5 left-8 inline-flex items-center justify-center w-11 h-11 rounded-full bg-aqua-400 text-abyss-950 font-display font-extrabold text-lg neon-ring">1</span>
-          <div class="mt-4 flex items-center gap-3 text-aqua-300"><i data-lucide="clipboard-list" class="w-6 h-6"></i><h3 class="font-display font-bold text-white text-lg">Wypełnij formularz</h3></div>
-          <p class="mt-3 text-slate-400">Wybierz grupę i preferowany termin — zajmie Ci to minutę.</p>
+      <div class="mt-20 grid gap-10 md:grid-cols-3">
+        <div class="relative rounded-[2rem] bg-sky-50 p-8 pt-10 text-center">
+          <span class="absolute -top-7 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-14 h-14 rounded-full bg-sky-500 text-white font-display font-extrabold text-xl shadow-lg shadow-sky-500/40">1</span>
+          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white text-sky-600 card-shadow"><i data-lucide="clipboard-list" class="w-7 h-7"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Wypełnij formularz</h3>
+          <p class="mt-3 text-slate-500">Wybierz grupę i termin — zajmie Ci to minutę.</p>
         </div>
-        <div class="relative rounded-3xl glass p-8">
-          <span class="absolute -top-5 left-8 inline-flex items-center justify-center w-11 h-11 rounded-full bg-mint text-abyss-950 font-display font-extrabold text-lg neon-ring">2</span>
-          <div class="mt-4 flex items-center gap-3 text-mint"><i data-lucide="phone-call" class="w-6 h-6"></i><h3 class="font-display font-bold text-white text-lg">Oddzwaniamy</h3></div>
-          <p class="mt-3 text-slate-400">Dobierzemy poziom i ustalimy szczegóły oraz dogodny termin.</p>
+        <div class="relative rounded-[2rem] bg-mint-light/40 p-8 pt-10 text-center">
+          <span class="absolute -top-7 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-14 h-14 rounded-full bg-mint text-white font-display font-extrabold text-xl shadow-lg shadow-mint/40">2</span>
+          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white text-mint-dark card-shadow"><i data-lucide="phone-call" class="w-7 h-7"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Oddzwaniamy</h3>
+          <p class="mt-3 text-slate-500">Dobierzemy poziom i ustalimy dogodny termin.</p>
         </div>
-        <div class="relative rounded-3xl glass p-8">
-          <span class="absolute -top-5 left-8 inline-flex items-center justify-center w-11 h-11 rounded-full bg-coral text-white font-display font-extrabold text-lg neon-ring">3</span>
-          <div class="mt-4 flex items-center gap-3 text-coral"><i data-lucide="waves" class="w-6 h-6"></i><h3 class="font-display font-bold text-white text-lg">Wskakujesz do wody</h3></div>
-          <p class="mt-3 text-slate-400">Pierwsze zajęcia i pierwsze postępy — pływasz z uśmiechem!</p>
+        <div class="relative rounded-[2rem] bg-coral-light/30 p-8 pt-10 text-center">
+          <span class="absolute -top-7 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-14 h-14 rounded-full bg-coral text-white font-display font-extrabold text-xl shadow-lg shadow-coral/40">3</span>
+          <span class="mx-auto inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white text-coral-dark card-shadow"><i data-lucide="waves" class="w-7 h-7"></i></span>
+          <h3 class="mt-5 font-display font-bold text-sky-700 text-lg">Wskakujecie do wody</h3>
+          <p class="mt-3 text-slate-500">Pierwsze zajęcia i pierwsze postępy z uśmiechem!</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============ CENNIK ============ -->
-  <section id="cennik" class="py-20 md:py-28 cinematic">
+  <section id="cennik" class="py-20 md:py-28 playful-bg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
-        <span class="text-sm font-bold uppercase tracking-widest text-aqua-400">Cennik</span>
-        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">Proste, przejrzyste ceny</h2>
-        <p class="mt-4 text-lg text-slate-400">Bez ukrytych kosztów.</p>
+        <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Cennik</span>
+        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Proste, przejrzyste ceny</h2>
+        <p class="mt-4 text-lg text-slate-500">Bez ukrytych kosztów.</p>
       </div>
 
       <div class="mt-16 grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-        <div class="rounded-3xl glass p-8">
+        <div class="rounded-[2rem] bg-white p-8 card-shadow">
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-aqua-500/15 text-aqua-300"><i data-lucide="users" class="w-6 h-6"></i></span>
-            <h3 class="text-xl font-display font-bold text-white">Zajęcia grupowe</h3>
+            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sky-100 text-sky-600"><i data-lucide="users" class="w-7 h-7"></i></span>
+            <h3 class="text-xl font-display font-bold text-sky-700">Zajęcia grupowe</h3>
           </div>
           <p class="mt-6 flex items-baseline gap-2">
             <span class="text-sm text-slate-400">od</span>
-            <span class="text-5xl font-display font-extrabold text-white">75</span>
-            <span class="text-slate-400 font-medium">PLN / h</span>
+            <span class="text-5xl font-display font-extrabold text-sky-700">75</span>
+            <span class="text-slate-400 font-semibold">PLN / h</span>
           </p>
-          <ul class="mt-6 space-y-3 text-slate-300">
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint mt-0.5"></i> Małe grupy do 6 osób</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint mt-0.5"></i> Podział wg poziomu</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint mt-0.5"></i> Motywacja w grupie</li>
+          <ul class="mt-6 space-y-3 text-slate-600">
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint-dark mt-0.5"></i> Małe grupy do 6 osób</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint-dark mt-0.5"></i> Podział wg poziomu</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint-dark mt-0.5"></i> Świetna zabawa w grupie</li>
           </ul>
-          <a href="#zapisy" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full glass hover:bg-white/10 text-white font-semibold px-6 py-3 transition-colors">Wybieram</a>
+          <a href="#zapisy" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Wybieram</a>
         </div>
 
-        <div class="relative rounded-3xl p-8 neon-ring bg-gradient-to-br from-abyss-800 to-abyss-900 overflow-hidden">
-          <span class="absolute top-5 right-5 rounded-full bg-coral px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">Najszybsze postępy</span>
+        <div class="relative rounded-[2rem] bg-gradient-to-br from-sky-500 to-sky-700 p-8 shadow-2xl shadow-sky-600/40 text-white overflow-hidden">
+          <span class="absolute top-5 right-5 rounded-full bg-sunny px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-slate-900">Najszybsze postępy</span>
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-coral/20 text-coral"><i data-lucide="user-round" class="w-6 h-6"></i></span>
-            <h3 class="text-xl font-display font-bold text-white">Zajęcia indywidualne</h3>
+            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 text-white"><i data-lucide="user-round" class="w-7 h-7"></i></span>
+            <h3 class="text-xl font-display font-bold">Zajęcia indywidualne</h3>
           </div>
           <p class="mt-6 flex items-baseline gap-2">
-            <span class="text-sm text-slate-400">od</span>
-            <span class="text-5xl font-display font-extrabold text-white neon-text">160</span>
-            <span class="text-slate-400 font-medium">PLN / h</span>
+            <span class="text-sm text-sky-100">od</span>
+            <span class="text-5xl font-display font-extrabold">160</span>
+            <span class="text-sky-100 font-semibold">PLN / h</span>
           </p>
-          <ul class="mt-6 space-y-3 text-slate-300">
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-aqua-300 mt-0.5"></i> Pełna uwaga 1:1</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-aqua-300 mt-0.5"></i> Elastyczne godziny</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-aqua-300 mt-0.5"></i> Program dopasowany w 100%</li>
+          <ul class="mt-6 space-y-3 text-sky-50">
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny mt-0.5"></i> Pełna uwaga 1:1</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny mt-0.5"></i> Elastyczne godziny</li>
+            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny mt-0.5"></i> Program dopasowany w 100%</li>
           </ul>
-          <a href="#zapisy" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-coral hover:brightness-110 text-white font-bold px-6 py-3 transition-all">Wybieram</a>
+          <a href="#zapisy" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Wybieram</a>
         </div>
       </div>
       <p class="mt-8 text-center text-sm text-slate-500">Karnety i pakiety rodzinne — zapytaj o indywidualną wycenę.</p>
@@ -338,121 +341,118 @@
   </section>
 
   <!-- ============ OPINIE ============ -->
-  <section class="py-20 md:py-28 bg-abyss-950">
+  <section class="py-20 md:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
-        <span class="text-sm font-bold uppercase tracking-widest text-aqua-400">Opinie</span>
-        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">Kochają nas kursanci</h2>
+        <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Opinie</span>
+        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Kochają nas rodzice i dzieci</h2>
       </div>
       <div class="mt-16 grid gap-8 md:grid-cols-3">
-        <figure class="rounded-3xl glass p-8">
-          <div class="flex gap-1 text-sunny"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
-          <blockquote class="mt-4 text-slate-300 leading-relaxed">„Córka po kilku zajęciach sama skacze do wody. Ogromna zmiana i mnóstwo radości!”</blockquote>
-          <figcaption class="mt-6 flex items-center gap-3"><span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-aqua-500/20 text-aqua-300 font-bold">K</span><div><p class="font-semibold text-white">Katarzyna</p><p class="text-sm text-slate-500">mama kursantki</p></div></figcaption>
+        <figure class="rounded-[2rem] bg-sky-50 p-8">
+          <div class="flex gap-1 text-sunny-dark"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed">„Córka po kilku zajęciach sama skacze do wody. Ogromna zmiana i mnóstwo radości!”</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3"><span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-sky-200 text-sky-700 font-extrabold">K</span><div><p class="font-bold text-sky-700">Katarzyna</p><p class="text-sm text-slate-400">mama kursantki</p></div></figcaption>
         </figure>
-        <figure class="rounded-3xl glass p-8">
-          <div class="flex gap-1 text-sunny"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
-          <blockquote class="mt-4 text-slate-300 leading-relaxed">„Bałem się wody przez całe życie. Dzięki cierpliwości instruktora w końcu pływam!”</blockquote>
-          <figcaption class="mt-6 flex items-center gap-3"><span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-mint/20 text-mint font-bold">M</span><div><p class="font-semibold text-white">Marek</p><p class="text-sm text-slate-500">kursant, 41 lat</p></div></figcaption>
+        <figure class="rounded-[2rem] bg-mint-light/40 p-8">
+          <div class="flex gap-1 text-sunny-dark"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed">„Bałem się wody przez całe życie. Dzięki cierpliwości instruktora w końcu pływam!”</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3"><span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-mint text-white font-extrabold">M</span><div><p class="font-bold text-sky-700">Marek</p><p class="text-sm text-slate-400">kursant, 41 lat</p></div></figcaption>
         </figure>
-        <figure class="rounded-3xl glass p-8">
-          <div class="flex gap-1 text-sunny"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
-          <blockquote class="mt-4 text-slate-300 leading-relaxed">„Profesjonalne podejście i świetna atmosfera. Technika poprawiła się w kilka tygodni.”</blockquote>
-          <figcaption class="mt-6 flex items-center gap-3"><span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-coral/20 text-coral font-bold">A</span><div><p class="font-semibold text-white">Aleksandra</p><p class="text-sm text-slate-500">doskonalenie</p></div></figcaption>
+        <figure class="rounded-[2rem] bg-coral-light/30 p-8">
+          <div class="flex gap-1 text-sunny-dark"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed">„Profesjonalne podejście i świetna atmosfera. Syn nie może się doczekać kolejnych zajęć!”</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3"><span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-coral text-white font-extrabold">A</span><div><p class="font-bold text-sky-700">Aleksandra</p><p class="text-sm text-slate-400">mama kursanta</p></div></figcaption>
         </figure>
       </div>
     </div>
   </section>
 
   <!-- ============ ZAPISY / FORMULARZ ============ -->
-  <section id="zapisy" class="py-20 md:py-28 cinematic">
+  <section id="zapisy" class="py-20 md:py-28 playful-bg">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid lg:grid-cols-2 gap-10 items-stretch">
-        <!-- Lewa kolumna -->
         <div class="flex flex-col justify-center">
-          <span class="text-sm font-bold uppercase tracking-widest text-aqua-400">Zapisy online</span>
-          <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">Zapisz się do DELFINADY</h2>
-          <p class="mt-4 text-lg text-slate-300">Wypełnij formularz, a my oddzwonimy i dobierzemy idealną grupę oraz termin. Bez zobowiązań.</p>
-          <ul class="mt-8 space-y-4 text-slate-300">
-            <li class="flex items-center gap-3"><span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-mint/15 text-mint"><i data-lucide="phone-call" class="w-5 h-5"></i></span> Kontakt w ciągu 24h</li>
-            <li class="flex items-center gap-3"><span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-aqua-500/15 text-aqua-300"><i data-lucide="calendar-check" class="w-5 h-5"></i></span> Dogodne terminy 7 dni w tygodniu</li>
-            <li class="flex items-center gap-3"><span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sunny/15 text-sunny"><i data-lucide="gift" class="w-5 h-5"></i></span> Pierwsze zajęcia próbne w promocji</li>
+          <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Zapisy online</span>
+          <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Zapisz się do DELFINADY 🐬</h2>
+          <p class="mt-4 text-lg text-slate-600">Wypełnij formularz, a my oddzwonimy i dobierzemy idealną grupę oraz termin. Bez zobowiązań.</p>
+          <ul class="mt-8 space-y-4 text-slate-600 font-semibold">
+            <li class="flex items-center gap-3"><span class="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-mint-light text-mint-dark"><i data-lucide="phone-call" class="w-5 h-5"></i></span> Kontakt w ciągu 24h</li>
+            <li class="flex items-center gap-3"><span class="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-sky-100 text-sky-600"><i data-lucide="calendar-check" class="w-5 h-5"></i></span> Dogodne terminy 7 dni w tygodniu</li>
+            <li class="flex items-center gap-3"><span class="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-sunny-light text-sunny-dark"><i data-lucide="gift" class="w-5 h-5"></i></span> Pierwsze zajęcia próbne w promocji</li>
           </ul>
         </div>
 
-        <!-- Formularz -->
-        <div class="rounded-3xl glass p-6 sm:p-8 neon-ring">
+        <div class="rounded-[2rem] bg-white p-6 sm:p-8 card-shadow">
           <form id="signup-form" novalidate class="space-y-5">
             <div>
-              <label for="name" class="block text-sm font-semibold text-slate-200">Imię i nazwisko</label>
+              <label for="name" class="block text-sm font-bold text-slate-700">Imię i nazwisko</label>
               <input id="name" name="name" type="text" autocomplete="name" placeholder="np. Jan Kowalski"
-                class="mt-2 w-full rounded-xl bg-abyss-950/60 border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-aqua-400 focus:border-transparent transition" />
-              <p class="err mt-1 text-sm text-coral hidden" data-for="name"></p>
+                class="mt-2 w-full rounded-2xl bg-sky-50 border border-sky-100 px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition" />
+              <p class="err mt-1 text-sm text-coral-dark hidden" data-for="name"></p>
             </div>
 
             <div class="grid sm:grid-cols-2 gap-5">
               <div>
-                <label for="email" class="block text-sm font-semibold text-slate-200">E-mail</label>
+                <label for="email" class="block text-sm font-bold text-slate-700">E-mail</label>
                 <input id="email" name="email" type="email" autocomplete="email" placeholder="jan@email.pl"
-                  class="mt-2 w-full rounded-xl bg-abyss-950/60 border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-aqua-400 focus:border-transparent transition" />
-                <p class="err mt-1 text-sm text-coral hidden" data-for="email"></p>
+                  class="mt-2 w-full rounded-2xl bg-sky-50 border border-sky-100 px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition" />
+                <p class="err mt-1 text-sm text-coral-dark hidden" data-for="email"></p>
               </div>
               <div>
-                <label for="phone" class="block text-sm font-semibold text-slate-200">Telefon</label>
+                <label for="phone" class="block text-sm font-bold text-slate-700">Telefon</label>
                 <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+48 600 000 000"
-                  class="mt-2 w-full rounded-xl bg-abyss-950/60 border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-aqua-400 focus:border-transparent transition" />
-                <p class="err mt-1 text-sm text-coral hidden" data-for="phone"></p>
+                  class="mt-2 w-full rounded-2xl bg-sky-50 border border-sky-100 px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition" />
+                <p class="err mt-1 text-sm text-coral-dark hidden" data-for="phone"></p>
               </div>
             </div>
 
             <div class="grid sm:grid-cols-2 gap-5">
               <div>
-                <label for="group" class="block text-sm font-semibold text-slate-200">Grupa</label>
+                <label for="group" class="block text-sm font-bold text-slate-700">Grupa</label>
                 <select id="group" name="group"
-                  class="mt-2 w-full rounded-xl bg-abyss-950/60 border border-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-aqua-400 focus:border-transparent transition">
+                  class="mt-2 w-full rounded-2xl bg-sky-50 border border-sky-100 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition">
                   <option value="">Wybierz…</option>
                   <option>Niemowlęta</option>
                   <option>Dla dzieci</option>
                   <option>Dla dorosłych</option>
                   <option>Doskonalenie</option>
                 </select>
-                <p class="err mt-1 text-sm text-coral hidden" data-for="group"></p>
+                <p class="err mt-1 text-sm text-coral-dark hidden" data-for="group"></p>
               </div>
               <div>
-                <label for="term" class="block text-sm font-semibold text-slate-200">Preferowany termin</label>
+                <label for="term" class="block text-sm font-bold text-slate-700">Preferowany termin</label>
                 <select id="term" name="term"
-                  class="mt-2 w-full rounded-xl bg-abyss-950/60 border border-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-aqua-400 focus:border-transparent transition">
+                  class="mt-2 w-full rounded-2xl bg-sky-50 border border-sky-100 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition">
                   <option value="">Wybierz…</option>
                   <option>Rano (dni powszednie)</option>
                   <option>Popołudnie (dni powszednie)</option>
                   <option>Wieczór (dni powszednie)</option>
                   <option>Weekend</option>
                 </select>
-                <p class="err mt-1 text-sm text-coral hidden" data-for="term"></p>
+                <p class="err mt-1 text-sm text-coral-dark hidden" data-for="term"></p>
               </div>
             </div>
 
             <div>
-              <label for="message" class="block text-sm font-semibold text-slate-200">Wiadomość <span class="text-slate-500 font-normal">(opcjonalnie)</span></label>
+              <label for="message" class="block text-sm font-bold text-slate-700">Wiadomość <span class="text-slate-400 font-normal">(opcjonalnie)</span></label>
               <textarea id="message" name="message" rows="3" placeholder="Napisz nam coś o poziomie lub oczekiwaniach…"
-                class="mt-2 w-full rounded-xl bg-abyss-950/60 border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-aqua-400 focus:border-transparent transition"></textarea>
+                class="mt-2 w-full rounded-2xl bg-sky-50 border border-sky-100 px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"></textarea>
             </div>
 
-            <label class="flex items-start gap-3 text-sm text-slate-300">
-              <input id="consent" name="consent" type="checkbox" class="mt-1 h-5 w-5 rounded border-white/20 bg-abyss-950/60 text-aqua-500 focus:ring-aqua-400" />
+            <label class="flex items-start gap-3 text-sm text-slate-600">
+              <input id="consent" name="consent" type="checkbox" class="mt-1 h-5 w-5 rounded border-sky-200 bg-sky-50 text-sky-500 focus:ring-sky-400" />
               <span>Wyrażam zgodę na kontakt telefoniczny / mailowy w sprawie zapisu.</span>
             </label>
-            <p class="err text-sm text-coral hidden" data-for="consent"></p>
+            <p class="err text-sm text-coral-dark hidden" data-for="consent"></p>
 
             <button type="submit"
-              class="w-full inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:brightness-110 text-white font-bold px-6 py-4 text-base shadow-xl shadow-coral/30 transition-all hover:-translate-y-0.5">
+              class="w-full inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-4 text-base shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
               <i data-lucide="send" class="w-5 h-5"></i> Wyślij zgłoszenie
             </button>
 
-            <!-- Komunikat sukcesu -->
-            <div id="form-success" class="hidden rounded-2xl bg-mint/15 border border-mint/30 p-4 flex items-start gap-3">
-              <i data-lucide="check-circle-2" class="w-6 h-6 text-mint shrink-0"></i>
-              <p class="text-mint text-sm font-medium">Dziękujemy! Twoje zgłoszenie zostało przyjęte — skontaktujemy się w ciągu 24 godzin. 🐬</p>
+            <div id="form-success" class="hidden rounded-2xl bg-mint-light/60 border border-mint p-4 flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-6 h-6 text-mint-dark shrink-0"></i>
+              <p class="text-mint-dark text-sm font-bold">Dziękujemy! Twoje zgłoszenie zostało przyjęte — skontaktujemy się w ciągu 24 godzin. 🐬</p>
             </div>
           </form>
         </div>
@@ -461,68 +461,64 @@
   </section>
 
   <!-- ============ STOPKA / KONTAKT ============ -->
-  <footer id="kontakt" class="bg-abyss-950 border-t border-white/10 text-slate-300">
+  <footer id="kontakt" class="bg-sky-700 text-sky-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="grid gap-12 md:grid-cols-3">
         <div>
           <a href="#top" class="flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-aqua-400 to-aqua-600 text-abyss-950"><i data-lucide="fish" class="w-6 h-6"></i></span>
-            <span class="text-2xl font-display font-extrabold text-white">DELFIN<span class="text-aqua-400">ADA</span></span>
+            <span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-sky-600"><i data-lucide="fish" class="w-6 h-6"></i></span>
+            <span class="text-2xl font-display font-extrabold text-white">DELFIN<span class="text-sunny">ADA</span></span>
           </a>
-          <p class="mt-4 text-slate-400 leading-relaxed max-w-xs">Uczymy pływać z pewnością siebie — niemowlęta, dzieci i dorosłych, na każdym poziomie zaawansowania.</p>
+          <p class="mt-4 text-sky-200 leading-relaxed max-w-xs">Uczymy pływać z pewnością siebie i uśmiechem — niemowlęta, dzieci i dorosłych, na każdym poziomie.</p>
           <div class="mt-6 flex items-center gap-3">
-            <a href="#" aria-label="Facebook" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 hover:bg-aqua-500 hover:text-abyss-950 transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-            <a href="#" aria-label="Instagram" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 hover:bg-aqua-500 hover:text-abyss-950 transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-            <a href="#" aria-label="YouTube" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 hover:bg-aqua-500 hover:text-abyss-950 transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+            <a href="#" aria-label="Facebook" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-coral transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+            <a href="#" aria-label="Instagram" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-coral transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+            <a href="#" aria-label="YouTube" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-coral transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
           </div>
         </div>
 
         <div>
           <h4 class="text-white font-display font-bold text-lg">Kontakt</h4>
           <ul class="mt-4 space-y-3">
-            <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-aqua-400"></i><a href="tel:+48000000000" class="hover:text-white transition-colors">+48 000 000 000</a></li>
-            <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-aqua-400"></i><a href="mailto:kontakt@delfinada.pl" class="hover:text-white transition-colors">kontakt@delfinada.pl</a></li>
-            <li class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-aqua-400 mt-0.5"></i><span>Pływalnia Miejska<br />ul. Wodna 12, 00-000 Miasto</span></li>
+            <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-sunny"></i><a href="tel:+48000000000" class="hover:text-white transition-colors">+48 000 000 000</a></li>
+            <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-sunny"></i><a href="mailto:kontakt@delfinada.pl" class="hover:text-white transition-colors">kontakt@delfinada.pl</a></li>
+            <li class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-sunny mt-0.5"></i><span>Pływalnia Miejska<br />ul. Wodna 12, 00-000 Miasto</span></li>
           </ul>
         </div>
 
         <div>
           <h4 class="text-white font-display font-bold text-lg">Godziny otwarcia</h4>
           <ul class="mt-4 space-y-3">
-            <li class="flex items-center justify-between max-w-xs"><span>Poniedziałek – Piątek</span><span class="text-aqua-300 font-medium">7:00 – 21:00</span></li>
-            <li class="flex items-center justify-between max-w-xs"><span>Sobota</span><span class="text-aqua-300 font-medium">8:00 – 18:00</span></li>
-            <li class="flex items-center justify-between max-w-xs"><span>Niedziela</span><span class="text-aqua-300 font-medium">9:00 – 15:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Poniedziałek – Piątek</span><span class="text-sunny font-semibold">7:00 – 21:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Sobota</span><span class="text-sunny font-semibold">8:00 – 18:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Niedziela</span><span class="text-sunny font-semibold">9:00 – 15:00</span></li>
           </ul>
-          <a href="#zapisy" class="mt-6 inline-flex items-center gap-2 rounded-full bg-coral hover:brightness-110 text-white font-bold px-6 py-3 transition-all"><i data-lucide="waves" class="w-4 h-4"></i> Zapisz się</a>
+          <a href="#zapisy" class="mt-6 inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors"><i data-lucide="waves" class="w-4 h-4"></i> Zapisz się</a>
         </div>
       </div>
 
-      <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+      <div class="mt-12 pt-8 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-sky-200">
         <p>&copy; <span id="year"></span> DELFINADA. Wszelkie prawa zastrzeżone.</p>
-        <p class="flex items-center gap-1.5">Zbudowane z <i data-lucide="heart" class="w-4 h-4 text-coral"></i> nad wodą 🐬</p>
+        <p class="flex items-center gap-1.5">Zbudowane z <i data-lucide="heart" class="w-4 h-4 text-coral-light fill-current"></i> nad wodą 🐬</p>
       </div>
     </div>
   </footer>
 
   <script>
-    // Ikony
     if (window.lucide) lucide.createIcons();
 
-    // Menu mobilne
     const btn = document.getElementById('menu-btn');
     const menu = document.getElementById('mobile-menu');
     btn?.addEventListener('click', () => menu.classList.toggle('hidden'));
     menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.add('hidden')));
 
-    // Rok
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Bąbelki w hero
     (function makeBubbles() {
       const box = document.getElementById('bubbles');
       if (!box) return;
-      const count = 18;
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < 18; i++) {
         const b = document.createElement('span');
         const size = Math.random() * 26 + 8;
         b.className = 'bubble';
@@ -545,7 +541,7 @@
         const el = form.querySelector('.err[data-for="' + name + '"]');
         const field = form.querySelector('[name="' + name + '"]');
         if (el) { el.textContent = msg; el.classList.toggle('hidden', !msg); }
-        if (field) field.classList.toggle('border-coral', !!msg);
+        if (field) field.classList.toggle('ring-2', !!msg), field.classList.toggle('ring-coral', !!msg);
       };
 
       const validators = {
@@ -557,7 +553,6 @@
         consent: (v, el) => el.checked || 'Zgoda jest wymagana, aby się skontaktować.',
       };
 
-      // walidacja w locie
       form.querySelectorAll('input, select').forEach((el) => {
         el.addEventListener('input', () => {
           const name = el.name;
@@ -583,7 +578,6 @@
           return;
         }
 
-        // Brak backendu — symulacja wysyłki (dane w konsoli)
         const data = Object.fromEntries(new FormData(form).entries());
         console.log('Zgłoszenie DELFINADA:', data);
 

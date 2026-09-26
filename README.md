@@ -1,8 +1,9 @@
 # DELFINADA — Szkoła Pływania 🐬
 
 Nowoczesna, responsywna strona docelowa (landing page) szkoły pływania **DELFINADA**.
-Motyw: **kinowa, ciemna baza (nocny basen)** połączona z **energetycznymi, radosnymi akcentami**
-(koral, słoneczna żółć, mięta), motywem delfina, neonowym cyjanem i animowanymi bąbelkami.
+Motyw: **jasny, kolorowy i zabawowy** („Playful Kids") — dla rodziców i dzieci.
+Ciepłe akcenty (**koral, słoneczna żółć, mięta**) na jasnym **błękicie**, zaokrąglone
+„bąbelkowe" kształty, **faliste przejścia** między sekcjami, maskotka-delfin i animowane bąbelki.
 Interfejs w języku polskim. Zawiera **działający formularz zapisu online** z walidacją.
 
 ## 🏊 Sekcje
@@ -27,9 +28,9 @@ Interfejs w języku polskim. Zawiera **działający formularz zapisu online** z 
 
 ## 🎨 Stack
 
-- **Tailwind CSS** — stylowanie (motyw ciemny + akcenty, glassmorphism, neon, animacje).
+- **Tailwind CSS** — stylowanie (jasny motyw, zaokrąglone kształty, faliste dividery, animacje).
 - **Lucide** — ikony.
-- Czcionki: **Baloo 2** (nagłówki, zabawowy charakter) + **Poppins** (tekst).
+- Czcionki: **Baloo 2** (zabawowe nagłówki) + **Nunito** (tekst).
 - Czysty HTML + JS (menu mobilne, bąbelki, walidacja formularza).
 
 ## ▶️ Jak uruchomić
