@@ -9,12 +9,10 @@ W nagłówku i stopce widnieje **logo DELFINADA** (delfin + fala + promienie) z 
 
 ## 🐬 Logo
 
-Logo jest odwzorowane jako **inline SVG** (delfin, fala, promienie słońca) — nie wymaga
-zewnętrznego pliku, skaluje się bez utraty jakości i używa dokładnych kolorów marki.
-Wersja samodzielna: [`assets/logo-delfinada.svg`](assets/logo-delfinada.svg).
-
-> Chcesz użyć oryginalnej grafiki zamiast wersji SVG? Wgraj plik do `assets/` (np. `assets/logo.png`)
-> i podmień znacznik `<svg …>` w nagłówku/stopce na `<img src="assets/logo.png" alt="DELFINADA" class="h-12 md:h-14" />`.
+Strona używa **oryginalnego logo** DELFINADA ([`assets/logo-delfinada.png`](assets/logo-delfinada.png),
+skopiowanego z wgranego `Logo DELFINADA.png`). Logo pojawia się w **nagłówku**, jako **wizual w hero**
+oraz w **stopce** (na białym kafelku, dla czytelności na turkusowym tle).
+Zachowano też wcześniejszą wersję wektorową [`assets/logo-delfinada.svg`](assets/logo-delfinada.svg).
 
 ## 🏊 Sekcje
 
