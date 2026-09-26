@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Szkoła Pływania — Pływaj z pewnością siebie!</title>
-  <meta name="description" content="Profesjonalna nauka pływania dla dzieci i dorosłych na każdym poziomie zaawansowania." />
+  <meta name="description" content="Profesjonalna nauka pływania dla niemowląt, dzieci i dorosłych na każdym poziomie zaawansowania. Małe grupy, doświadczeni instruktorzy, przyjazna atmosfera." />
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -58,7 +58,6 @@
   </script>
 
   <style>
-    /* Subtle water gradient used behind the hero when no image loads */
     .hero-fallback {
       background:
         linear-gradient(135deg, rgba(2,138,189,0.55), rgba(14,173,224,0.35)),
@@ -66,7 +65,6 @@
         radial-gradient(circle at 80% 0%, rgba(255,255,255,0.35), transparent 40%),
         linear-gradient(180deg, #076e99, #0d5c7d);
     }
-    /* Wavy divider */
     .wave-divider svg { display: block; width: 100%; height: 100%; }
   </style>
 </head>
@@ -77,7 +75,6 @@
   <header id="top" class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-100">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 md:h-20">
-        <!-- Logo -->
         <a href="#top" class="flex items-center gap-2 group">
           <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30 group-hover:scale-105 transition-transform">
             <i data-lucide="waves" class="w-6 h-6"></i>
@@ -85,9 +82,10 @@
           <span class="text-lg md:text-xl font-extrabold tracking-tight text-water-800">Szkoła Pływania</span>
         </a>
 
-        <!-- Desktop links -->
-        <div class="hidden md:flex items-center gap-8">
+        <div class="hidden md:flex items-center gap-7">
           <a href="#oferta" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Oferta</a>
+          <a href="#dlaczego-my" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Dlaczego my</a>
+          <a href="#instruktorzy" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Instruktorzy</a>
           <a href="#cennik" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Cennik</a>
           <a href="#kontakt" class="text-sm font-semibold text-slate-600 hover:text-water-600 transition-colors">Kontakt</a>
           <a href="#kontakt" class="inline-flex items-center gap-2 rounded-full bg-water-600 hover:bg-water-700 text-white text-sm font-semibold px-5 py-2.5 shadow-lg shadow-water-600/30 transition-colors">
@@ -96,17 +94,17 @@
           </a>
         </div>
 
-        <!-- Mobile toggle -->
         <button id="menu-btn" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-water-700 hover:bg-water-50 transition-colors">
           <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
       </div>
     </nav>
 
-    <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-md">
       <div class="px-4 py-4 space-y-1">
         <a href="#oferta" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Oferta</a>
+        <a href="#dlaczego-my" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Dlaczego my</a>
+        <a href="#instruktorzy" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Instruktorzy</a>
         <a href="#cennik" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Cennik</a>
         <a href="#kontakt" class="block px-3 py-2 rounded-lg font-semibold text-slate-600 hover:bg-water-50 hover:text-water-700">Kontakt</a>
         <a href="#kontakt" class="mt-2 flex items-center justify-center gap-2 rounded-full bg-water-600 hover:bg-water-700 text-white font-semibold px-5 py-3">
@@ -119,7 +117,6 @@
 
   <!-- ============ HERO ============ -->
   <section class="relative min-h-screen flex items-center pt-16 md:pt-20 overflow-hidden">
-    <!-- Background image placeholder (swimming pool) with graceful gradient fallback -->
     <div class="absolute inset-0 hero-fallback">
       <img
         src="https://images.unsplash.com/photo-1560090995-01632a28895b?auto=format&fit=crop&w=1920&q=80"
@@ -135,7 +132,7 @@
       <div class="max-w-3xl">
         <span class="animate-fade-up inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-sm font-semibold text-water-50 ring-1 ring-white/25">
           <i data-lucide="sparkles" class="w-4 h-4"></i>
-          Nauka pływania dla każdego
+          Nauka pływania dla niemowląt, dzieci i dorosłych
         </span>
 
         <h1 class="animate-fade-up mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white drop-shadow-sm">
@@ -157,7 +154,6 @@
           </a>
         </div>
 
-        <!-- Quick trust badges -->
         <div class="animate-fade-up mt-12 flex flex-wrap gap-x-8 gap-y-3 text-water-50/90 text-sm font-medium">
           <span class="inline-flex items-center gap-2"><i data-lucide="badge-check" class="w-5 h-5 text-water-300"></i> Wykwalifikowani instruktorzy</span>
           <span class="inline-flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-water-300"></i> Małe grupy</span>
@@ -166,7 +162,6 @@
       </div>
     </div>
 
-    <!-- Wave divider -->
     <div class="wave-divider absolute bottom-0 inset-x-0 text-white">
       <svg viewBox="0 0 1440 90" fill="currentColor" preserveAspectRatio="none">
         <path d="M0,64 C240,10 480,10 720,42 C960,74 1200,74 1440,32 L1440,90 L0,90 Z"></path>
@@ -174,18 +169,54 @@
     </div>
   </section>
 
+  <!-- ============ STATS BAR ============ -->
+  <section class="bg-white -mt-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <p class="text-4xl font-extrabold text-water-600">12+</p>
+          <p class="mt-1 text-sm font-medium text-slate-500">lat doświadczenia</p>
+        </div>
+        <div>
+          <p class="text-4xl font-extrabold text-water-600">3000+</p>
+          <p class="mt-1 text-sm font-medium text-slate-500">zadowolonych kursantów</p>
+        </div>
+        <div>
+          <p class="text-4xl font-extrabold text-water-600">15</p>
+          <p class="mt-1 text-sm font-medium text-slate-500">instruktorów w zespole</p>
+        </div>
+        <div>
+          <p class="text-4xl font-extrabold text-water-600">4</p>
+          <p class="mt-1 text-sm font-medium text-slate-500">lokalizacje / pływalnie</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ OFERTA / SERVICES ============ -->
-  <section id="oferta" class="py-20 md:py-28 bg-white">
+  <section id="oferta" class="py-20 md:py-28 bg-water-50/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
         <span class="text-sm font-bold uppercase tracking-wider text-water-600">Oferta</span>
         <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Zajęcia dopasowane do Ciebie</h2>
-        <p class="mt-4 text-lg text-slate-500">Wybierz program idealny dla siebie lub swojego dziecka — od pierwszego kontaktu z wodą po zaawansowany trening.</p>
+        <p class="mt-4 text-lg text-slate-500">Od pierwszego kontaktu z wodą, przez naukę od podstaw, aż po zaawansowany trening — dla każdego wieku i poziomu.</p>
       </div>
 
-      <div class="mt-16 grid gap-8 md:grid-cols-3">
-        <!-- Card 1 -->
-        <article class="group relative rounded-3xl border border-slate-100 bg-gradient-to-b from-water-50/60 to-white p-8 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+      <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Card 0: Niemowlęta -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-white p-7 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+          <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
+            <i data-lucide="bath" class="w-7 h-7"></i>
+          </span>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Niemowlęta</h3>
+          <p class="mt-3 text-slate-500 leading-relaxed">Zajęcia z rodzicem, oswajanie z wodą i wspólna zabawa wspierająca rozwój od najmłodszych lat.</p>
+          <a href="#kontakt" class="mt-6 inline-flex items-center gap-1.5 text-water-600 font-semibold group-hover:gap-2.5 transition-all">
+            Dowiedz się więcej <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </article>
+
+        <!-- Card 1: Dla dzieci -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-white p-7 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
           <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
             <i data-lucide="baby" class="w-7 h-7"></i>
           </span>
@@ -196,8 +227,8 @@
           </a>
         </article>
 
-        <!-- Card 2 -->
-        <article class="group relative rounded-3xl border border-slate-100 bg-gradient-to-b from-water-50/60 to-white p-8 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+        <!-- Card 2: Dla dorosłych -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-white p-7 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
           <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
             <i data-lucide="user-round" class="w-7 h-7"></i>
           </span>
@@ -208,13 +239,13 @@
           </a>
         </article>
 
-        <!-- Card 3 -->
-        <article class="group relative rounded-3xl border border-slate-100 bg-gradient-to-b from-water-50/60 to-white p-8 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
+        <!-- Card 3: Doskonalenie -->
+        <article class="group relative rounded-3xl border border-slate-100 bg-white p-7 shadow-sm hover:shadow-xl hover:shadow-water-500/10 hover:-translate-y-1 transition-all duration-300">
           <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-water-400 to-water-600 text-white shadow-lg shadow-water-500/30">
             <i data-lucide="trophy" class="w-7 h-7"></i>
           </span>
           <h3 class="mt-6 text-xl font-bold text-slate-900">Doskonalenie</h3>
-          <p class="mt-3 text-slate-500 leading-relaxed">Trening techniki i przygotowanie do zawodów. Dopracowujemy styl, wydolność i starty dla pływaków średniozaawansowanych i zaawansowanych.</p>
+          <p class="mt-3 text-slate-500 leading-relaxed">Trening techniki i przygotowanie do zawodów. Dopracowujemy styl, wydolność i starty dla zaawansowanych pływaków.</p>
           <a href="#kontakt" class="mt-6 inline-flex items-center gap-1.5 text-water-600 font-semibold group-hover:gap-2.5 transition-all">
             Dowiedz się więcej <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </a>
@@ -223,8 +254,136 @@
     </div>
   </section>
 
+  <!-- ============ DLACZEGO MY ============ -->
+  <section id="dlaczego-my" class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <!-- Image placeholder -->
+        <div class="relative">
+          <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-xl hero-fallback">
+            <img
+              src="https://images.unsplash.com/photo-1519315901367-f34ff9154487?auto=format&fit=crop&w=1200&q=80"
+              alt="Instruktor podczas zajęć na basenie"
+              class="w-full h-full object-cover"
+              onerror="this.style.display='none'"
+              loading="lazy"
+            />
+          </div>
+          <div class="absolute -bottom-6 -right-4 sm:right-6 bg-white rounded-2xl shadow-xl p-5 flex items-center gap-3 ring-1 ring-slate-100">
+            <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-water-100 text-water-700"><i data-lucide="smile" class="w-6 h-6"></i></span>
+            <div>
+              <p class="text-2xl font-extrabold text-slate-900 leading-none">98%</p>
+              <p class="text-xs text-slate-500 mt-1">poleca nas znajomym</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div>
+          <span class="text-sm font-bold uppercase tracking-wider text-water-600">Dlaczego my</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Uczymy skutecznie i z uśmiechem</h2>
+          <p class="mt-4 text-lg text-slate-500">Łączymy sprawdzoną metodykę z indywidualnym podejściem, dzięki czemu każdy kursant robi realne postępy — bez stresu i pośpiechu.</p>
+
+          <div class="mt-8 grid sm:grid-cols-2 gap-6">
+            <div class="flex gap-4">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-water-50 text-water-600"><i data-lucide="graduation-cap" class="w-6 h-6"></i></span>
+              <div>
+                <h3 class="font-bold text-slate-900">Doświadczona kadra</h3>
+                <p class="mt-1 text-sm text-slate-500">Wykwalifikowani instruktorzy z pasją i wieloletnim stażem.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-water-50 text-water-600"><i data-lucide="users" class="w-6 h-6"></i></span>
+              <div>
+                <h3 class="font-bold text-slate-900">Małe grupy</h3>
+                <p class="mt-1 text-sm text-slate-500">Maksymalnie kilka osób — więcej uwagi dla każdego.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-water-50 text-water-600"><i data-lucide="clipboard-check" class="w-6 h-6"></i></span>
+              <div>
+                <h3 class="font-bold text-slate-900">Autorska metodyka</h3>
+                <p class="mt-1 text-sm text-slate-500">Sprawdzony program prowadzący krok po kroku do celu.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-water-50 text-water-600"><i data-lucide="shield-check" class="w-6 h-6"></i></span>
+              <div>
+                <h3 class="font-bold text-slate-900">Bezpieczeństwo</h3>
+                <p class="mt-1 text-sm text-slate-500">Komfortowe warunki i pełen nadzór na każdych zajęciach.</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="#kontakt" class="mt-10 inline-flex items-center gap-2 rounded-full bg-water-600 hover:bg-water-700 text-white font-semibold px-7 py-3.5 shadow-lg shadow-water-600/30 transition-colors">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+            Zapisz się na zajęcia
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INSTRUKTORZY ============ -->
+  <section id="instruktorzy" class="py-20 md:py-28 bg-water-50/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="text-sm font-bold uppercase tracking-wider text-water-600">Instruktorzy</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Poznaj nasz zespół</h2>
+        <p class="mt-4 text-lg text-slate-500">Zgrany zespół instruktorów z licencjami i sercem do pracy z ludźmi w każdym wieku.</p>
+      </div>
+
+      <div class="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Instructor card template -->
+        <article class="rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="aspect-square hero-fallback flex items-center justify-center text-white/70">
+            <i data-lucide="user-round" class="w-16 h-16"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-900">Anna Kowalska</h3>
+            <p class="text-sm font-semibold text-water-600">Instruktor / dzieci i niemowlęta</p>
+            <p class="mt-3 text-sm text-slate-500">Specjalizuje się w oswajaniu maluchów z wodą w atmosferze zabawy i bezpieczeństwa.</p>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="aspect-square hero-fallback flex items-center justify-center text-white/70">
+            <i data-lucide="user-round" class="w-16 h-16"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-900">Piotr Nowak</h3>
+            <p class="text-sm font-semibold text-water-600">Trener / doskonalenie</p>
+            <p class="mt-3 text-sm text-slate-500">Były zawodnik, dopracowuje technikę i przygotowuje kursantów do startów.</p>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="aspect-square hero-fallback flex items-center justify-center text-white/70">
+            <i data-lucide="user-round" class="w-16 h-16"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-900">Magda Wiśniewska</h3>
+            <p class="text-sm font-semibold text-water-600">Instruktor / dorośli</p>
+            <p class="mt-3 text-sm text-slate-500">Pomaga przełamać strach przed wodą i nauczyć się pływać od podstaw.</p>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="aspect-square hero-fallback flex items-center justify-center text-white/70">
+            <i data-lucide="user-round" class="w-16 h-16"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-900">Tomasz Zieliński</h3>
+            <p class="text-sm font-semibold text-water-600">Trener / grupy</p>
+            <p class="mt-3 text-sm text-slate-500">Prowadzi zajęcia grupowe z energią, dbając o postępy każdego uczestnika.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ CENNIK / PRICING ============ -->
-  <section id="cennik" class="py-20 md:py-28 bg-water-50/70">
+  <section id="cennik" class="py-20 md:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-2xl mx-auto text-center">
         <span class="text-sm font-bold uppercase tracking-wider text-water-600">Cennik</span>
@@ -233,7 +392,6 @@
       </div>
 
       <div class="mt-16 grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-        <!-- Group -->
         <div class="relative rounded-3xl bg-white border border-slate-100 p-8 shadow-sm hover:shadow-lg transition-shadow">
           <div class="flex items-center gap-3">
             <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-water-100 text-water-700">
@@ -256,7 +414,6 @@
           </a>
         </div>
 
-        <!-- Individual (highlighted) -->
         <div class="relative rounded-3xl bg-gradient-to-b from-water-600 to-water-800 p-8 shadow-xl shadow-water-700/30 text-white overflow-hidden">
           <span class="absolute top-5 right-5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">Najszybsze postępy</span>
           <div class="flex items-center gap-3">
@@ -285,11 +442,104 @@
     </div>
   </section>
 
+  <!-- ============ OPINIE / TESTIMONIALS ============ -->
+  <section class="py-20 md:py-28 bg-water-50/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="text-sm font-bold uppercase tracking-wider text-water-600">Opinie</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Co mówią nasi kursanci</h2>
+      </div>
+
+      <div class="mt-16 grid gap-8 md:grid-cols-3">
+        <figure class="rounded-3xl bg-white border border-slate-100 p-8 shadow-sm">
+          <div class="flex gap-1 text-amber-400">
+            <i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          </div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed">„Córka po kilku zajęciach sama skacze do wody. Ogromna zmiana i mnóstwo radości!”</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-water-100 text-water-700 font-bold">K</span>
+            <div><p class="font-semibold text-slate-900">Katarzyna</p><p class="text-sm text-slate-400">mama kursantki</p></div>
+          </figcaption>
+        </figure>
+
+        <figure class="rounded-3xl bg-white border border-slate-100 p-8 shadow-sm">
+          <div class="flex gap-1 text-amber-400">
+            <i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          </div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed">„Bałem się wody przez całe życie. Dzięki cierpliwości instruktora w końcu pływam!”</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-water-100 text-water-700 font-bold">M</span>
+            <div><p class="font-semibold text-slate-900">Marek</p><p class="text-sm text-slate-400">kursant, 41 lat</p></div>
+          </figcaption>
+        </figure>
+
+        <figure class="rounded-3xl bg-white border border-slate-100 p-8 shadow-sm">
+          <div class="flex gap-1 text-amber-400">
+            <i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          </div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed">„Profesjonalne podejście i świetna atmosfera. Technika poprawiła się w kilka tygodni.”</blockquote>
+          <figcaption class="mt-6 flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-water-100 text-water-700 font-bold">A</span>
+            <div><p class="font-semibold text-slate-900">Aleksandra</p><p class="text-sm text-slate-400">kursantka, doskonalenie</p></div>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOKALIZACJE ============ -->
+  <section class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="text-sm font-bold uppercase tracking-wider text-water-600">Lokalizacje</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Znajdziesz nas na tych pływalniach</h2>
+        <p class="mt-4 text-lg text-slate-500">Prowadzimy zajęcia w kilku dogodnych lokalizacjach — wybierz najbliższą.</p>
+      </div>
+
+      <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-2xl border border-slate-100 p-6 flex items-start gap-4 hover:border-water-200 hover:bg-water-50/50 transition-colors">
+          <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-water-100 text-water-700"><i data-lucide="map-pin" class="w-6 h-6"></i></span>
+          <div>
+            <h3 class="font-bold text-slate-900">Pływalnia Centrum</h3>
+            <p class="mt-1 text-sm text-slate-500">ul. Wodna 12, 00-000 Miasto</p>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-100 p-6 flex items-start gap-4 hover:border-water-200 hover:bg-water-50/50 transition-colors">
+          <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-water-100 text-water-700"><i data-lucide="map-pin" class="w-6 h-6"></i></span>
+          <div>
+            <h3 class="font-bold text-slate-900">Pływalnia OSiR Północ</h3>
+            <p class="mt-1 text-sm text-slate-500">ul. Falowa 5, 00-001 Miasto</p>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-100 p-6 flex items-start gap-4 hover:border-water-200 hover:bg-water-50/50 transition-colors">
+          <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-water-100 text-water-700"><i data-lucide="map-pin" class="w-6 h-6"></i></span>
+          <div>
+            <h3 class="font-bold text-slate-900">Pływalnia Zachód</h3>
+            <p class="mt-1 text-sm text-slate-500">ul. Kaskadowa 8, 00-002 Miasto</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 md:pb-28">
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-water-600 to-water-800 px-8 py-14 sm:px-14 text-center shadow-xl">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Gotowy, aby wejść do wody?</h2>
+        <p class="mt-4 text-lg text-water-50/90 max-w-2xl mx-auto">Dołącz do grona naszych kursantów i pływaj z pewnością siebie — niezależnie od wieku i poziomu.</p>
+        <a href="#kontakt" class="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-white hover:bg-water-50 text-water-700 font-semibold px-8 py-4 shadow-lg transition-colors">
+          <i data-lucide="user-plus" class="w-5 h-5"></i>
+          Zapisz się już dziś
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ FOOTER & CONTACT ============ -->
   <footer id="kontakt" class="bg-water-900 text-water-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="grid gap-12 md:grid-cols-3">
-        <!-- Brand -->
         <div>
           <a href="#top" class="flex items-center gap-2">
             <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-water-400 to-water-600 text-white">
@@ -298,9 +548,8 @@
             <span class="text-xl font-extrabold text-white">Szkoła Pływania</span>
           </a>
           <p class="mt-4 text-water-200/80 leading-relaxed max-w-xs">
-            Uczymy pływać z pewnością siebie — dzieci i dorosłych, na każdym poziomie zaawansowania.
+            Uczymy pływać z pewnością siebie — niemowlęta, dzieci i dorosłych, na każdym poziomie zaawansowania.
           </p>
-          <!-- Social media placeholders -->
           <div class="mt-6 flex items-center gap-3">
             <a href="#" aria-label="Facebook" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-water-500 transition-colors">
               <i data-lucide="facebook" class="w-5 h-5"></i>
@@ -314,7 +563,6 @@
           </div>
         </div>
 
-        <!-- Contact -->
         <div>
           <h4 class="text-white font-bold text-lg">Kontakt</h4>
           <ul class="mt-4 space-y-3">
@@ -333,7 +581,6 @@
           </ul>
         </div>
 
-        <!-- Hours / Links -->
         <div>
           <h4 class="text-white font-bold text-lg">Godziny otwarcia</h4>
           <ul class="mt-4 space-y-3">
@@ -356,16 +603,13 @@
   </footer>
 
   <script>
-    // Render Lucide icons
     if (window.lucide) lucide.createIcons();
 
-    // Mobile menu toggle
     const btn = document.getElementById('menu-btn');
     const menu = document.getElementById('mobile-menu');
     btn?.addEventListener('click', () => menu.classList.toggle('hidden'));
     menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.add('hidden')));
 
-    // Current year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
