@@ -74,6 +74,35 @@
     .bubble { position:absolute; bottom:-20px; border-radius:9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(111,210,221,.55) 60%, transparent 72%); animation: rise linear infinite; pointer-events:none; }
     .card-shadow { box-shadow: 0 18px 40px -18px rgba(14,124,139,.35); }
     input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+
+    /* ===== Cover Flow slider ===== */
+    .cf-stage { perspective: 1400px; }
+    .cf-track { position: relative; height: 100%; transform-style: preserve-3d; }
+    .cf-item {
+      position: absolute; top: 50%; left: 50%;
+      width: 60%; max-width: 460px; aspect-ratio: 4 / 3;
+      margin-left: -30%;
+      border-radius: 1.5rem; overflow: hidden;
+      background: #cfeff3;
+      box-shadow: 0 30px 60px -20px rgba(11,98,112,.55);
+      transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .55s, filter .55s;
+      transform-origin: center center;
+      cursor: pointer; user-select: none;
+    }
+    .cf-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+    /* pozycje względem aktywnego (data-pos: -2,-1,0,1,2) */
+    .cf-item[data-pos="0"]  { transform: translateY(-50%) translateX(0)      scale(1)    rotateY(0deg);   opacity: 1; z-index: 5; filter: none; }
+    .cf-item[data-pos="1"]  { transform: translateY(-50%) translateX(52%)    scale(.82)  rotateY(-32deg); opacity: .75; z-index: 4; filter: brightness(.7); }
+    .cf-item[data-pos="-1"] { transform: translateY(-50%) translateX(-52%)   scale(.82)  rotateY(32deg);  opacity: .75; z-index: 4; filter: brightness(.7); }
+    .cf-item[data-pos="2"]  { transform: translateY(-50%) translateX(92%)    scale(.66)  rotateY(-42deg); opacity: .45; z-index: 3; filter: brightness(.55); }
+    .cf-item[data-pos="-2"] { transform: translateY(-50%) translateX(-92%)   scale(.66)  rotateY(42deg);  opacity: .45; z-index: 3; filter: brightness(.55); }
+    .cf-item[data-pos="hidden"] { transform: translateY(-50%) translateX(0) scale(.5); opacity: 0; z-index: 1; pointer-events: none; }
+    @media (max-width: 640px) {
+      .cf-item { width: 74%; margin-left: -37%; }
+      .cf-item[data-pos="1"]  { transform: translateY(-50%) translateX(46%)  scale(.8)  rotateY(-28deg); }
+      .cf-item[data-pos="-1"] { transform: translateY(-50%) translateX(-46%) scale(.8)  rotateY(28deg); }
+      .cf-item[data-pos="2"], .cf-item[data-pos="-2"] { opacity: 0; pointer-events: none; }
+    }
   </style>
 </head>
 
@@ -225,6 +254,31 @@
         <span class="text-sm font-extrabold uppercase tracking-widest text-coral">O mnie</span>
         <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Poznaj DELFINADĘ</h2>
         <p class="mt-4 text-lg text-slate-500">Skuteczna metodyka i radosna atmosfera — realne postępy bez stresu.</p>
+      </div>
+
+      <!-- ===== Cover Flow slider ===== -->
+      <div id="coverflow" class="mt-14 select-none" aria-roledescription="carousel" aria-label="Galeria zdjęć DELFINADA">
+        <div class="cf-stage relative h-72 sm:h-96 lg:h-[30rem]">
+          <div class="cf-track" id="cf-track">
+            <div class="cf-item"><img src="assets/foto1.jpg" alt="Instruktorka DELFINADA na hali sportowej" loading="lazy" /></div>
+            <div class="cf-item"><img src="assets/foto3.jpg" alt="Zawodniczka przy słupku startowym na basenie" loading="lazy" /></div>
+            <div class="cf-item"><img src="assets/foto4.jpg" alt="Drużyna na podium zawodów pływackich" loading="lazy" /></div>
+            <div class="cf-item"><img src="assets/foto5.jpg" alt="Pływaczka przygotowująca się do startu" loading="lazy" /></div>
+          </div>
+
+          <!-- strzałki -->
+          <button id="cf-prev" type="button" aria-label="Poprzednie zdjęcie"
+            class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/90 hover:bg-white text-sky-700 card-shadow transition hover:scale-105">
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+          </button>
+          <button id="cf-next" type="button" aria-label="Następne zdjęcie"
+            class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/90 hover:bg-white text-sky-700 card-shadow transition hover:scale-105">
+            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <!-- kropki -->
+        <div id="cf-dots" class="mt-6 flex items-center justify-center gap-2.5"></div>
       </div>
 
       <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -599,6 +653,80 @@
         success.classList.remove('hidden');
         success.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
+    })();
+
+    // ===== Cover Flow slider =====
+    (function initCoverFlow() {
+      const root = document.getElementById('coverflow');
+      if (!root) return;
+      const track = document.getElementById('cf-track');
+      const items = Array.from(track.querySelectorAll('.cf-item'));
+      const dotsWrap = document.getElementById('cf-dots');
+      const n = items.length;
+      if (!n) return;
+      let active = 0;
+
+      // kropki
+      items.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.setAttribute('aria-label', 'Pokaż zdjęcie ' + (i + 1));
+        dot.className = 'cf-dot w-2.5 h-2.5 rounded-full bg-sky-200 hover:bg-sky-400 transition-all';
+        dot.addEventListener('click', () => go(i));
+        dotsWrap.appendChild(dot);
+      });
+      const dots = Array.from(dotsWrap.children);
+
+      function render() {
+        items.forEach((el, i) => {
+          let diff = i - active;
+          // najkrótsza droga w pętli
+          if (diff > n / 2) diff -= n;
+          if (diff < -n / 2) diff += n;
+          const pos = Math.abs(diff) <= 2 ? String(diff) : 'hidden';
+          el.dataset.pos = pos;
+          el.setAttribute('aria-hidden', diff === 0 ? 'false' : 'true');
+        });
+        dots.forEach((d, i) => {
+          const on = i === active;
+          d.classList.toggle('bg-coral', on);
+          d.classList.toggle('w-6', on);
+          d.classList.toggle('bg-sky-200', !on);
+        });
+      }
+
+      function go(i) { active = (i % n + n) % n; render(); }
+      function next() { go(active + 1); }
+      function prev() { go(active - 1); }
+
+      document.getElementById('cf-next').addEventListener('click', next);
+      document.getElementById('cf-prev').addEventListener('click', prev);
+
+      // klik w boczne zdjęcie = przejdź do niego
+      items.forEach((el, i) => el.addEventListener('click', () => { if (i !== active) go(i); }));
+
+      // klawiatura (gdy slider w polu widzenia / focus w obrębie)
+      root.tabIndex = 0;
+      root.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { prev(); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
+      });
+
+      // swipe (dotyk + mysz)
+      let startX = null;
+      const onStart = (x) => { startX = x; };
+      const onEnd = (x) => {
+        if (startX === null) return;
+        const dx = x - startX;
+        if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+        startX = null;
+      };
+      track.addEventListener('touchstart', (e) => onStart(e.touches[0].clientX), { passive: true });
+      track.addEventListener('touchend', (e) => onEnd(e.changedTouches[0].clientX), { passive: true });
+      track.addEventListener('mousedown', (e) => onStart(e.clientX));
+      window.addEventListener('mouseup', (e) => { if (startX !== null) onEnd(e.clientX); });
+
+      render();
     })();
   </script>
 </body>
