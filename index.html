@@ -83,11 +83,11 @@
   <header id="top" class="fixed top-0 inset-x-0 z-50">
     <div class="bg-white/85 backdrop-blur-md border-b border-sky-100">
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16 md:h-20">
+        <div class="flex items-center justify-between h-[83px] md:h-[104px]">
           <a href="#top" class="flex items-center group" aria-label="DELFINADA — strona główna">
             <!-- Logo DELFINADA -->
             <img src="assets/logo-delfinada-full.svg" alt="DELFINADA — Nauka pływania i obozy sportowe"
-              class="h-12 md:h-14 w-auto group-hover:scale-105 transition-transform" />
+              class="h-[62px] md:h-[73px] w-auto group-hover:scale-105 transition-transform" />
           </a>
 
           <div class="hidden md:flex items-center gap-7">
@@ -121,7 +121,7 @@
   </header>
 
   <!-- ============ HERO ============ -->
-  <section class="relative min-h-screen flex items-center overflow-hidden playful-bg pt-16 md:pt-20">
+  <section class="relative min-h-screen flex items-center overflow-hidden playful-bg pt-[83px] md:pt-[104px]">
     <div id="bubbles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-12 items-center py-16">
@@ -156,10 +156,14 @@
         </div>
       </div>
 
-      <!-- Zdjęcie instruktorki (bez tła, nieruchome) -->
+      <!-- Zdjęcie instruktorki (bez tła, nieruchome) + miękki akcent za postacią -->
       <div class="relative order-first lg:order-none flex justify-center">
+        <!-- delikatna kolorowa plama osadzająca postać -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+          <div class="w-72 h-72 sm:w-96 sm:h-96 lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-br from-sky-300/60 via-mint/40 to-sunny/40 blur-3xl"></div>
+        </div>
         <img src="assets/ada2.png" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="eager"
-          class="w-72 sm:w-96 lg:w-full max-w-lg h-auto drop-shadow-2xl" />
+          class="relative w-72 sm:w-96 lg:w-full max-w-lg h-auto drop-shadow-2xl" />
       </div>
     </div>
 
