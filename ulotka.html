@@ -33,7 +33,7 @@
     /* fale dekoracyjne */
     .waves-l, .waves-r { position:absolute; opacity:.5; }
     .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.28em .7em; border-radius:.5em; }
-    .instr { position:absolute; right:-52mm; bottom:-40mm; height:185mm; width:auto; z-index:1;
+    .instr { position:absolute; right:-40mm; bottom:-40mm; height:222mm; width:auto; z-index:1;
              object-fit:cover; object-position:top;
              filter: drop-shadow(0 10px 20px rgba(0,0,0,.25)); }
     .content { position:relative; z-index:2; }
@@ -96,8 +96,7 @@
         </div>
 
         <!-- ZAPISY + KONTAKT -->
-        <p class="mt-6 text-[11px] font-bold text-white/90">Karnety i pakiety rodzinne — zapytaj o indywidualną wycenę.</p>
-        <div class="mt-2 inline-block rounded-xl border-2 border-white/80 px-4 py-2">
+        <div class="mt-6 inline-block rounded-xl border-2 border-white/80 px-4 py-2">
           <p class="font-display font-extrabold text-sunny text-[18px]">ZAPISY: 666 515 178</p>
         </div>
 
@@ -109,12 +108,12 @@
         </div>
       </div>
 
-      <!-- QR całkiem na dole (lewy róg) -->
-      <div class="content absolute left-9 bottom-6 text-center">
+      <!-- QR całkiem na dole (prawy róg, nad zdjęciem) -->
+      <div class="absolute right-8 bottom-6 text-center" style="z-index:3">
         <div class="bg-white rounded-xl p-1.5 shadow-lg">
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=0b5563&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[90px] h-[90px]" />
         </div>
-        <p class="text-[9px] text-white/85 mt-1 font-semibold">Zeskanuj i zapisz się</p>
+        <p class="text-[9px] text-white mt-1 font-bold">Zeskanuj i zapisz się</p>
       </div>
 
     </div>
