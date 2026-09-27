@@ -6,9 +6,9 @@
   <title>DELFINADA — Szkoła Pływania dla dzieci i dorosłych 🐬</title>
   <meta name="description" content="DELFINADA — nauka pływania i obozy sportowe dla niemowląt, dzieci i dorosłych. Nauka przez zabawę, instruktorzy z sercem. Zapisz się online!" />
 
-  <!-- Favicon: delfin 🐬 -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%AC%3C/text%3E%3C/svg%3E" />
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%AC%3C/text%3E%3C/svg%3E" />
+  <!-- Favicon: logo DELFINADA (delfin) -->
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -96,13 +96,6 @@
     .cf-item img { pointer-events: none; }
     /* film kadrowany wyżej — osoba w centrum */
     .cf-item video { object-position: center 22%; }
-    /* nakładka „play" na slajdzie wideo (znika, gdy slajd jest aktywny) */
-    .cf-video .cf-play {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: rgba(11,98,112,.35); color: #fff; pointer-events: none; transition: opacity .3s;
-    }
-    .cf-video .cf-play i { background: rgba(255,136,38,.95); border-radius: 9999px; padding: 14px; box-shadow: 0 8px 24px -6px rgba(0,0,0,.5); }
-    .cf-item[data-pos="0"].cf-video .cf-play { opacity: 0; }
     /* pozycje względem aktywnego (data-pos: -2,-1,0,1,2) */
     /* każda pozycja zaczyna od translate(-50%,-50%) → wyśrodkowanie względem WŁASNEJ szerokości kafla */
     .cf-item[data-pos="0"]  { transform: translate(-50%,-50%)              scale(1)    rotateY(0deg);   opacity: 1; z-index: 5; filter: none; }
@@ -276,8 +269,7 @@
           <div class="cf-track" id="cf-track">
             <div class="cf-item"><img src="assets/foto1.jpg" alt="Instruktorka DELFINADA na hali sportowej" loading="lazy" /></div>
             <div class="cf-item cf-video">
-              <video src="assets/foto2.mp4" playsinline muted loop preload="metadata" controls></video>
-              <span class="cf-play" aria-hidden="true"><i data-lucide="play" class="w-8 h-8"></i></span>
+              <video src="assets/foto2.mp4" playsinline muted loop autoplay preload="auto" controls></video>
             </div>
             <div class="cf-item"><img src="assets/foto3.jpg" alt="Zawodniczka przy słupku startowym na basenie" loading="lazy" /></div>
             <div class="cf-item"><img src="assets/foto4.jpg" alt="Drużyna na podium zawodów pływackich" loading="lazy" /></div>
@@ -675,9 +667,6 @@
           const pos = Math.abs(diff) <= 2 ? String(diff) : 'hidden';
           el.dataset.pos = pos;
           el.setAttribute('aria-hidden', diff === 0 ? 'false' : 'true');
-          // zatrzymaj wideo, gdy slajd nie jest aktywny
-          const vid = el.querySelector('video');
-          if (vid && diff !== 0) { vid.pause(); }
         });
         dots.forEach((d, i) => {
           const on = i === active;
