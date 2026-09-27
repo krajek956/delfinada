@@ -434,7 +434,13 @@
         </div>
 
         <div class="rounded-[2rem] bg-white p-6 sm:p-8 card-shadow">
-          <form id="signup-form" novalidate class="space-y-5">
+          <form id="signup-form" novalidate class="space-y-5" action="https://api.web3forms.com/submit" method="POST">
+            <!-- Web3Forms: konfiguracja -->
+            <input type="hidden" name="access_key" value="1e051fcc-9f4b-4183-af05-249a509afe12" />
+            <input type="hidden" name="subject" value="Nowe zgłoszenie ze strony DELFINADA 🐬" />
+            <input type="hidden" name="from_name" value="Formularz DELFINADA" />
+            <!-- honeypot anty-spam (ukryte pole; boty je wypełniają) -->
+            <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
             <div>
               <label for="name" class="block text-sm font-bold text-slate-700">Imię i nazwisko</label>
               <input id="name" name="name" type="text" autocomplete="name" placeholder="np. Jan Kowalski"
@@ -503,8 +509,9 @@
 
             <div id="form-success" class="hidden rounded-2xl bg-mint-light/60 border border-mint p-4 flex items-start gap-3">
               <i data-lucide="check-circle-2" class="w-6 h-6 text-mint-dark shrink-0"></i>
-              <p class="text-mint-dark text-sm font-bold">Dziękujemy! Twoje zgłoszenie zostało przyjęte — skontaktujemy się w ciągu 24 godzin. 🐬</p>
+              <p class="text-mint-dark text-sm font-bold">Dziękujemy! Twoje zgłoszenie zostało przyjęte — skontaktujemy się w ciągu 2 godzin. 🐬</p>
             </div>
+            <p id="form-error" class="hidden rounded-2xl bg-coral-light/40 border border-coral p-4 text-coral-dark text-sm font-bold"></p>
           </form>
         </div>
       </div>
@@ -612,7 +619,9 @@
         });
       });
 
-      form.addEventListener('submit', (e) => {
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         let ok = true;
         Object.keys(validators).forEach((name) => {
@@ -628,12 +637,33 @@
           return;
         }
 
-        const data = Object.fromEntries(new FormData(form).entries());
-        console.log('Zgłoszenie DELFINADA:', data);
+        // Wyślij do Web3Forms
+        const originalBtn = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Wysyłanie…'; }
 
-        form.querySelectorAll('input, select, textarea, button').forEach((el) => el.setAttribute('disabled', 'true'));
-        success.classList.remove('hidden');
-        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        try {
+          const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: new FormData(form),
+          });
+          const json = await res.json();
+          if (res.ok && json.success) {
+            form.querySelectorAll('input, select, textarea, button').forEach((el) => el.setAttribute('disabled', 'true'));
+            success.classList.remove('hidden');
+            success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            throw new Error(json.message || 'Błąd wysyłki');
+          }
+        } catch (err) {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtn; }
+          const box = document.getElementById('form-error');
+          if (box) {
+            box.textContent = 'Nie udało się wysłać zgłoszenia. Spróbuj ponownie lub zadzwoń: 666-515-178.';
+            box.classList.remove('hidden');
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
       });
     })();
 
