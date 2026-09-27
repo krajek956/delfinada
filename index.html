@@ -122,11 +122,19 @@
 
   <!-- ============ HERO ============ -->
   <section class="relative min-h-screen flex items-center overflow-hidden playful-bg pt-[83px] md:pt-[104px]">
+    <!-- MOBILE: zdjęcie instruktorki jako subtelne tło za nagłówkiem (ukryte na desktopie) -->
+    <div class="lg:hidden absolute inset-0 pointer-events-none" aria-hidden="true">
+      <img src="assets/ada2.png" alt="" loading="eager"
+        class="absolute right-0 bottom-0 h-full w-auto max-w-none object-contain object-bottom opacity-20" />
+      <!-- welon zwiększający czytelność tekstu -->
+      <div class="absolute inset-0 bg-gradient-to-r from-white/85 via-white/60 to-white/30"></div>
+    </div>
+
     <div id="bubbles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-12 items-center py-16">
       <!-- Copy -->
-      <div>
+      <div class="relative z-10">
         <span class="animate-fade-up inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-sky-600 card-shadow">
           <i data-lucide="sparkles" class="w-4 h-4 text-sunny-dark"></i>
           Niemowlęta • Dzieci • Dorośli
@@ -156,8 +164,8 @@
         </div>
       </div>
 
-      <!-- Zdjęcie instruktorki (bez tła, nieruchome) + miękki akcent za postacią -->
-      <div class="relative order-first lg:order-none flex justify-center">
+      <!-- Zdjęcie instruktorki (desktop) — na mobile jest tłem sekcji (patrz wyżej) -->
+      <div class="relative hidden lg:flex justify-center">
         <!-- delikatna kolorowa plama osadzająca postać -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <div class="w-72 h-72 sm:w-96 sm:h-96 lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-br from-sky-300/60 via-mint/40 to-sunny/40 blur-3xl"></div>
