@@ -89,7 +89,15 @@
       transform-origin: center center;
       cursor: pointer; user-select: none;
     }
-    .cf-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+    .cf-item img, .cf-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cf-item img { pointer-events: none; }
+    /* nakładka „play" na slajdzie wideo (znika, gdy slajd jest aktywny) */
+    .cf-video .cf-play {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(11,98,112,.35); color: #fff; pointer-events: none; transition: opacity .3s;
+    }
+    .cf-video .cf-play i { background: rgba(255,136,38,.95); border-radius: 9999px; padding: 14px; box-shadow: 0 8px 24px -6px rgba(0,0,0,.5); }
+    .cf-item[data-pos="0"].cf-video .cf-play { opacity: 0; }
     /* pozycje względem aktywnego (data-pos: -2,-1,0,1,2) */
     .cf-item[data-pos="0"]  { transform: translateY(-50%) translateX(0)      scale(1)    rotateY(0deg);   opacity: 1; z-index: 5; filter: none; }
     .cf-item[data-pos="1"]  { transform: translateY(-50%) translateX(52%)    scale(.82)  rotateY(-32deg); opacity: .75; z-index: 4; filter: brightness(.7); }
@@ -261,6 +269,10 @@
         <div class="cf-stage relative h-72 sm:h-96 lg:h-[30rem]">
           <div class="cf-track" id="cf-track">
             <div class="cf-item"><img src="assets/foto1.jpg" alt="Instruktorka DELFINADA na hali sportowej" loading="lazy" /></div>
+            <div class="cf-item cf-video">
+              <video src="assets/foto2.mp4" playsinline muted loop preload="metadata" controls></video>
+              <span class="cf-play" aria-hidden="true"><i data-lucide="play" class="w-8 h-8"></i></span>
+            </div>
             <div class="cf-item"><img src="assets/foto3.jpg" alt="Zawodniczka przy słupku startowym na basenie" loading="lazy" /></div>
             <div class="cf-item"><img src="assets/foto4.jpg" alt="Drużyna na podium zawodów pływackich" loading="lazy" /></div>
             <div class="cf-item"><img src="assets/foto5.jpg" alt="Pływaczka przygotowująca się do startu" loading="lazy" /></div>
@@ -686,6 +698,9 @@
           const pos = Math.abs(diff) <= 2 ? String(diff) : 'hidden';
           el.dataset.pos = pos;
           el.setAttribute('aria-hidden', diff === 0 ? 'false' : 'true');
+          // zatrzymaj wideo, gdy slajd nie jest aktywny
+          const vid = el.querySelector('video');
+          if (vid && diff !== 0) { vid.pause(); }
         });
         dots.forEach((d, i) => {
           const on = i === active;
