@@ -25,7 +25,7 @@
     }
     .stage{ display:flex; justify-content:center; padding:24px; }
     .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.24em .6em; border-radius:.35em; }
-    .instr { position:absolute; right:-220px; bottom:-200px; height:1416px; width:auto; z-index:1; object-fit:cover; object-position:top; filter:drop-shadow(0 20px 40px rgba(0,0,0,.28)); }
+    .instr { position:absolute; right:-300px; bottom:-200px; height:1416px; width:auto; z-index:1; object-fit:cover; object-position:top; filter:drop-shadow(0 20px 40px rgba(0,0,0,.28)); }
     .content{ position:relative; z-index:2; }
     .bullet{ list-style:none; padding:0; margin:0; }
     .bullet li{ position:relative; padding-left:34px; }
@@ -81,18 +81,18 @@
           <p class="font-display font-extrabold text-sunny text-[40px]">ZAPISY: 666 515 178</p>
         </div>
 
-        <div class="mt-6 text-right text-[26px] font-bold leading-snug pr-4">
+        <div class="mt-6 text-left text-[26px] font-bold leading-snug">
           <p>www.delfinada.pl</p>
           <p class="text-white/90 font-semibold">delfinada.info@gmail.com · Warszawa</p>
         </div>
-      </div>
 
-      <!-- QR całkiem na dole (lewy róg) -->
-      <div class="absolute left-14 bottom-10 text-center" style="z-index:3">
-        <div class="bg-white rounded-2xl p-3 shadow-2xl">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&color=0b5563&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[190px] h-[190px]" />
+        <!-- QR pod kontaktem (lewa strona) -->
+        <div class="mt-5 inline-block text-center" style="z-index:3">
+          <div class="bg-white rounded-2xl p-3 shadow-2xl inline-block">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&color=0b5563&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[180px] h-[180px]" />
+          </div>
+          <p class="text-[18px] text-white mt-2 font-bold">Zeskanuj i zapisz się</p>
         </div>
-        <p class="text-[18px] text-white mt-2 font-bold">Zeskanuj i zapisz się</p>
       </div>
     </div>
   </div>
