@@ -7,129 +7,104 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       theme: { extend: {
-        fontFamily: { sans:['Nunito','sans-serif'], display:['"Baloo 2"','sans-serif'] },
+        fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
         colors: {
-          sky:{50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270'},
-          coral:{light:'#ffb26b',DEFAULT:'#ff8826',dark:'#e5720f'},
-          sunny:{light:'#ffc98a',DEFAULT:'#ff9d40',dark:'#f07f1a'},
-          mint:{light:'#bdeef0',DEFAULT:'#22b8c0',dark:'#0e9aa2'},
+          aqua:{ base:'#3aa6c9', mid:'#3f9dc4', deep:'#2f8fb8' },
+          sunny:{ DEFAULT:'#ffd23f', dark:'#f5b800' },
+          coral:{ DEFAULT:'#ff8826', dark:'#e5720f' },
         },
       } },
     };
   </script>
   <style>
-    /* A5: 148mm x 210mm */
     @page { size: A5; margin: 0; }
     html,body { margin:0; padding:0; background:#e2e8f0; }
     .a5 {
-      width: 148mm; height: 210mm; margin: 0 auto; position: relative; overflow: hidden;
-      background:
-        radial-gradient(90px 90px at 12% 8%, rgba(255,136,38,.18), transparent 70%),
-        radial-gradient(120px 120px at 92% 4%, rgba(34,184,192,.20), transparent 70%),
-        linear-gradient(180deg,#eafafc 0%, #ffffff 55%);
+      width:148mm; height:210mm; margin:0 auto; position:relative; overflow:hidden;
+      background: linear-gradient(160deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
+      color:#fff;
     }
-    .screen-wrap { padding: 24px 0 60px; }
-    @media print {
-      html,body { background:#fff; }
-      .screen-wrap { padding:0; }
-      .noprint { display:none !important; }
-      .a5 { box-shadow:none !important; }
-    }
-    .card-shadow { box-shadow: 0 12px 30px -12px rgba(14,124,139,.35); }
-    .wave svg { display:block; width:100%; }
+    .screen-wrap{ padding:24px 0 60px; }
+    @media print { html,body{background:#fff;} .screen-wrap{padding:0;} .noprint{display:none!important;} .a5{box-shadow:none!important;} }
+    /* fale dekoracyjne */
+    .waves-l, .waves-r { position:absolute; opacity:.5; }
+    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.28em .7em; border-radius:.5em; }
+    .instr { position:absolute; right:-6mm; bottom:0; height:150mm; width:auto; z-index:1;
+             filter: drop-shadow(0 10px 20px rgba(0,0,0,.25)); }
+    .content { position:relative; z-index:2; }
+    .bullet { list-style:none; padding:0; margin:0; }
+    .bullet li { position:relative; padding-left:16px; }
+    .bullet li::before { content:''; position:absolute; left:0; top:.55em; width:6px; height:6px; border-radius:50%; background:#fff; }
   </style>
 </head>
-<body class="font-sans text-slate-700">
+<body class="font-sans">
 
-  <!-- pasek pomocniczy (nie drukuje się) -->
-  <div class="noprint text-center py-4 bg-white/70">
-    <p class="text-sm text-slate-600">Podgląd ulotki A5. Aby zapisać jako PDF: <b>Ctrl/Cmd + P → Zapisz jako PDF</b> (rozmiar A5, marginesy: brak, „Grafika tła": włączona).</p>
+  <div class="noprint text-center py-4 bg-white/70 text-slate-700">
+    <p class="text-sm">Podgląd ulotki A5. Zapis do PDF: <b>Ctrl/Cmd + P → Zapisz jako PDF</b> (A5, marginesy: brak, „Grafika tła": włączona).</p>
   </div>
 
   <div class="screen-wrap">
-    <div class="a5 card-shadow">
+    <div class="a5 shadow-2xl">
 
-      <!-- LOGO -->
-      <div class="pt-7 px-8 flex justify-center">
-        <img src="assets/logo333.png" alt="DELFINADA" class="h-20 w-auto" />
-      </div>
+      <!-- fale w tle (lewy gornej / prawy) -->
+      <svg class="waves-l" style="top:14mm;left:-6mm;width:52mm" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/>
+      </svg>
+      <svg class="waves-r" style="top:40mm;right:-10mm;width:60mm;opacity:.35" viewBox="0 0 200 200" fill="none" stroke="#bfe9f3" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/><path d="M0 95 Q30 80 60 95 T120 95"/>
+      </svg>
 
-      <!-- HASŁO -->
-      <div class="mt-3 px-8 text-center">
-        <h1 class="font-display text-3xl font-extrabold leading-tight text-sky-700">
-          Pływaj z <span class="text-coral">pewnością</span> siebie!
-        </h1>
-        <p class="mt-1.5 text-[13px] text-slate-500 font-semibold">
-          Profesjonalna nauka pływania dla dzieci i dorosłych na każdym poziomie.
-        </p>
-      </div>
+      <!-- ZDJĘCIE INSTRUKTORKI -->
+      <img src="assets/ada2.png" alt="Instruktorka DELFINADA" class="instr" />
 
-      <!-- ZDJĘCIE + OFERTA -->
-      <div class="mt-4 px-8 flex gap-4 items-center">
-        <div class="shrink-0 w-[38%]">
-          <div class="rounded-2xl overflow-hidden bg-gradient-to-br from-sky-200 to-sky-400 card-shadow aspect-[3/4]">
-            <img src="assets/ada2.png" alt="Instruktorka DELFINADA" class="w-full h-full object-cover object-top" />
-          </div>
+      <div class="content px-9 pt-8">
+        <!-- NAGŁÓWEK -->
+        <div class="flex items-start justify-between">
+          <h1 class="font-display font-black leading-[0.9] tracking-tight">
+            <span class="block text-white text-[52px]">NAUKA</span>
+            <span class="block text-sunny text-[52px]">PŁYWANIA</span>
+          </h1>
+          <img src="assets/logo333.png" alt="DELFINADA" class="w-[42mm] h-auto mt-1 drop-shadow" />
         </div>
-        <div class="flex-1 space-y-2">
-          <div class="flex items-center gap-2 rounded-xl bg-sky-50 px-3 py-2">
-            <span class="text-lg">👶</span><span class="font-display font-bold text-sky-700 text-sm">Niemowlęta</span>
-          </div>
-          <div class="flex items-center gap-2 rounded-xl bg-mint-light/40 px-3 py-2">
-            <span class="text-lg">😊</span><span class="font-display font-bold text-sky-700 text-sm">Dzieci — nauka przez zabawę</span>
-          </div>
-          <div class="flex items-center gap-2 rounded-xl bg-sunny-light/40 px-3 py-2">
-            <span class="text-lg">🏊</span><span class="font-display font-bold text-sky-700 text-sm">Dorośli — od podstaw</span>
-          </div>
-          <div class="flex items-center gap-2 rounded-xl bg-coral-light/30 px-3 py-2">
-            <span class="text-lg">🏆</span><span class="font-display font-bold text-sky-700 text-sm">Doskonalenie techniki</span>
-          </div>
-        </div>
-      </div>
+        <p class="font-display font-extrabold text-white text-[26px] mt-1">W WARSZAWIE</p>
 
-      <!-- CENNIK -->
-      <div class="mt-4 px-8">
-        <h2 class="text-center font-display text-lg font-extrabold text-sky-700">Cennik</h2>
-        <div class="mt-2 grid grid-cols-2 gap-3">
-          <div class="rounded-2xl bg-white card-shadow p-3 text-center">
-            <p class="text-xs font-semibold text-slate-500">Zajęcia grupowe</p>
-            <p class="mt-1"><span class="text-xs text-slate-400">od</span> <span class="font-display text-2xl font-extrabold text-sky-700">75</span> <span class="text-xs text-slate-400">zł/h</span></p>
-            <p class="text-[11px] text-slate-500 mt-0.5">małe grupy do 8 osób</p>
-          </div>
-          <div class="rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 p-3 text-center text-white card-shadow">
-            <p class="text-xs font-semibold text-sky-100">Indywidualne</p>
-            <p class="mt-1"><span class="text-xs text-sky-100">od</span> <span class="font-display text-2xl font-extrabold">160</span> <span class="text-xs text-sky-100">zł/h</span></p>
-            <p class="text-[11px] text-sky-100 mt-0.5">program 1:1, najszybsze postępy</p>
-          </div>
+        <!-- OFERTA -->
+        <div class="mt-6 max-w-[82mm]">
+          <p class="text-[10px] font-extrabold tracking-widest text-white/90">NIEMOWLĘTA · DZIECI · DOROŚLI · DOSKONALENIE</p>
+          <h2 class="mt-1 font-display font-extrabold text-[20px]"><span class="pill">ZAJĘCIA GRUPOWE</span></h2>
+          <ul class="bullet mt-2 space-y-1 text-[13px] font-semibold">
+            <li>od 75 zł / h</li>
+            <li>małe grupy do 8 osób</li>
+            <li>podział wg poziomu zaawansowania</li>
+          </ul>
         </div>
-        <p class="mt-2 text-center text-[11px] font-bold text-slate-600">Karnety i pakiety rodzinne — zapytaj o wycenę</p>
-      </div>
 
-      <!-- KONTAKT + QR -->
-      <div class="absolute bottom-0 inset-x-0">
-        <div class="wave text-sky-700">
-          <svg viewBox="0 0 400 40" fill="currentColor" preserveAspectRatio="none"><path d="M0,20 C80,0 160,0 240,14 C300,24 350,24 400,10 L400,40 L0,40 Z"></path></svg>
+        <!-- SEKCJA 2: INDYWIDUALNE -->
+        <div class="mt-6 max-w-[82mm]">
+          <p class="text-[10px] font-extrabold tracking-widest text-white/90">WSZYSTKIE GRUPY WIEKOWE</p>
+          <h2 class="mt-1 font-display font-extrabold text-[20px]"><span class="pill">ZAJĘCIA INDYWIDUALNE</span></h2>
+          <ul class="bullet mt-2 space-y-1 text-[13px] font-semibold">
+            <li>od 160 zł / h</li>
+            <li>pełna uwaga instruktora 1:1</li>
+            <li>program dopasowany w 100%</li>
+          </ul>
         </div>
-        <div class="bg-sky-700 text-white px-8 pt-2 pb-5">
-          <div class="flex items-center justify-between gap-4">
-            <div class="space-y-1.5">
-              <p class="flex items-center gap-2 text-sm font-bold"><span>📞</span> +48 666-515-178</p>
-              <p class="flex items-center gap-2 text-sm font-bold"><span>✉️</span> delfinada.info@gmail.com</p>
-              <p class="flex items-center gap-2 text-sm font-bold"><span>🌐</span> www.delfinada.pl</p>
-              <p class="flex items-center gap-2 text-xs text-sky-100 mt-1"><span>📍</span> Warszawa</p>
-            </div>
-            <div class="shrink-0 text-center">
-              <div class="bg-white rounded-xl p-1.5">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=0&color=0b6270&data=https%3A%2F%2Fwww.delfinada.pl"
-                     alt="QR — www.delfinada.pl" class="w-[70px] h-[70px]" />
-              </div>
-              <p class="text-[9px] text-sky-100 mt-1">Zeskanuj i zapisz się</p>
-            </div>
-          </div>
+
+        <!-- ZAPISY + KONTAKT -->
+        <p class="mt-6 text-[11px] font-bold text-white/90">Karnety i pakiety rodzinne — zapytaj o indywidualną wycenę.</p>
+        <div class="mt-2 inline-block rounded-xl border-2 border-white/80 px-4 py-2">
+          <p class="font-display font-extrabold text-sunny text-[18px]">ZAPISY: 666 515 178</p>
+        </div>
+
+        <div class="mt-4 text-[12px] font-bold leading-relaxed">
+          <p>DELFINADA — Nauka pływania</p>
+          <p class="font-semibold text-white/90">Warszawa</p>
+          <p class="mt-1">www.delfinada.pl</p>
+          <p class="font-semibold text-white/90">delfinada.info@gmail.com</p>
         </div>
       </div>
 

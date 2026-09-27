@@ -7,119 +7,92 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       theme: { extend: {
-        fontFamily: { sans:['Nunito','sans-serif'], display:['"Baloo 2"','sans-serif'] },
-        colors: {
-          sky:{50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270'},
-          coral:{light:'#ffb26b',DEFAULT:'#ff8826',dark:'#e5720f'},
-          sunny:{light:'#ffc98a',DEFAULT:'#ff9d40',dark:'#f07f1a'},
-          mint:{light:'#bdeef0',DEFAULT:'#22b8c0',dark:'#0e9aa2'},
-        },
+        fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
+        colors: { sunny:{DEFAULT:'#ffd23f'}, coral:{DEFAULT:'#ff8826'} },
       } },
     };
   </script>
   <style>
     html,body { margin:0; padding:0; background:#e2e8f0; }
-    /* Post 4:5 — 1080x1350 px */
     .post {
-      width: 1080px; height: 1350px; position: relative; overflow: hidden;
-      background:
-        radial-gradient(300px 300px at 10% 6%, rgba(255,136,38,.18), transparent 70%),
-        radial-gradient(360px 360px at 92% 4%, rgba(34,184,192,.22), transparent 70%),
-        linear-gradient(180deg,#eafafc 0%, #ffffff 60%);
+      width:1080px; height:1350px; position:relative; overflow:hidden; color:#fff;
+      background: linear-gradient(160deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
       transform-origin: top left;
     }
-    /* skalowanie podglądu do okna (nie wpływa na eksport w pełnej rozdzielczości) */
-    .stage { display:flex; justify-content:center; padding:24px; }
-    .card-shadow { box-shadow: 0 30px 60px -24px rgba(14,124,139,.4); }
-    .wave svg { display:block; width:100%; }
-    .noprint{}
+    .stage{ display:flex; justify-content:center; padding:24px; }
+    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.24em .6em; border-radius:.35em; }
+    .instr { position:absolute; right:-40px; bottom:0; height:1000px; width:auto; z-index:1; filter:drop-shadow(0 20px 40px rgba(0,0,0,.28)); }
+    .content{ position:relative; z-index:2; }
+    .bullet{ list-style:none; padding:0; margin:0; }
+    .bullet li{ position:relative; padding-left:34px; }
+    .bullet li::before{ content:''; position:absolute; left:0; top:.6em; width:12px; height:12px; border-radius:50%; background:#fff; }
   </style>
 </head>
-<body class="font-sans text-slate-700">
-
-  <div class="noprint text-center py-4 bg-white/70">
-    <p class="text-sm text-slate-600">Podgląd posta 1080×1350. Aby zapisać jako obraz: zrób zrzut ekranu kadru albo w DevTools „Capture node screenshot” na elemencie <code>.post</code>.</p>
+<body class="font-sans">
+  <div class="text-center py-4 bg-white/70 text-slate-700">
+    <p class="text-sm">Podgląd posta 1080×1350. Zapis: DevTools → prawy klik na <code>.post</code> → „Capture node screenshot”.</p>
   </div>
 
   <div class="stage">
-    <div class="post card-shadow" id="post">
+    <div class="post shadow-2xl" id="post">
+      <!-- fale -->
+      <svg style="position:absolute;top:120px;left:-30px;width:360px;opacity:.5" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/></svg>
+      <svg style="position:absolute;top:360px;right:-60px;width:420px;opacity:.32" viewBox="0 0 200 200" fill="none" stroke="#bfe9f3" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/><path d="M0 95 Q30 80 60 95 T120 95"/></svg>
 
-      <!-- LOGO -->
-      <div class="pt-14 px-16 flex justify-center">
-        <img src="assets/logo333.png" alt="DELFINADA" class="h-40 w-auto" />
-      </div>
+      <img src="assets/ada2.png" alt="Instruktorka DELFINADA" class="instr" />
 
-      <!-- HASŁO -->
-      <div class="mt-6 px-16 text-center">
-        <h1 class="font-display text-[68px] leading-[1.02] font-extrabold text-sky-700">
-          Pływaj z <span class="text-coral">pewnością</span> siebie!
-        </h1>
-        <p class="mt-4 text-[26px] text-slate-500 font-semibold">
-          Nauka pływania dla dzieci i dorosłych — Warszawa 🐬
-        </p>
-      </div>
-
-      <!-- ZDJĘCIE + OFERTA -->
-      <div class="mt-8 px-16 flex gap-8 items-center">
-        <div class="shrink-0 w-[42%]">
-          <div class="rounded-[2rem] overflow-hidden bg-gradient-to-br from-sky-200 to-sky-400 card-shadow aspect-[3/4]">
-            <img src="assets/ada2.png" alt="Instruktorka DELFINADA" class="w-full h-full object-cover object-top" />
-          </div>
+      <div class="content px-16 pt-16">
+        <div class="flex items-start justify-between">
+          <h1 class="font-display font-black leading-[0.88] tracking-tight">
+            <span class="block text-white text-[120px]">NAUKA</span>
+            <span class="block text-sunny text-[120px]">PŁYWANIA</span>
+          </h1>
+          <img src="assets/logo333.png" alt="DELFINADA" class="w-[320px] h-auto mt-2" />
         </div>
-        <div class="flex-1 space-y-4">
-          <div class="flex items-center gap-3 rounded-2xl bg-sky-50 px-5 py-4"><span class="text-3xl">👶</span><span class="font-display font-bold text-sky-700 text-[26px]">Niemowlęta</span></div>
-          <div class="flex items-center gap-3 rounded-2xl bg-mint-light/40 px-5 py-4"><span class="text-3xl">😊</span><span class="font-display font-bold text-sky-700 text-[26px]">Dzieci</span></div>
-          <div class="flex items-center gap-3 rounded-2xl bg-sunny-light/40 px-5 py-4"><span class="text-3xl">🏊</span><span class="font-display font-bold text-sky-700 text-[26px]">Dorośli</span></div>
-          <div class="flex items-center gap-3 rounded-2xl bg-coral-light/30 px-5 py-4"><span class="text-3xl">🏆</span><span class="font-display font-bold text-sky-700 text-[26px]">Doskonalenie</span></div>
-        </div>
-      </div>
+        <p class="font-display font-extrabold text-white text-[60px] mt-2">W WARSZAWIE</p>
 
-      <!-- CENNIK -->
-      <div class="mt-9 px-16 grid grid-cols-2 gap-6">
-        <div class="rounded-[2rem] bg-white card-shadow p-6 text-center">
-          <p class="text-[20px] font-semibold text-slate-500">Zajęcia grupowe</p>
-          <p class="mt-1"><span class="text-[18px] text-slate-400">od</span> <span class="font-display text-[52px] font-extrabold text-sky-700">75</span> <span class="text-[18px] text-slate-400">zł/h</span></p>
+        <!-- GRUPOWE -->
+        <div class="mt-12 max-w-[600px]">
+          <p class="text-[20px] font-extrabold tracking-widest text-white/90">NIEMOWLĘTA · DZIECI · DOROŚLI · DOSKONALENIE</p>
+          <h2 class="mt-2 font-display font-extrabold text-[44px]"><span class="pill">ZAJĘCIA GRUPOWE</span></h2>
+          <ul class="bullet mt-4 space-y-2 text-[28px] font-semibold">
+            <li>od 75 zł / h</li>
+            <li>małe grupy do 8 osób</li>
+          </ul>
         </div>
-        <div class="rounded-[2rem] bg-gradient-to-br from-sky-500 to-sky-700 p-6 text-center text-white card-shadow">
-          <p class="text-[20px] font-semibold text-sky-100">Indywidualne</p>
-          <p class="mt-1"><span class="text-[18px] text-sky-100">od</span> <span class="font-display text-[52px] font-extrabold">160</span> <span class="text-[18px] text-sky-100">zł/h</span></p>
-        </div>
-      </div>
 
-      <!-- KONTAKT + QR -->
-      <div class="absolute bottom-0 inset-x-0">
-        <div class="wave text-sky-700"><svg viewBox="0 0 1080 80" fill="currentColor" preserveAspectRatio="none"><path d="M0,40 C220,0 440,0 660,26 C820,46 960,46 1080,20 L1080,80 L0,80 Z"></path></svg></div>
-        <div class="bg-sky-700 text-white px-16 pt-4 pb-12 flex items-center justify-between">
-          <div class="space-y-3">
-            <p class="flex items-center gap-3 text-[30px] font-extrabold"><span>📞</span> +48 666-515-178</p>
-            <p class="flex items-center gap-3 text-[24px] font-bold"><span>✉️</span> delfinada.info@gmail.com</p>
-            <p class="flex items-center gap-3 text-[24px] font-bold"><span>🌐</span> www.delfinada.pl</p>
-          </div>
-          <div class="shrink-0 text-center">
-            <div class="bg-white rounded-2xl p-2">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=0b6270&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[130px] h-[130px]" />
-            </div>
-            <p class="text-[15px] text-sky-100 mt-1.5">Zeskanuj i zapisz się</p>
-          </div>
+        <!-- INDYWIDUALNE -->
+        <div class="mt-10 max-w-[600px]">
+          <p class="text-[20px] font-extrabold tracking-widest text-white/90">WSZYSTKIE GRUPY WIEKOWE</p>
+          <h2 class="mt-2 font-display font-extrabold text-[44px]"><span class="pill">ZAJĘCIA INDYWIDUALNE</span></h2>
+          <ul class="bullet mt-4 space-y-2 text-[28px] font-semibold">
+            <li>od 160 zł / h</li>
+            <li>program 1:1, najszybsze postępy</li>
+          </ul>
+        </div>
+
+        <p class="mt-10 text-[22px] font-bold text-white/90">Karnety i pakiety rodzinne — zapytaj o wycenę.</p>
+
+        <div class="mt-6 inline-block rounded-2xl border-4 border-white/80 px-7 py-3">
+          <p class="font-display font-extrabold text-sunny text-[40px]">ZAPISY: 666 515 178</p>
+        </div>
+
+        <div class="mt-8 text-[26px] font-bold leading-snug">
+          <p>www.delfinada.pl</p>
+          <p class="text-white/90 font-semibold">delfinada.info@gmail.com · Warszawa</p>
         </div>
       </div>
-
     </div>
   </div>
 
   <script>
-    // Dopasuj podgląd do szerokości okna (eksport i tak w 1080px)
-    function fit(){
-      const post=document.getElementById('post');
-      const avail=Math.min(window.innerWidth-48, 1080);
-      const scale=avail/1080;
-      post.style.transform='scale('+scale+')';
-      post.parentElement.style.height=(1350*scale+0)+'px';
-    }
+    function fit(){ const p=document.getElementById('post'); const s=Math.min(window.innerWidth-48,1080)/1080; p.style.transform='scale('+s+')'; p.parentElement.style.height=(1350*s)+'px'; }
     window.addEventListener('resize',fit); fit();
   </script>
 </body>
