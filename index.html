@@ -61,7 +61,7 @@
   </script>
 
   <style>
-    body { background-color: #eafafc; }
+    body { background-color: #eafafc; overflow-x: hidden; }
     /* Wesołe tło z „bąbelkami" — kolory z logo (turkus + pomarańcz) */
     .playful-bg {
       background:
@@ -76,7 +76,7 @@
     input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 
     /* ===== Cover Flow slider ===== */
-    .cf-stage { perspective: 1400px; }
+    .cf-stage { perspective: 1400px; overflow: hidden; }
     .cf-track { position: relative; height: 100%; transform-style: preserve-3d; }
     .cf-item {
       position: absolute; top: 50%; left: 50%;
@@ -108,9 +108,9 @@
     .cf-item[data-pos="-2"] { transform: translate(-50%,-50%) translateX(-150%) scale(.66)  rotateY(42deg);  opacity: .45; z-index: 3; filter: brightness(.55); }
     .cf-item[data-pos="hidden"] { transform: translate(-50%,-50%) scale(.5); opacity: 0; z-index: 1; pointer-events: none; }
     @media (max-width: 640px) {
-      .cf-item { width: 74%; }
-      .cf-item[data-pos="1"]  { transform: translate(-50%,-50%) translateX(62%)  scale(.8)  rotateY(-28deg); }
-      .cf-item[data-pos="-1"] { transform: translate(-50%,-50%) translateX(-62%) scale(.8)  rotateY(28deg); }
+      .cf-item { width: 66%; }
+      .cf-item[data-pos="1"]  { transform: translate(-50%,-50%) translateX(48%)  scale(.78)  rotateY(-26deg); }
+      .cf-item[data-pos="-1"] { transform: translate(-50%,-50%) translateX(-48%) scale(.78)  rotateY(26deg); }
       .cf-item[data-pos="2"], .cf-item[data-pos="-2"] { opacity: 0; pointer-events: none; }
     }
   </style>
