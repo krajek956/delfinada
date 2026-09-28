@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O mnie — DELFINADA | Ada, instruktor i trener pływania 🐬</title>
+  <meta name="description" content="Poznaj Adę — instruktorkę i trenerkę pływania z licencją PZP, absolwentkę AWF w Warszawie. Nauka pływania dla dzieci i dorosłych oraz obozy sportowe." />
+
+  <!-- Favicon: logo DELFINADA (delfin) -->
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            sky: { 50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270' },
+            coral: { light:'#ffb26b', DEFAULT:'#ff8826', dark:'#e5720f' },
+            sunny: { light:'#ffc98a', DEFAULT:'#ff9d40', dark:'#f07f1a' },
+            mint:  { light:'#bdeef0', DEFAULT:'#22b8c0', dark:'#0e9aa2' },
+          },
+          keyframes: {
+            'float': { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-18px)' } },
+            'fade-up': { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'fade-up': 'fade-up .7s ease-out both',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color: #eafafc; overflow-x: hidden; }
+    .playful-bg {
+      background:
+        radial-gradient(60px 60px at 12% 20%, rgba(255,136,38,.30), transparent 70%),
+        radial-gradient(90px 90px at 85% 15%, rgba(255,136,38,.20), transparent 70%),
+        radial-gradient(70px 70px at 75% 80%, rgba(34,184,192,.28), transparent 70%),
+        linear-gradient(180deg, #d2f2f6 0%, #eafafc 60%, #ffffff 100%);
+    }
+    .wave-divider svg { display:block; width:100%; height:100%; }
+    .card-shadow { box-shadow: 0 18px 40px -18px rgba(14,124,139,.35); }
+  </style>
+</head>
+
+<body class="font-sans text-slate-700 antialiased selection:bg-sunny selection:text-slate-900">
+
+  <!-- ============ NAVBAR ============ -->
+  <header id="top" class="fixed top-0 inset-x-0 z-50">
+    <div class="bg-white/85 backdrop-blur-md border-b border-sky-100">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-[83px] md:h-[104px]">
+          <a href="index.html" class="group inline-flex items-center" aria-label="DELFINADA — strona główna">
+            <img src="assets/logo333.png" alt="DELFINADA — Nauka pływania i obozy sportowe, Warszawa"
+              class="h-[68px] md:h-[82px] w-auto group-hover:scale-105 transition-transform" />
+          </a>
+
+          <div class="hidden md:flex items-center gap-7">
+            <a href="index.html#oferta" class="text-xl font-bold text-slate-600 hover:text-sky-600 transition-colors">Oferta</a>
+            <a href="o-mnie.html" class="text-xl font-bold text-sky-600 transition-colors">O mnie</a>
+            <a href="index.html#jak" class="text-xl font-bold text-slate-600 hover:text-sky-600 transition-colors">Jak to działa</a>
+            <a href="index.html#cennik" class="text-xl font-bold text-slate-600 hover:text-sky-600 transition-colors">Cennik</a>
+            <a href="index.html#obozy" class="text-xl font-bold text-slate-600 hover:text-sky-600 transition-colors">Obozy</a>
+            <a href="index.html#zapisy" class="inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white text-xl font-bold px-6 py-3 shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
+              <i data-lucide="waves" class="w-5 h-5"></i> Zapisz się
+            </a>
+          </div>
+
+          <button id="menu-btn" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full text-sky-600 hover:bg-sky-50 transition-colors">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-b border-sky-100">
+      <div class="px-4 py-4 space-y-1">
+        <a href="index.html#oferta" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Oferta</a>
+        <a href="o-mnie.html" class="block px-3 py-2 rounded-xl text-xl font-bold text-sky-600">O mnie</a>
+        <a href="index.html#jak" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Jak to działa</a>
+        <a href="index.html#cennik" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Cennik</a>
+        <a href="index.html#obozy" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Obozy</a>
+        <a href="index.html#zapisy" class="mt-2 flex items-center justify-center gap-2 rounded-full bg-coral text-white font-bold px-5 py-3">
+          <i data-lucide="waves" class="w-4 h-4"></i> Zapisz się
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO O MNIE ============ -->
+  <section class="relative playful-bg pt-[83px] md:pt-[104px]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="animate-fade-up">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-sky-600 card-shadow">
+          <i data-lucide="sparkles" class="w-4 h-4 text-sunny-dark"></i> O mnie
+        </span>
+        <h1 class="mt-6 font-display text-5xl sm:text-6xl font-extrabold leading-[1.05] text-sky-700">
+          Cześć! Jestem <span class="text-coral">Ada</span> 🐬
+        </h1>
+        <p class="mt-5 text-lg sm:text-xl text-slate-600 max-w-xl">
+          Instruktor i trener pływania z licencją Polskiego Związku Pływackiego. Uczę pływać z pewnością siebie i uśmiechem — dzieci i dorosłych, na każdym poziomie.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-slate-600 text-sm font-bold">
+          <span class="inline-flex items-center gap-2"><i data-lucide="badge-check" class="w-5 h-5 text-mint-dark"></i> Licencja PZP</span>
+          <span class="inline-flex items-center gap-2"><i data-lucide="graduation-cap" class="w-5 h-5 text-sky-500"></i> Absolwentka AWF</span>
+          <span class="inline-flex items-center gap-2"><i data-lucide="waves" class="w-5 h-5 text-sunny-dark"></i> Trener pływania</span>
+        </div>
+        <a href="index.html#zapisy" class="mt-9 inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-base shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
+          <i data-lucide="waves" class="w-5 h-5"></i> Zapisz się na zajęcia
+        </a>
+      </div>
+
+      <div class="relative">
+        <div class="rounded-[2rem] overflow-hidden card-shadow bg-gradient-to-br from-sky-200 to-sky-400 aspect-[4/3] animate-float">
+          <img src="assets/foto1.jpg" alt="Ada — instruktorka DELFINADA" class="w-full h-full object-cover" loading="eager" />
+        </div>
+      </div>
+    </div>
+
+    <div class="wave-divider text-white">
+      <svg viewBox="0 0 1440 110" fill="currentColor" preserveAspectRatio="none">
+        <path d="M0,48 C180,110 360,110 540,70 C720,30 900,30 1080,66 C1260,102 1350,88 1440,60 L1440,110 L0,110 Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ BIO + ZDJĘCIA ============ -->
+  <section class="bg-white py-16 md:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Blok 1: tekst + zdjęcie -->
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div class="space-y-5 text-lg leading-relaxed text-slate-600">
+          <p class="text-2xl font-display font-bold text-sky-700">Pływanie to moja pasja od najmłodszych lat.</p>
+          <p>Wychowałam się na basenie, przez lata reprezentując jako zawodniczka pruszkowski klub pływacki. Dziś to wieloletnie doświadczenie i miłość do sportu przekazuję swoim podopiecznym podczas codziennych treningów.</p>
+          <p>Jestem absolwentką AWF-u w Warszawie, a obecnie studentką ratownictwa medycznego.</p>
+        </div>
+        <div class="rounded-[2rem] overflow-hidden card-shadow aspect-[3/2]">
+          <img src="assets/foto3.jpg" alt="Ada podczas zawodów pływackich" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+      </div>
+
+      <!-- Blok 2: zdjęcie + tekst (odwrócony) -->
+      <div class="mt-16 grid lg:grid-cols-2 gap-10 items-center">
+        <div class="order-last lg:order-first rounded-[2rem] overflow-hidden card-shadow aspect-[3/2]">
+          <img src="assets/foto4.jpg" alt="Ada — trening i przygotowanie do startu" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="space-y-5 text-lg leading-relaxed text-slate-600">
+          <p class="text-2xl font-display font-bold text-sky-700">Świetny kontakt z dziećmi i młodzieżą.</p>
+          <p>Na co dzień pracuję jako nauczycielka wychowania fizycznego w szkole podstawowej, dzięki czemu doskonale rozumiem potrzeby oraz etap rozwoju moich podopiecznych. Z kolei w wakacje i ferie zimowe organizuję aktywne obozy sportowe – nie tylko pływackie!</p>
+        </div>
+      </div>
+
+      <!-- Blok 3: cytat/motto + zdjęcie -->
+      <div class="mt-16 grid lg:grid-cols-2 gap-10 items-center">
+        <div class="space-y-5 text-lg leading-relaxed text-slate-600">
+          <p class="text-2xl font-display font-bold text-sky-700">Radość z każdego przepłyniętego metra.</p>
+          <p>Na moich zajęciach stawiam na bezpieczną, przyjazną atmosferę, prawidłową technikę i, przede wszystkim, czerpanie radości z pływania. Niezależnie od tego, czy stawiasz pierwsze kroki w wodzie, czy chcesz doszlifować formę – do zobaczenia na torze! 🌊</p>
+          <a href="index.html#zapisy" class="inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-7 py-3.5 shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
+            <i data-lucide="waves" class="w-5 h-5"></i> Dołącz do DELFINADY
+          </a>
+        </div>
+        <div class="rounded-[2rem] overflow-hidden card-shadow aspect-[3/2]">
+          <img src="assets/foto5.jpg" alt="Ada — pływanie i starty" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ GALERIA ============ -->
+  <section class="playful-bg py-16 md:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="text-sm font-extrabold uppercase tracking-widest text-coral">Galeria</span>
+        <h2 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-sky-700">Chwile z basenu</h2>
+      </div>
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="rounded-2xl overflow-hidden card-shadow aspect-square"><img src="assets/foto1.jpg" alt="Zdjęcie 1" class="w-full h-full object-cover hover:scale-105 transition-transform" loading="lazy" /></div>
+        <div class="rounded-2xl overflow-hidden card-shadow aspect-square"><img src="assets/foto3.jpg" alt="Zdjęcie 2" class="w-full h-full object-cover hover:scale-105 transition-transform" loading="lazy" /></div>
+        <div class="rounded-2xl overflow-hidden card-shadow aspect-square"><img src="assets/foto4.jpg" alt="Zdjęcie 3" class="w-full h-full object-cover hover:scale-105 transition-transform" loading="lazy" /></div>
+        <div class="rounded-2xl overflow-hidden card-shadow aspect-square"><img src="assets/foto5.jpg" alt="Zdjęcie 4" class="w-full h-full object-cover hover:scale-105 transition-transform" loading="lazy" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STOPKA / KONTAKT ============ -->
+  <footer id="kontakt" class="bg-sky-700 text-sky-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid gap-12 md:grid-cols-3">
+        <div>
+          <a href="index.html" class="inline-flex items-center rounded-2xl bg-white px-4 py-3">
+            <img src="assets/logo333.png" alt="DELFINADA — Nauka pływania i obozy sportowe, Warszawa" class="h-[68px] w-auto" />
+          </a>
+          <p class="mt-4 text-sky-200 leading-relaxed max-w-xs">Uczymy pływać z pewnością siebie i uśmiechem — niemowlęta, dzieci i dorosłych, na każdym poziomie.</p>
+          <div class="mt-6 flex items-center gap-3">
+            <a href="#" aria-label="Facebook" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-coral transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+            <a href="#" aria-label="Instagram" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-coral transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+            <a href="#" aria-label="YouTube" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-coral transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-white font-display font-bold text-lg">Kontakt</h4>
+          <ul class="mt-4 space-y-3">
+            <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-sunny"></i><a href="tel:+48666515178" class="hover:text-white transition-colors">+48 666-515-178</a></li>
+            <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-sunny"></i><a href="mailto:delfinada.info@gmail.com" class="hover:text-white transition-colors">delfinada.info@gmail.com</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-display font-bold text-lg">Godziny otwarcia</h4>
+          <ul class="mt-4 space-y-3">
+            <li class="flex items-center justify-between max-w-xs"><span>Poniedziałek – Piątek</span><span class="text-sunny font-semibold">7:00 – 21:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Sobota</span><span class="text-sunny font-semibold">8:00 – 18:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Niedziela</span><span class="text-sunny font-semibold">9:00 – 15:00</span></li>
+          </ul>
+          <a href="index.html#zapisy" class="mt-6 inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors"><i data-lucide="waves" class="w-4 h-4"></i> Zapisz się</a>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-sky-200">
+        <p>&copy; <span id="year"></span> DELFINADA. Wszelkie prawa zastrzeżone.</p>
+        <p class="flex items-center gap-1.5">Zbudowane z <i data-lucide="heart" class="w-4 h-4 text-coral-light fill-current"></i> nad wodą 🐬</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+    const btn = document.getElementById('menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    btn?.addEventListener('click', () => menu.classList.toggle('hidden'));
+    menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.add('hidden')));
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
