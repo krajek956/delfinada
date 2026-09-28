@@ -13,7 +13,6 @@
       theme: { extend: {
         fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
         colors: {
-          aqua:{ base:'#3aa6c9', mid:'#3f9dc4', deep:'#2f8fb8' },
           sunny:{ DEFAULT:'#ffd23f', dark:'#f5b800' },
           coral:{ DEFAULT:'#ff8826', dark:'#e5720f' },
         },
@@ -27,14 +26,14 @@
       width:148mm; height:210mm; margin:0 auto; position:relative; overflow:hidden;
       background: linear-gradient(160deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
       color:#fff;
+      display:flex; flex-direction:column;
     }
     .screen-wrap{ padding:24px 0 60px; }
     @media print { html,body{background:#fff;} .screen-wrap{padding:0;} .noprint{display:none!important;} .a5{box-shadow:none!important;} }
-    .waves-l, .waves-r { position:absolute; }
-    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.28em .7em; border-radius:.5em; }
-    .content { position:relative; z-index:2; }
-    .photo { border-radius:14px; overflow:hidden; box-shadow:0 8px 18px rgba(0,0,0,.22); }
+    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.22em .65em; border-radius:.45em; }
+    .photo { border-radius:14px; overflow:hidden; box-shadow:0 8px 18px rgba(0,0,0,.22); background:#cfeff3; }
     .photo img { width:100%; height:100%; object-fit:cover; display:block; }
+    .waves { position:absolute; pointer-events:none; }
   </style>
 </head>
 <body class="font-sans">
@@ -46,60 +45,62 @@
   <div class="screen-wrap">
     <div class="a5 shadow-2xl">
 
-      <!-- fale w tle -->
-      <svg class="waves-l" style="top:12mm;left:-6mm;width:52mm;opacity:.5" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
+      <!-- fale dekoracyjne (za treścią) -->
+      <svg class="waves" style="top:16mm;left:-8mm;width:48mm;opacity:.45" viewBox="0 0 200 120" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
         <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/>
       </svg>
-      <svg class="waves-r" style="bottom:8mm;right:-10mm;width:60mm;opacity:.32" viewBox="0 0 200 200" fill="none" stroke="#bfe9f3" stroke-width="7" stroke-linecap="round">
-        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/><path d="M0 95 Q30 80 60 95 T120 95"/>
-      </svg>
 
-      <div class="content px-9 pt-8">
-        <!-- NAGŁÓWEK -->
-        <div class="flex items-start justify-between">
-          <h1 class="font-display font-black leading-[0.9] tracking-tight">
-            <span class="block text-white text-[46px]">POZNAJ</span>
-            <span class="block text-sunny text-[46px]">INSTRUKTORKĘ</span>
+      <!-- ====== GÓRA: nagłówek + logo ====== -->
+      <div class="relative px-9 pt-8">
+        <div class="flex items-start justify-between gap-4">
+          <h1 class="font-display font-black leading-[0.92] tracking-tight">
+            <span class="block text-white text-[40px]">POZNAJ</span>
+            <span class="block text-sunny text-[40px]">INSTRUKTORKĘ</span>
           </h1>
-          <span class="inline-block rounded-2xl bg-white px-3 py-2"><img src="assets/logo333.png" alt="DELFINADA" class="w-[42mm] h-auto" /></span>
+          <span class="shrink-0 inline-block rounded-2xl bg-white px-3 py-2"><img src="assets/logo333.png" alt="DELFINADA" class="w-[40mm] h-auto" /></span>
         </div>
+      </div>
 
-        <!-- ZDJĘCIE GŁÓWNE + INTRO -->
-        <div class="mt-5 flex gap-4 items-center">
-          <div class="shrink-0 w-[46mm] h-[62mm] flex items-end justify-end">
-            <img src="assets/adaulotka.png" alt="Ada — instruktorka DELFINADA" class="max-h-full w-auto object-contain" style="transform:scale(1.5) translateX(10%); transform-origin:bottom center; filter:drop-shadow(0 8px 16px rgba(0,0,0,.22))" />
-          </div>
-          <div>
-            <h2 class="font-display font-extrabold text-[19px] leading-tight"><span class="pill">Cześć! Jestem Ada</span></h2>
-            <p class="mt-3 text-[13px] font-semibold leading-snug">Instruktor i trener pływania z licencją Polskiego Związku Pływackiego. Pływanie to moja pasja od najmłodszych lat.</p>
-          </div>
+      <!-- ====== ŚRODEK: intro (tekst po lewej, zdjęcie po prawej) ====== -->
+      <div class="relative px-9 mt-5 flex gap-5 items-center">
+        <div class="flex-1 min-w-0">
+          <h2 class="font-display font-extrabold text-[18px]"><span class="pill">Cześć! Jestem Ada</span></h2>
+          <p class="mt-3 text-[12.5px] font-semibold leading-snug">
+            Instruktor i trener pływania z licencją Polskiego Związku Pływackiego. Pływanie to moja pasja od najmłodszych lat.
+          </p>
         </div>
-
-        <!-- TEKST BIO -->
-        <div class="mt-5 space-y-2.5 text-[12.5px] leading-snug font-medium text-white/95">
-          <p>Wychowałam się na basenie, przez lata reprezentując jako zawodniczka pruszkowski klub pływacki. Dziś to wieloletnie doświadczenie i miłość do sportu przekazuję swoim podopiecznym podczas codziennych treningów.</p>
-          <p>Jestem absolwentką AWF-u w Warszawie, a obecnie studentką ratownictwa medycznego.</p>
-          <p>Na co dzień pracuję jako nauczycielka wychowania fizycznego w szkole podstawowej, dzięki czemu mam świetny kontakt z dziećmi i młodzieżą. W wakacje i ferie zimowe organizuję aktywne obozy sportowe – nie tylko pływackie!</p>
-          <p>Na moich zajęciach stawiam na bezpieczną, przyjazną atmosferę, prawidłową technikę i czerpanie radości z każdego przepłyniętego metra. Do zobaczenia na torze!</p>
+        <div class="photo shrink-0 w-[44mm] h-[58mm]">
+          <img src="assets/adaulotka.png" alt="Ada — instruktorka DELFINADA" style="object-position:center 15%" />
         </div>
+      </div>
 
-        <!-- GALERIA 3 ZDJĘĆ -->
-        <div class="mt-5 grid grid-cols-3 gap-3">
-          <div class="photo h-[34mm]"><img src="assets/foto3.jpg" alt="Ada — zawody" /></div>
-          <div class="photo h-[34mm]"><img src="assets/foto4.jpg" alt="Ada — trening" /></div>
-          <div class="photo h-[34mm]"><img src="assets/foto5.jpg" alt="Ada — start" /></div>
-        </div>
+      <!-- ====== BIO ====== -->
+      <div class="relative px-9 mt-5 space-y-2 text-[12px] leading-snug font-medium text-white/95">
+        <p>Wychowałam się na basenie, przez lata reprezentując jako zawodniczka pruszkowski klub pływacki. Dziś to doświadczenie i miłość do sportu przekazuję swoim podopiecznym podczas codziennych treningów.</p>
+        <p>Jestem absolwentką AWF-u w Warszawie, a obecnie studentką ratownictwa medycznego.</p>
+        <p>Na co dzień uczę wychowania fizycznego w szkole podstawowej, dzięki czemu mam świetny kontakt z dziećmi i młodzieżą. W wakacje i ferie organizuję aktywne obozy sportowe – nie tylko pływackie!</p>
+        <p>Stawiam na bezpieczną, przyjazną atmosferę, prawidłową technikę i radość z każdego przepłyniętego metra. Do zobaczenia na torze!</p>
+      </div>
 
-        <!-- STOPKA KONTAKT -->
-        <div class="mt-6 flex items-end justify-between">
-          <div class="text-[12px] font-bold leading-relaxed">
-            <p class="font-display font-extrabold text-sunny text-[16px]">ZAPISY: 666 515 178</p>
+      <!-- ====== GALERIA 3 ZDJĘĆ ====== -->
+      <div class="relative px-9 mt-5 grid grid-cols-3 gap-3">
+        <div class="photo h-[30mm]"><img src="assets/foto3.jpg" alt="Ada — zawody" /></div>
+        <div class="photo h-[30mm]"><img src="assets/foto4.jpg" alt="Ada — trening" /></div>
+        <div class="photo h-[30mm]"><img src="assets/foto5.jpg" alt="Ada — start" /></div>
+      </div>
+
+      <!-- ====== DÓŁ: kontakt + QR (osobny pasek, nic się nie nakłada) ====== -->
+      <div class="relative mt-auto">
+        <div class="mx-9 mb-7 mt-6 rounded-2xl bg-white/12 border border-white/25 px-5 py-4 flex items-center justify-between gap-4">
+          <div class="text-[12.5px] font-bold leading-relaxed">
+            <p class="font-display font-extrabold text-sunny text-[17px]">ZAPISY: 666 515 178</p>
             <p class="mt-1">www.delfinada.pl</p>
-            <p class="font-semibold text-white/90">delfinada.info@gmail.com · Warszawa</p>
+            <p class="font-semibold text-white/90">delfinada.info@gmail.com</p>
+            <p class="font-semibold text-white/90">Warszawa</p>
           </div>
-          <div class="text-center">
-            <div class="bg-white rounded-xl p-1.5 inline-block">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=0b5563&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[80px] h-[80px]" />
+          <div class="shrink-0 text-center">
+            <div class="bg-white rounded-xl p-2 inline-block">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=0&color=000000&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[26mm] h-[26mm] block" />
             </div>
             <p class="text-[9px] text-white mt-1 font-bold">Zeskanuj i zapisz się</p>
           </div>
