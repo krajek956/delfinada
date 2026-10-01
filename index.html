@@ -11,9 +11,14 @@
   <link rel="apple-touch-icon" href="assets/favicon.png" />
 
   <!-- Tailwind CSS (CDN) -->
+  <!-- Przyspieszenie połączeń z CDN -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin />
+  <link rel="dns-prefetch" href="https://api.qrserver.com" />
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons (CDN) -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons (CDN, przypięta wersja + defer) -->
+  <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -162,7 +167,7 @@
   <section class="relative min-h-screen flex items-center overflow-hidden playful-bg pt-[83px] md:pt-[104px]">
     <!-- MOBILE: zdjęcie instruktorki jako tło za nagłówkiem, dosunięte do prawej (ukryte na desktopie) -->
     <div class="lg:hidden absolute inset-0 pointer-events-none" aria-hidden="true">
-      <img src="assets/ada2-trim.png" alt="" loading="lazy" decoding="async"
+      <img src="assets/ada2-trim.png" width="1074" height="1710" alt="" loading="lazy" decoding="async"
         class="absolute right-0 bottom-0 h-[92%] w-auto max-w-none object-contain object-bottom opacity-70" />
       <!-- welon: mocny z lewej (czytelność tekstu), znika po prawej (widoczna instruktorka) -->
       <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/45 to-transparent"></div>
@@ -208,7 +213,7 @@
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <div class="w-72 h-72 sm:w-96 sm:h-96 lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-br from-sky-300/60 via-mint/40 to-sunny/40 blur-3xl"></div>
         </div>
-        <img src="assets/ada2.png" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="lazy" decoding="async"
+        <img src="assets/ada2.png" width="1365" height="2048" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="lazy" decoding="async"
           class="relative w-72 sm:w-96 lg:w-full max-w-lg h-auto drop-shadow-2xl" />
       </div>
     </div>
@@ -267,13 +272,13 @@
       <div id="coverflow" class="mt-14 mx-auto max-w-3xl select-none" aria-roledescription="carousel" aria-label="Galeria zdjęć DELFINADA">
         <div class="cf-stage relative h-72 sm:h-96 lg:h-[28rem]">
           <div class="cf-track" id="cf-track">
-            <div class="cf-item"><img src="assets/foto1.jpg" alt="Instruktorka DELFINADA na hali sportowej" loading="lazy" decoding="async" /></div>
+            <div class="cf-item"><img src="assets/foto1.jpg" width="3024" height="4032" alt="Instruktorka DELFINADA na hali sportowej" loading="lazy" decoding="async" /></div>
             <div class="cf-item cf-video">
               <video src="assets/foto2.mp4" playsinline muted loop preload="none" controls poster="assets/foto5.jpg"></video>
             </div>
-            <div class="cf-item"><img src="assets/foto3.jpg" alt="Zawodniczka przy słupku startowym na basenie" loading="lazy" decoding="async" /></div>
-            <div class="cf-item"><img src="assets/foto4.jpg" alt="Drużyna na podium zawodów pływackich" loading="lazy" decoding="async" /></div>
-            <div class="cf-item"><img src="assets/foto5.jpg" alt="Pływaczka przygotowująca się do startu" loading="lazy" decoding="async" /></div>
+            <div class="cf-item"><img src="assets/foto3.jpg" width="2048" height="1365" alt="Zawodniczka przy słupku startowym na basenie" loading="lazy" decoding="async" /></div>
+            <div class="cf-item"><img src="assets/foto4.jpg" width="2000" height="1333" alt="Drużyna na podium zawodów pływackich" loading="lazy" decoding="async" /></div>
+            <div class="cf-item"><img src="assets/foto5.jpg" width="2000" height="1334" alt="Pływaczka przygotowująca się do startu" loading="lazy" decoding="async" /></div>
           </div>
 
           <!-- strzałki -->
@@ -561,7 +566,8 @@
   </footer>
 
   <script>
-    if (window.lucide) lucide.createIcons();
+    function renderIcons(){ if (window.lucide) lucide.createIcons(); }
+    if (window.lucide) renderIcons(); else window.addEventListener('load', renderIcons);
 
     const btn = document.getElementById('menu-btn');
     const menu = document.getElementById('mobile-menu');
