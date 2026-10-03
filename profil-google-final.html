@@ -12,30 +12,31 @@
       width:720px; height:720px; position:relative; overflow:hidden;
       background:linear-gradient(160deg,#43a7cb 0%, #2f8bb6 100%);
       box-shadow:0 20px 50px -20px rgba(0,0,0,.4);
+      display:flex; flex-direction:column; align-items:center;
     }
     .waves { position:absolute; inset:0; pointer-events:none; }
-    /* okrąg pokazujący, jak Google przytnie zdjęcie do kółka */
-    .circle-guide { position:absolute; inset:0; border-radius:50%; box-shadow:0 0 0 9999px rgba(226,232,240,.0); outline:2px dashed rgba(255,255,255,.35); outline-offset:-2px; pointer-events:none; }
-    /* kadr wyśrodkowany na twarzy/tułowiu, żeby w okrągłym krążku Google wyglądał dobrze */
-    #ada { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(1.18); width:86%; height:auto; object-fit:contain; object-position:top; filter:drop-shadow(0 10px 24px rgba(0,0,0,.3)); }
+    #logo { position:relative; z-index:2; width:60%; margin-top:40px; }
+    /* całe zdjęcie instruktorki mieści się w kadrze (bez przycinania) */
+    #ada { position:relative; z-index:2; flex:1; min-height:0; width:auto; max-width:92%; object-fit:contain; object-position:bottom; margin-top:6px; margin-bottom:10px;
+           filter:drop-shadow(0 10px 24px rgba(0,0,0,.3)); }
     .hint { font-size:14px; color:#475569; max-width:720px; text-align:center; }
     @media (max-width:800px){ #tile{ transform:scale(.6); transform-origin:top center; } .wrap{ height:432px; } }
   </style>
 </head>
 <body>
-  <p class="hint"><b>Zdjęcie profilowe DELFINADA — instruktorka (720×720).</b> Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>#tile</code>. Przerywany okrąg pokazuje, jak Google przytnie zdjęcie do kółka (to tylko podgląd — nie zapisze się).</p>
+  <p class="hint"><b>Zdjęcie profilowe DELFINADA — logo + instruktorka (720×720).</b> Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>#tile</code>. Albo Cmd+Shift+4 i zaznacz kwadrat.</p>
 
   <div class="wrap">
     <div id="tile">
-      <!-- fale dekoracyjne -->
-      <svg class="waves" style="opacity:.45" viewBox="0 0 720 720" fill="none" stroke="#7fd3e8" stroke-width="10" stroke-linecap="round" preserveAspectRatio="none">
-        <path d="M-20 90 Q90 55 200 90 T420 90 T640 90 T860 90"/>
-        <path d="M-20 130 Q90 95 200 130 T420 130 T640 130 T860 130"/>
+      <!-- fale dekoracyjne w tle -->
+      <svg class="waves" style="opacity:.4" viewBox="0 0 720 720" fill="none" stroke="#7fd3e8" stroke-width="10" stroke-linecap="round" preserveAspectRatio="none">
+        <path d="M-20 250 Q90 215 200 250 T420 250 T640 250 T860 250"/>
+        <path d="M-20 300 Q90 265 200 300 T420 300 T640 300 T860 300"/>
       </svg>
-      <!-- instruktorka wyśrodkowana, wyrównana do dołu -->
-      <img id="ada" src="assets/ada777.webp" alt="Ada — instruktorka DELFINADA" />
-      <!-- podgląd przycięcia do kółka (nie eksportuje się na kolor, tylko kontur) -->
-      <div class="circle-guide"></div>
+      <!-- logo na górze -->
+      <img id="logo" src="assets/logo333.webp" alt="DELFINADA — Nauka pływania i obozy sportowe, Warszawa" />
+      <!-- całe zdjęcie instruktorki (ze strony głównej) -->
+      <img id="ada" src="assets/ada2.webp" alt="Instruktorka DELFINADA" />
     </div>
   </div>
 </body>
