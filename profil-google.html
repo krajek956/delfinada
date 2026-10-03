@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — zdjęcia profilowe (Google) 720×720</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { theme: { extend: {
+      fontFamily: { display:['"Baloo 2"','sans-serif'], mont:['Montserrat','sans-serif'] },
+      colors: { sky:{400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270'}, sunny:'#ffd23f', coral:'#ff8826' },
+    } } };
+  </script>
+  <style>
+    body { background:#e2e8f0; font-family:'Baloo 2',sans-serif; }
+    /* kwadrat profilowy 720x720 (podgląd skalowany, eksport w pełnej rozdzielczości) */
+    .tile { width:360px; height:360px; position:relative; overflow:hidden; border-radius:24px; }
+    .tile-full { width:720px; height:720px; } /* do eksportu: użyj DevTools capture node */
+    .grad { background:linear-gradient(160deg,#43a7cb 0%, #2f8bb6 100%); }
+    .waves { position:absolute; inset:0; opacity:.5; pointer-events:none; }
+    .label { font-family:system-ui; }
+  </style>
+</head>
+<body class="p-8">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-2xl font-bold text-slate-700 mb-2" style="font-family:system-ui">Zdjęcia profilowe DELFINADA — wybierz wersję</h1>
+    <p class="label text-sm text-slate-500 mb-8">Każdy kafelek to kwadrat (format profilu Google). Aby zapisać: najedź → zrzut ekranu (Cmd+Shift+4) albo DevTools → „Capture node screenshot” na elemencie <code>.tile</code>. Podgląd 360px; realnie renderują się ostro do 720px.</p>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+
+      <!-- 1: Logo na turkusie (gradient) -->
+      <figure>
+        <div class="tile grad flex items-center justify-center shadow-xl">
+          <img src="assets/logo333.webp" alt="DELFINADA" class="w-[78%]" />
+        </div>
+        <figcaption class="label text-center text-sm font-semibold text-slate-600 mt-2">1 · Logo na turkusie</figcaption>
+      </figure>
+
+      <!-- 2: Logo na bieli -->
+      <figure>
+        <div class="tile bg-white flex items-center justify-center shadow-xl ring-1 ring-slate-200">
+          <img src="assets/logo333.webp" alt="DELFINADA" class="w-[82%]" />
+        </div>
+        <figcaption class="label text-center text-sm font-semibold text-slate-600 mt-2">2 · Logo na bieli</figcaption>
+      </figure>
+
+      <!-- 3: Sam delfin (favicon) na turkusie -->
+      <figure>
+        <div class="tile grad flex items-center justify-center shadow-xl">
+          <img src="assets/favicon.png" alt="Delfin DELFINADA" class="w-[64%] drop-shadow-lg" />
+        </div>
+        <figcaption class="label text-center text-sm font-semibold text-slate-600 mt-2">3 · Sam delfin na turkusie</figcaption>
+      </figure>
+
+      <!-- 4: Logo na turkusie z falami -->
+      <figure>
+        <div class="tile grad flex items-center justify-center shadow-xl">
+          <svg class="waves" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="6" stroke-linecap="round" preserveAspectRatio="none">
+            <path d="M-10 150 Q30 135 70 150 T150 150 T230 150"/><path d="M-10 170 Q30 155 70 170 T150 170 T230 170"/><path d="M-10 190 Q30 175 70 190 T150 190 T230 190"/>
+          </svg>
+          <img src="assets/logo333.webp" alt="DELFINADA" class="relative w-[78%]" />
+        </div>
+        <figcaption class="label text-center text-sm font-semibold text-slate-600 mt-2">4 · Logo + fale</figcaption>
+      </figure>
+
+      <!-- 5: Delfin + napis DELFINADA (minimalistyczne) -->
+      <figure>
+        <div class="tile grad flex flex-col items-center justify-center gap-2 shadow-xl">
+          <img src="assets/favicon.png" alt="Delfin" class="w-[46%] drop-shadow-lg" />
+          <div class="text-center leading-none">
+            <p class="font-mont font-black text-white text-[34px] tracking-wide">DELFINADA</p>
+            <p class="text-sunny font-semibold text-[13px] tracking-[0.25em] mt-1" style="color:#ffd23f">WARSZAWA</p>
+          </div>
+        </div>
+        <figcaption class="label text-center text-sm font-semibold text-slate-600 mt-2">5 · Delfin + napis</figcaption>
+      </figure>
+
+      <!-- 6: Zdjęcie instruktorki na turkusie -->
+      <figure>
+        <div class="tile grad flex items-end justify-center shadow-xl">
+          <img src="assets/ada777.webp" alt="Ada — DELFINADA" class="h-[94%] object-contain object-bottom drop-shadow-lg" />
+        </div>
+        <figcaption class="label text-center text-sm font-semibold text-slate-600 mt-2">6 · Instruktorka</figcaption>
+      </figure>
+
+    </div>
+  </div>
+</body>
+</html>
