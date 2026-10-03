@@ -3,104 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DELFINADA — ulotka Instagram Story (1080×1920)</title>
+  <title>DELFINADA — ulotka Instagram Story (9:16)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script>
-    tailwind.config = { theme: { extend: {
-      fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
-      colors: { sunny:{DEFAULT:'#ffd23f'}, coral:{DEFAULT:'#ff8826'} },
-    } } };
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
+        colors: {
+          aqua:{ base:'#3aa6c9', mid:'#3f9dc4', deep:'#2f8fb8' },
+          sunny:{ DEFAULT:'#ffd23f', dark:'#f5b800' },
+          coral:{ DEFAULT:'#ff8826', dark:'#e5720f' },
+        },
+      } },
+    };
   </script>
   <style>
     html,body { margin:0; padding:0; background:#1f2937; }
-    /* Story 9:16 — 1080×1920 px */
+    /* Story 9:16 — ta sama szerokość co A5 (148mm), wysokość 9:16 = 263.1mm.
+       Układ i wszystkie elementy IDENTYCZNE jak w oryginalnej ulotce A5 — zmienione tylko proporcje kadru. */
     .story {
-      width:1080px; height:1920px; position:relative; overflow:hidden; color:#fff;
-      background: linear-gradient(165deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
-      transform-origin: top left;
+      width:148mm; height:263.1mm; margin:0 auto; position:relative; overflow:hidden;
+      background: linear-gradient(160deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
+      color:#fff;
     }
-    .stage{ display:flex; justify-content:center; padding:20px; }
-    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.22em .7em; border-radius:.4em; }
-    .instr { position:absolute; right:-120px; bottom:-40px; height:1150px; width:auto; z-index:1; filter:drop-shadow(0 20px 40px rgba(0,0,0,.3)); }
-    .content{ position:relative; z-index:2; }
-    .bullet{ list-style:none; padding:0; margin:0; }
-    .bullet li{ position:relative; padding-left:36px; }
-    .bullet li::before{ content:''; position:absolute; left:0; top:.55em; width:14px; height:14px; border-radius:50%; background:#fff; }
-    .waves{ position:absolute; pointer-events:none; }
+    .screen-wrap{ padding:24px 0 60px; }
+    .waves-l, .waves-r { position:absolute; opacity:.5; }
+    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.28em .7em; border-radius:.5em; }
+    /* instruktorka jak w oryginale, dosunięta do prawego-dolnego rogu wyższego kadru */
+    .instr { position:absolute; right:-54mm; bottom:-40mm; height:222mm; width:auto; z-index:1;
+             object-fit:cover; object-position:top;
+             filter: drop-shadow(0 10px 20px rgba(0,0,0,.25)); }
+    .content { position:relative; z-index:2; }
+    .bullet { list-style:none; padding:0; margin:0; }
+    .bullet li { position:relative; padding-left:16px; }
+    .bullet li::before { content:''; position:absolute; left:0; top:.55em; width:6px; height:6px; border-radius:50%; background:#fff; }
   </style>
 </head>
-<body>
-  <div class="text-center py-4 bg-white/70 text-slate-700" style="font-family:system-ui">
-    <p class="text-sm">Podgląd — Instagram Story 1080×1920. Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>.story</code>. Bezpieczne marginesy na górze/dole (IG zasłania paskami).</p>
+<body class="font-sans">
+
+  <div class="text-center py-4 bg-white/70 text-slate-700">
+    <p class="text-sm">Podgląd — Instagram Story (9:16). Identyczna ulotka, inne proporcje. Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>.story</code>.</p>
   </div>
 
-  <div class="stage">
-    <div class="story shadow-2xl" id="story">
-      <!-- fale -->
-      <svg class="waves" style="top:260px;left:-40px;width:420px;opacity:.45" viewBox="0 0 200 120" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
-        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/></svg>
+  <div class="screen-wrap">
+    <div class="story shadow-2xl">
 
-      <!-- instruktorka (duża, z prawej) -->
+      <!-- fale w tle (jak w oryginale) -->
+      <svg class="waves-l" style="top:14mm;left:-6mm;width:52mm" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/>
+      </svg>
+      <svg class="waves-r" style="top:40mm;right:-10mm;width:60mm;opacity:.35" viewBox="0 0 200 200" fill="none" stroke="#bfe9f3" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/><path d="M0 95 Q30 80 60 95 T120 95"/>
+      </svg>
+
+      <!-- ZDJĘCIE INSTRUKTORKI (jak w oryginale) -->
       <img src="assets/ada2.webp" alt="Instruktorka DELFINADA" class="instr" />
 
-      <div class="content px-16 pt-28">
-        <!-- LOGO -->
-        <div class="flex justify-center">
-          <span class="inline-block rounded-3xl bg-white px-6 py-4"><img src="assets/logo333.webp" alt="DELFINADA" class="w-[420px] h-auto" /></span>
-        </div>
-
+      <div class="content px-9 pt-8">
         <!-- NAGŁÓWEK -->
-        <h1 class="mt-12 font-display font-black leading-[0.95] tracking-tight">
-          <span class="block text-white text-[120px]">NAUKA</span>
-          <span class="block text-sunny text-[120px]">PŁYWANIA</span>
-        </h1>
-        <p class="font-display font-extrabold text-white text-[56px] mt-2">W WARSZAWIE</p>
+        <div class="flex items-start justify-between">
+          <h1 class="font-display font-black leading-[0.9] tracking-tight">
+            <span class="block text-white text-[52px]">NAUKA</span>
+            <span class="block text-sunny text-[52px]">PŁYWANIA</span>
+          </h1>
+          <span class="mt-1 inline-block rounded-2xl bg-white px-3 py-2"><img src="assets/logo333.webp" alt="DELFINADA" class="w-[52mm] h-auto" /></span>
+        </div>
+        <p class="font-display font-extrabold text-white text-[26px] mt-1">W WARSZAWIE</p>
 
-        <!-- OFERTA / CENNIK -->
-        <div class="mt-14 max-w-[640px]">
-          <p class="text-[22px] font-extrabold tracking-widest text-white/90">NIEMOWLĘTA · DZIECI · DOROŚLI · DOSKONALENIE</p>
-          <h2 class="mt-3 font-display font-extrabold text-[46px]"><span class="pill">ZAJĘCIA GRUPOWE</span></h2>
-          <ul class="bullet mt-4 space-y-2 text-[30px] font-semibold">
+        <!-- OFERTA -->
+        <div class="mt-6 max-w-[82mm]">
+          <p class="text-[10px] font-extrabold tracking-widest text-white/90">NIEMOWLĘTA · DZIECI · DOROŚLI · DOSKONALENIE</p>
+          <h2 class="mt-1 font-display font-extrabold text-[20px]"><span class="pill">ZAJĘCIA GRUPOWE</span></h2>
+          <ul class="bullet mt-2 space-y-1 text-[13px] font-semibold">
             <li>45 min | od 75 zł</li>
             <li>małe grupy do 8 osób</li>
+            <li>podział wg poziomu zaawansowania</li>
           </ul>
         </div>
 
-        <div class="mt-10 max-w-[640px]">
-          <p class="text-[22px] font-extrabold tracking-widest text-white/90">WSZYSTKIE GRUPY WIEKOWE</p>
-          <h2 class="mt-3 font-display font-extrabold text-[46px]"><span class="pill">ZAJĘCIA INDYWIDUALNE</span></h2>
-          <ul class="bullet mt-4 space-y-2 text-[30px] font-semibold">
+        <!-- SEKCJA 2: INDYWIDUALNE -->
+        <div class="mt-6 max-w-[82mm]">
+          <p class="text-[10px] font-extrabold tracking-widest text-white/90">WSZYSTKIE GRUPY WIEKOWE</p>
+          <h2 class="mt-1 font-display font-extrabold text-[20px]"><span class="pill">ZAJĘCIA INDYWIDUALNE</span></h2>
+          <ul class="bullet mt-2 space-y-1 text-[13px] font-semibold">
             <li>45 min | od 160 zł</li>
-            <li>program 1:1, najszybsze postępy</li>
+            <li>pełna uwaga instruktora 1:1</li>
+            <li>program dopasowany w 100%</li>
           </ul>
+        </div>
+
+        <!-- ZAPISY + KONTAKT -->
+        <div class="mt-6 inline-block rounded-xl border-2 border-white/80 px-4 py-2">
+          <p class="font-display font-extrabold text-sunny text-[18px]">ZAPISY: 666 515 178</p>
+        </div>
+
+        <div class="mt-3 text-left text-[12px] font-bold leading-relaxed">
+          <p>DELFINADA — Nauka pływania</p>
+          <p class="font-semibold text-white/90">Warszawa</p>
+          <p class="mt-1">www.delfinada.pl</p>
+          <p class="font-semibold text-white/90">delfinada.info@gmail.com</p>
+        </div>
+
+        <!-- QR pod kontaktem (lewa strona) -->
+        <div class="mt-3 inline-block text-center" style="z-index:3">
+          <div class="bg-white rounded-xl p-1.5 inline-block">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&color=0b5563&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[80px] h-[80px]" />
+          </div>
+          <p class="text-[9px] text-white mt-1 font-bold">Zeskanuj i zapisz się</p>
         </div>
       </div>
 
-      <!-- DÓŁ: ZAPISY + QR + kontakt (nad bezpiecznym marginesem) -->
-      <div class="content absolute left-16 right-16 bottom-28 flex items-end justify-between gap-6">
-        <div>
-          <div class="inline-block rounded-2xl border-4 border-white/80 px-7 py-3">
-            <p class="font-display font-extrabold text-sunny text-[44px]">ZAPISY: 666 515 178</p>
-          </div>
-          <p class="mt-5 text-[30px] font-bold">www.delfinada.pl</p>
-          <p class="text-[24px] font-semibold text-white/90">delfinada.info@gmail.com</p>
-        </div>
-        <div class="text-center shrink-0">
-          <div class="bg-white rounded-2xl p-3 inline-block">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&color=000000&data=https%3A%2F%2Fwww.delfinada.pl" alt="QR www.delfinada.pl" class="w-[170px] h-[170px] block" />
-          </div>
-          <p class="text-[18px] text-white mt-2 font-bold">Zeskanuj</p>
-        </div>
-      </div>
     </div>
   </div>
-
-  <script>
-    function fit(){ const s=document.getElementById('story'); const k=Math.min((window.innerWidth-40)/1080,(window.innerHeight-120)/1920); s.style.transform='scale('+k+')'; s.parentElement.style.height=(1920*k)+'px'; }
-    window.addEventListener('resize',fit); fit();
-  </script>
 </body>
 </html>
