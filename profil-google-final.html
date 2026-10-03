@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — zdjęcie profilowe Google (720×720)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin:0; background:#e2e8f0; display:flex; flex-direction:column; align-items:center; gap:16px; padding:24px; font-family:system-ui,sans-serif; }
+    .wrap { }
+    /* dokładnie 720×720 — profil Google */
+    #tile {
+      width:720px; height:720px; position:relative; overflow:hidden;
+      background:linear-gradient(160deg,#43a7cb 0%, #2f8bb6 100%);
+      box-shadow:0 20px 50px -20px rgba(0,0,0,.4);
+    }
+    .waves { position:absolute; inset:0; pointer-events:none; }
+    #logo { position:absolute; inset:0; margin:auto; width:78%; height:auto; }
+    .hint { font-size:14px; color:#475569; max-width:720px; text-align:center; }
+    @media (max-width:800px){ #tile{ transform:scale(.6); transform-origin:top center; } .wrap{ height:432px; } }
+  </style>
+</head>
+<body>
+  <p class="hint"><b>Zdjęcie profilowe DELFINADA (720×720).</b> Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>#tile</code>. Albo Cmd+Shift+4 i zaznacz kwadrat.</p>
+
+  <div class="wrap">
+    <div id="tile">
+      <!-- fale dekoracyjne (góra i dół) -->
+      <svg class="waves" style="opacity:.5" viewBox="0 0 720 720" fill="none" stroke="#7fd3e8" stroke-width="10" stroke-linecap="round" preserveAspectRatio="none">
+        <path d="M-20 90 Q90 55 200 90 T420 90 T640 90 T860 90"/>
+        <path d="M-20 130 Q90 95 200 130 T420 130 T640 130 T860 130"/>
+        <path d="M-20 170 Q90 135 200 170 T420 170 T640 170 T860 170"/>
+      </svg>
+      <svg class="waves" style="opacity:.4" viewBox="0 0 720 720" fill="none" stroke="#bfe9f3" stroke-width="10" stroke-linecap="round" preserveAspectRatio="none">
+        <path d="M-20 560 Q90 525 200 560 T420 560 T640 560 T860 560"/>
+        <path d="M-20 600 Q90 565 200 600 T420 600 T640 600 T860 600"/>
+        <path d="M-20 640 Q90 605 200 640 T420 640 T640 640 T860 640"/>
+      </svg>
+      <!-- logo wyśrodkowane -->
+      <img id="logo" src="assets/logo333.webp" alt="DELFINADA — Nauka pływania i obozy sportowe, Warszawa" />
+    </div>
+  </div>
+</body>
+</html>
