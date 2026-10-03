@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     body { margin:0; background:#e2e8f0; display:flex; flex-direction:column; align-items:center; gap:16px; padding:24px; font-family:system-ui,sans-serif; }
     /* dokładnie 720×720 — profil Google */
@@ -15,36 +15,39 @@
       width:720px; height:720px; position:relative; overflow:hidden;
       background:linear-gradient(160deg,#43a7cb 0%, #2f8bb6 100%);
       box-shadow:0 20px 50px -20px rgba(0,0,0,.4);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+      font-family:'Baloo 2', sans-serif;
     }
     .waves { position:absolute; inset:0; pointer-events:none; }
-    #delfin { position:relative; z-index:2; width:58%; filter:drop-shadow(0 12px 28px rgba(0,0,0,.3)); }
+    #delfin { position:relative; z-index:2; width:50%; filter:drop-shadow(0 12px 28px rgba(0,0,0,.3)); }
     .txt { position:relative; z-index:2; text-align:center; line-height:1; }
-    .txt .name { font-family:'Montserrat',sans-serif; font-weight:900; color:#fff; font-size:88px; letter-spacing:2px; }
-    .txt .city { color:#ffd23f; font-weight:700; font-size:30px; letter-spacing:12px; margin-top:14px; }
+    .txt .name { font-weight:800; color:#fff; font-size:94px; letter-spacing:1px; text-shadow:0 4px 14px rgba(0,0,0,.18); }
+    .txt .sub  { color:#ffffff; font-weight:700; font-size:25px; letter-spacing:3px; margin-top:16px; text-transform:uppercase; }
+    .txt .city { color:#ffd23f; font-weight:800; font-size:26px; letter-spacing:14px; margin-top:8px; }
     .hint { font-size:14px; color:#475569; max-width:720px; text-align:center; }
     @media (max-width:800px){ #tile{ transform:scale(.6); transform-origin:top center; } .wrap{ height:432px; } }
   </style>
 </head>
 <body>
-  <p class="hint"><b>Zdjęcie profilowe DELFINADA — delfin + napis (720×720).</b> Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>#tile</code>. Albo Cmd+Shift+4 i zaznacz kwadrat.</p>
+  <p class="hint"><b>Zdjęcie profilowe DELFINADA — delfin + napisy jak w logo (720×720).</b> Zapis: Chrome → F12 → Cmd+Shift+P → „Capture node screenshot” na elemencie <code>#tile</code>.</p>
 
   <div class="wrap">
     <div id="tile">
       <!-- fale dekoracyjne -->
       <svg class="waves" style="opacity:.4" viewBox="0 0 720 720" fill="none" stroke="#7fd3e8" stroke-width="10" stroke-linecap="round" preserveAspectRatio="none">
-        <path d="M-20 110 Q90 75 200 110 T420 110 T640 110 T860 110"/>
-        <path d="M-20 150 Q90 115 200 150 T420 150 T640 150 T860 150"/>
+        <path d="M-20 90 Q90 55 200 90 T420 90 T640 90 T860 90"/>
+        <path d="M-20 130 Q90 95 200 130 T420 130 T640 130 T860 130"/>
       </svg>
       <svg class="waves" style="opacity:.35" viewBox="0 0 720 720" fill="none" stroke="#bfe9f3" stroke-width="10" stroke-linecap="round" preserveAspectRatio="none">
-        <path d="M-20 600 Q90 565 200 600 T420 600 T640 600 T860 600"/>
-        <path d="M-20 640 Q90 605 200 640 T420 640 T640 640 T860 640"/>
+        <path d="M-20 620 Q90 585 200 620 T420 620 T640 620 T860 620"/>
+        <path d="M-20 660 Q90 625 200 660 T420 660 T640 660 T860 660"/>
       </svg>
       <!-- delfin -->
       <img id="delfin" src="assets/favicon.png" alt="Delfin DELFINADA" />
-      <!-- napis -->
+      <!-- napisy (czcionka jak w logo) -->
       <div class="txt">
         <div class="name">DELFINADA</div>
+        <div class="sub">Nauka pływania &amp; obozy sportowe</div>
         <div class="city">WARSZAWA</div>
       </div>
     </div>
