@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="DELFINADA">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#189aad"/>
+      <stop offset="1" stop-color="#0b6270"/>
+    </linearGradient>
+    <linearGradient id="dolphin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FDB94E"/>
+      <stop offset="0.55" stop-color="#F5911E"/>
+      <stop offset="1" stop-color="#F0641E"/>
+    </linearGradient>
+  </defs>
+  <!-- tło zaokrąglone -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- fala -->
+  <path d="M70 360 C150 338 200 378 256 370 C312 362 360 338 442 356 C398 388 330 398 256 392 C182 386 128 392 96 388 C84 382 74 372 70 360 Z" fill="#6fd2dd" opacity=".55"/>
+  <!-- delfin (ze skalowaniem i wyśrodkowaniem logo) -->
+  <g transform="translate(44,70) scale(0.44)">
+    <path fill="url(#dolphin)" stroke="#E85D18" stroke-width="6" stroke-linejoin="round"
+      d="M356 322
+         C352 300 360 282 384 266
+         C356 262 336 250 322 232
+         C348 236 372 240 396 250
+         C420 208 456 176 508 158
+         C470 150 452 132 444 112
+         C476 132 502 146 528 150
+         C566 128 612 118 660 128
+         C712 139 748 170 762 214
+         C772 246 766 280 742 306
+         C716 334 676 350 632 352
+         C660 330 674 306 672 280
+         C660 300 640 314 614 320
+         C640 296 650 270 642 246
+         C624 274 596 292 560 300
+         C512 310 468 302 430 314
+         C404 322 378 330 356 322 Z"/>
+    <circle cx="690" cy="196" r="12" fill="#7A3410"/>
+  </g>
+</svg>

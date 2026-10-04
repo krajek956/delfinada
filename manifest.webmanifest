@@ -1,0 +1,48 @@
+{
+  "name": "DELFINADA — Postępy dziecka",
+  "short_name": "DELFINADA",
+  "description": "Śledź postępy swojego dziecka w szkole pływania DELFINADA: notatki, zdjęcia, filmy i cele po każdych zajęciach.",
+  "lang": "pl",
+  "dir": "ltr",
+  "start_url": "./app-postepy.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eafafc",
+  "theme_color": "#0e7c8b",
+  "categories": ["education", "sports", "lifestyle"],
+  "icons": [
+    {
+      "src": "assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/app-icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/favicon.png",
+      "sizes": "443x443",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Postępy dziecka",
+      "short_name": "Postępy",
+      "url": "./app-postepy.html",
+      "description": "Panel rodzica — oś czasu postępów"
+    },
+    {
+      "name": "Panel trenera",
+      "short_name": "Trener",
+      "url": "./app-trener.html",
+      "description": "Dodaj wpis po zajęciach"
+    }
+  ]
+}
