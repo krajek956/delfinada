@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — Panel trenera 🐬 (prototyp)</title>
+  <meta name="description" content="Prototyp aplikacji DELFINADA — panel trenera: szybkie dodawanie wpisu o postępach dziecka po zajęciach (notatki, zdjęcia, filmy, odznaki)." />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            sky: { 50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270' },
+            coral: { light:'#ffb26b', DEFAULT:'#ff8826', dark:'#e5720f' },
+            sunny: { light:'#ffc98a', DEFAULT:'#ff9d40', dark:'#f07f1a' },
+            mint:  { light:'#bdeef0', DEFAULT:'#22b8c0', dark:'#0e9aa2' },
+          },
+          keyframes: {
+            'float': { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-14px)'} },
+            'fade-up': { '0%':{opacity:'0',transform:'translateY(24px)'}, '100%':{opacity:'1',transform:'translateY(0)'} },
+            'pop': { '0%':{transform:'scale(.9)'}, '60%':{transform:'scale(1.05)'}, '100%':{transform:'scale(1)'} },
+            'slide-up': { '0%':{opacity:'0',transform:'translateY(100%)'}, '100%':{opacity:'1',transform:'translateY(0)'} },
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'fade-up': 'fade-up .6s ease-out both',
+            'pop': 'pop .4s ease-out both',
+            'slide-up': 'slide-up .35s cubic-bezier(.22,.61,.36,1) both',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color:#eafafc; overflow-x:hidden; }
+    .playful-bg {
+      background:
+        radial-gradient(60px 60px at 10% 15%, rgba(255,136,38,.22), transparent 70%),
+        radial-gradient(90px 90px at 88% 10%, rgba(34,184,192,.20), transparent 70%),
+        linear-gradient(180deg,#d2f2f6 0%,#eafafc 55%,#ffffff 100%);
+    }
+    .card-shadow { box-shadow:0 18px 40px -18px rgba(14,124,139,.35); }
+    /* przełącznik segmentowy */
+    .seg input { position:absolute; opacity:0; pointer-events:none; }
+    .seg label { cursor:pointer; }
+    /* ocena buźkami */
+    .mood input { position:absolute; opacity:0; }
+    .mood label { cursor:pointer; transition:transform .15s, filter .15s; filter:grayscale(1) opacity(.5); }
+    .mood input:checked + label { filter:none; transform:scale(1.15); }
+    /* kafelek dodawania mediów */
+    .media-add { border:2px dashed #a6e5ec; }
+    /* overlay / modal */
+    .sheet-backdrop { background:rgba(11,98,112,.45); backdrop-filter:blur(2px); }
+  </style>
+</head>
+<body class="font-sans text-sky-700">
+
+  <!-- ===== Pasek demo ===== -->
+  <div class="w-full bg-sky-700 text-white text-center text-xs sm:text-sm py-2 px-3">
+    🐬 <strong>Prototyp</strong> aplikacji DELFINADA — panel trenera. Dane przykładowe, bez zapisu.
+  </div>
+
+  <!-- ===== Górny pasek ===== -->
+  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-sky-100">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-2xl bg-sky-50 grid place-items-center">
+          <img src="assets/logo-delfinada.png" alt="DELFINADA" class="w-8 h-8 object-contain" onerror="this.style.display='none'" />
+        </div>
+        <div class="leading-tight">
+          <p class="font-display font-800 text-sky-700 text-lg">DELFINADA</p>
+          <p class="text-[11px] text-coral font-800 -mt-0.5">Panel trenera</p>
+        </div>
+      </div>
+      <a href="app-postepy.html" class="ml-auto flex items-center gap-1.5 px-3 py-2 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-600 text-xs font-800 transition">
+        <i data-lucide="eye" class="w-4 h-4"></i> <span class="hidden sm:inline">Widok rodzica</span>
+      </a>
+      <button class="ml-2 flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-sky-50 hover:bg-sky-100 transition">
+        <span class="w-8 h-8 rounded-full bg-sky-600 text-white grid place-items-center font-800">M</span>
+        <span class="hidden sm:block text-sm font-700 text-sky-700">trener Marek</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="playful-bg min-h-screen pb-24">
+    <div class="max-w-5xl mx-auto px-4">
+
+      <!-- ===== Nagłówek dnia ===== -->
+      <section class="pt-6 animate-fade-up">
+        <p class="text-sky-500 font-700">Wtorek, 7 października · 10:00</p>
+        <h1 class="font-display font-800 text-3xl sm:text-4xl text-sky-700">Dzisiejsze zajęcia</h1>
+
+        <!-- wybór grupy -->
+        <div class="mt-4 flex gap-2 flex-wrap text-sm font-800">
+          <button class="px-4 py-2 rounded-full bg-coral text-white card-shadow">Delfinki · 10:00</button>
+          <button class="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-sky-600 transition">Rybki · 11:00</button>
+          <button class="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-sky-600 transition">Foczki · 12:00</button>
+        </div>
+      </section>
+
+      <!-- ===== Postęp dzisiejszego dodawania ===== -->
+      <section class="mt-5 animate-fade-up">
+        <div class="bg-white rounded-3xl card-shadow p-4 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-coral/10 grid place-items-center text-coral"><i data-lucide="clipboard-list" class="w-6 h-6"></i></div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-800 text-sky-600 mb-1">
+              <span>Wpisy dodane dziś</span><span><span id="doneCount">1</span> / 5</span>
+            </div>
+            <div class="h-3 rounded-full bg-sky-100 overflow-hidden">
+              <div id="dayProgress" class="h-full rounded-full bg-gradient-to-r from-mint to-sky-500 transition-all" style="width:20%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Lista uczniów na dziś ===== -->
+      <section class="mt-6 animate-fade-up">
+        <h3 class="font-display font-800 text-lg text-sky-700 mb-3 flex items-center gap-2">
+          <i data-lucide="users" class="w-5 h-5 text-coral"></i> Grupa Delfinki (5)
+        </h3>
+
+        <div id="studentList" class="grid gap-3 sm:grid-cols-2">
+          <!-- uczeń: gotowy wpis -->
+          <button onclick="openSheet('Zosia')" class="group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
+            <span class="w-12 h-12 rounded-full bg-coral/15 text-coral grid place-items-center font-800 text-lg">Z</span>
+            <span class="flex-1">
+              <span class="block font-800 text-sky-700">Zosia Kowalska</span>
+              <span class="block text-xs text-sky-400">7 lat · cel: kraul 15 m</span>
+            </span>
+            <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-mint/20 text-mint-dark flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> dodano</span>
+          </button>
+
+          <!-- uczeń: do uzupełnienia -->
+          <button onclick="openSheet('Kuba')" class="group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
+            <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">K</span>
+            <span class="flex-1">
+              <span class="block font-800 text-sky-700">Kuba Nowak</span>
+              <span class="block text-xs text-sky-400">6 lat · cel: pływanie na plecach</span>
+            </span>
+            <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>
+          </button>
+
+          <button onclick="openSheet('Ola')" class="group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
+            <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">O</span>
+            <span class="flex-1">
+              <span class="block font-800 text-sky-700">Ola Wiśniewska</span>
+              <span class="block text-xs text-sky-400">8 lat · cel: skok startowy</span>
+            </span>
+            <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>
+          </button>
+
+          <button onclick="openSheet('Tymek')" class="group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
+            <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">T</span>
+            <span class="flex-1">
+              <span class="block font-800 text-sky-700">Tymek Zieliński</span>
+              <span class="block text-xs text-sky-400">7 lat · cel: nurkowanie po krążek</span>
+            </span>
+            <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>
+          </button>
+
+          <button onclick="openSheet('Lena')" class="group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
+            <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">L</span>
+            <span class="flex-1">
+              <span class="block font-800 text-sky-700">Lena Dąbrowska</span>
+              <span class="block text-xs text-sky-400">6 lat · cel: zanurzanie głowy</span>
+            </span>
+            <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Wskazówka ===== -->
+      <section class="mt-6 animate-fade-up">
+        <div class="rounded-3xl p-4 bg-mint/15 border border-mint/30 flex items-start gap-3 text-sky-700">
+          <i data-lucide="lightbulb" class="w-5 h-5 text-mint-dark shrink-0 mt-0.5"></i>
+          <p class="text-sm"><strong>Wskazówka:</strong> kliknij ucznia, by w kilka sekund dodać wpis — zaznacz nastrój, dorzuć zdjęcie/film z telefonu i gotowe. Rodzic zobaczy wpis od razu w swoim panelu.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== Przycisk „dodaj wpis grupowo” (FAB) ===== -->
+  <button onclick="openSheet('')" class="fixed bottom-5 right-5 z-30 w-14 h-14 rounded-full bg-coral text-white card-shadow grid place-items-center hover:bg-coral-dark transition animate-float">
+    <i data-lucide="plus" class="w-7 h-7"></i>
+  </button>
+
+  <!-- ===== PANEL DODAWANIA WPISU (bottom sheet) ===== -->
+  <div id="sheet" class="fixed inset-0 z-40 hidden">
+    <div class="sheet-backdrop absolute inset-0" onclick="closeSheet()"></div>
+
+    <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-lg sm:h-fit sm:rounded-3xl bg-white rounded-t-3xl card-shadow animate-slide-up max-h-[92vh] overflow-y-auto">
+      <!-- uchwyt -->
+      <div class="sm:hidden pt-3 flex justify-center"><span class="w-10 h-1.5 rounded-full bg-sky-200"></span></div>
+
+      <!-- nagłówek -->
+      <div class="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-sky-100 sticky top-0 bg-white z-10">
+        <span class="w-11 h-11 rounded-full bg-coral/15 text-coral grid place-items-center font-800" id="sheetAvatar">Z</span>
+        <div class="flex-1">
+          <p class="font-display font-800 text-lg text-sky-700 leading-tight">Wpis po zajęciach</p>
+          <p class="text-xs text-sky-400" id="sheetName">Zosia · Delfinki · 7 paź</p>
+        </div>
+        <button onclick="closeSheet()" class="w-9 h-9 rounded-full hover:bg-sky-50 grid place-items-center text-sky-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <!-- treść formularza -->
+      <div class="p-5 space-y-5">
+
+        <!-- 1. Nastrój/ocena zajęć -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-coral">Jak poszły dziś zajęcia?</label>
+          <div class="mood mt-2 flex gap-3 text-3xl">
+            <span><input type="radio" name="mood" id="m1"><label for="m1" title="słabo">😟</label></span>
+            <span><input type="radio" name="mood" id="m2"><label for="m2" title="ok">🙂</label></span>
+            <span><input type="radio" name="mood" id="m3" checked><label for="m3" title="dobrze">😃</label></span>
+            <span><input type="radio" name="mood" id="m4"><label for="m4" title="super">🤩</label></span>
+            <span><input type="radio" name="mood" id="m5"><label for="m5" title="rekord!">🏆</label></span>
+          </div>
+        </div>
+
+        <!-- 2. Co się udało -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="party-popper" class="w-4 h-4 text-mint-dark"></i> Co się dziś udało?</label>
+          <textarea rows="2" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm text-sky-700 placeholder:text-sky-300 resize-none" placeholder="np. Pierwszy raz przepłynęła całą szerokość z wydechem do wody!"></textarea>
+          <!-- szybkie podpowiedzi -->
+          <div class="mt-2 flex gap-2 flex-wrap text-[11px] font-800">
+            <button class="px-2.5 py-1 rounded-full bg-sky-50 text-sky-600 hover:bg-sky-100">+ ładny wydech</button>
+            <button class="px-2.5 py-1 rounded-full bg-sky-50 text-sky-600 hover:bg-sky-100">+ odwaga w wodzie</button>
+            <button class="px-2.5 py-1 rounded-full bg-sky-50 text-sky-600 hover:bg-sky-100">+ praca nóg</button>
+          </div>
+        </div>
+
+        <!-- 3. Nad czym pracujemy -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="target" class="w-4 h-4 text-coral"></i> Nad czym pracujemy</label>
+          <textarea rows="2" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm text-sky-700 placeholder:text-sky-300 resize-none" placeholder="np. Równa praca nóg przy kraulu — nogi lekko się uginają."></textarea>
+        </div>
+
+        <!-- 4. Do domu -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="home" class="w-4 h-4 text-sunny-dark"></i> Do poćwiczenia w domu (opcjonalnie)</label>
+          <input type="text" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm text-sky-700 placeholder:text-sky-300" placeholder="np. Zabawa „kto dłużej” — wstrzymywanie oddechu w wannie.">
+        </div>
+
+        <!-- 5. Zdjęcia / filmy -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-sky-500"></i> Zdjęcia i filmy</label>
+          <div class="mt-2 grid grid-cols-4 gap-2">
+            <label class="media-add aspect-square rounded-xl grid place-items-center text-sky-400 hover:text-coral hover:border-coral cursor-pointer transition">
+              <input type="file" accept="image/*,video/*" multiple class="hidden" onchange="addPreview(this)">
+              <span class="flex flex-col items-center gap-1"><i data-lucide="plus" class="w-6 h-6"></i><span class="text-[10px] font-800">dodaj</span></span>
+            </label>
+            <div id="mediaPreview" class="contents"></div>
+          </div>
+          <p class="text-[11px] text-sky-400 mt-1">Robisz zdjęcie telefonem lub wybierasz z galerii. Filmy mile widziane — rodzice je uwielbiają. 🎥</p>
+        </div>
+
+        <!-- 6. Odznaka + postęp celu -->
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="medal" class="w-4 h-4 text-coral"></i> Przyznaj odznakę</label>
+            <select class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm text-sky-700 bg-white">
+              <option value="">— brak —</option>
+              <option>Nie boję się wody</option>
+              <option>Wydech do wody</option>
+              <option>Leżenie na plecach</option>
+              <option>Odbicie od ściany</option>
+              <option>Kraul 15 m</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="trending-up" class="w-4 h-4 text-mint-dark"></i> Postęp celu: <span id="goalVal" class="text-coral">65%</span></label>
+            <input type="range" min="0" max="100" value="65" oninput="document.getElementById('goalVal').textContent=this.value+'%'" class="mt-3 w-full accent-coral">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- stopka panelu -->
+      <div class="p-4 border-t border-sky-100 sticky bottom-0 bg-white flex gap-3">
+        <button onclick="closeSheet()" class="px-4 py-3 rounded-2xl bg-sky-50 text-sky-600 font-800 hover:bg-sky-100 transition">Anuluj</button>
+        <button onclick="saveEntry()" class="flex-1 px-4 py-3 rounded-2xl bg-coral text-white font-800 hover:bg-coral-dark transition flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-5 h-5"></i> Zapisz i wyślij rodzicowi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Toast sukcesu ===== -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="bg-sky-700 text-white px-5 py-3 rounded-2xl card-shadow font-800 flex items-center gap-2 animate-pop">
+      <i data-lucide="check-circle-2" class="w-5 h-5 text-mint-light"></i> Wpis zapisany — rodzic dostał powiadomienie! 🐬
+    </div>
+  </div>
+
+  <script>
+    function openSheet(name){
+      const sheet = document.getElementById('sheet');
+      if (name) {
+        document.getElementById('sheetName').textContent = name + ' · Delfinki · 7 paź';
+        document.getElementById('sheetAvatar').textContent = name.charAt(0).toUpperCase();
+      } else {
+        document.getElementById('sheetName').textContent = 'Nowy wpis · Delfinki · 7 paź';
+        document.getElementById('sheetAvatar').textContent = '+';
+      }
+      sheet.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      if (window.lucide) lucide.createIcons();
+    }
+    function closeSheet(){
+      document.getElementById('sheet').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    function addPreview(input){
+      const wrap = document.getElementById('mediaPreview');
+      [...input.files].forEach(file => {
+        const url = URL.createObjectURL(file);
+        const isVideo = file.type.startsWith('video');
+        const el = document.createElement('div');
+        el.className = 'relative aspect-square rounded-xl overflow-hidden bg-sky-900';
+        el.innerHTML = isVideo
+          ? `<video src="${url}" class="w-full h-full object-cover"></video><span class="absolute inset-0 grid place-items-center text-white"><i data-lucide="play" class="w-6 h-6"></i></span>`
+          : `<img src="${url}" class="w-full h-full object-cover">`;
+        wrap.appendChild(el);
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+    function saveEntry(){
+      closeSheet();
+      const toast = document.getElementById('toast');
+      toast.classList.remove('hidden');
+      // zaktualizuj licznik dnia (demo)
+      const c = document.getElementById('doneCount');
+      let n = Math.min(5, parseInt(c.textContent||'1',10) + 1);
+      c.textContent = n;
+      document.getElementById('dayProgress').style.width = (n/5*100) + '%';
+      if (window.lucide) lucide.createIcons();
+      setTimeout(() => toast.classList.add('hidden'), 3200);
+    }
+    window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
+  </script>
+</body>
+</html>
