@@ -418,7 +418,7 @@
         dane.dziecko_id = STAN.wybraneDziecko.id;
         await API.dodajWpis(dane, STAN.pliki);
         closeSheet();
-        toastOk('Wpis zapisany — rodzic go zobaczy! 🐬');
+        toastOk('Wpis zapisany — rodzic dostanie powiadomienie e-mail! 🐬');
         await zaladujDzieci(); // odśwież listę/oznaczenia
       }catch(err){
         alert('Błąd zapisu: ' + (err.message||err));
