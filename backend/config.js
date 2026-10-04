@@ -11,6 +11,6 @@
  *  NIGDY nie wklejaj tu klucza "service_role".
  * ============================================================= */
 window.DELFINADA_CONFIG = {
-  SUPABASE_URL: 'TU_WKLEJ_PROJECT_URL',
-  SUPABASE_ANON_KEY: 'TU_WKLEJ_ANON_KEY'
+  SUPABASE_URL: 'https://yrdqcvhnsihmccbyauvs.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_9HE8UWyuxBL-Jnj3cXk7vw_hCRNnZHa'
 };
