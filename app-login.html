@@ -102,7 +102,9 @@
       try {
         const profil = await API.mojProfil();
         const rola = profil?.rola || 'rodzic';
-        window.location.href = (rola === 'trener' || rola === 'admin') ? 'app-trener.html' : 'app-postepy.html';
+        if (rola === 'admin') window.location.href = 'app-admin.html';
+        else if (rola === 'trener') window.location.href = 'app-trener.html';
+        else window.location.href = 'app-postepy.html';
       } catch { window.location.href = 'app-postepy.html'; }
     }
 

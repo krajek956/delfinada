@@ -103,6 +103,9 @@
           <p class="text-[11px] text-coral font-800 -mt-0.5">Panel trenera</p>
         </div>
       </div>
+      <a id="linkAdmin" href="app-admin.html" class="hidden items-center gap-1.5 px-3 py-2 rounded-full bg-coral/10 hover:bg-coral/20 text-coral text-xs font-800 transition">
+        <i data-lucide="settings" class="w-4 h-4"></i> <span class="hidden sm:inline">Panel szkoły</span>
+      </a>
       <a href="app-postepy.html" class="ml-auto flex items-center gap-1.5 px-3 py-2 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-600 text-xs font-800 transition">
         <i data-lucide="eye" class="w-4 h-4"></i> <span class="hidden sm:inline">Widok rodzica</span>
       </a>
@@ -481,6 +484,8 @@
         if(label && p?.imie) label.textContent = 'trener '+p.imie;
         const avBtn = av ? av.closest('button') : null;
         if(avBtn){ avBtn.title='Wyloguj się'; avBtn.onclick=async()=>{ if(confirm('Wylogować się?')){ await API.wyloguj(); window.location.href='app-login.html'; } }; }
+        // link do panelu szkoły tylko dla admina
+        if(p && p.rola==='admin'){ const la=document.getElementById('linkAdmin'); if(la){ la.classList.remove('hidden'); la.classList.add('flex'); } }
       }catch{}
       STAN.grupy = await API.grupy();
       renderGrupy();

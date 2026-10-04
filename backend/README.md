@@ -84,3 +84,25 @@ values ('WKLEJ_UID_RODZICA', 'WKLEJ_ID_DZIECKA');
 - `schema.sql` — tabele + RLS + storage (uruchamiasz raz).
 - `config.js` — Twoje klucze (URL + anon). **Nie commituj prawdziwych kluczy, jeśli repo jest publiczne i tego nie chcesz** — anon key i tak jest publiczny, ale decyzja należy do Ciebie.
 - `api.js` — warstwa dostępu używana przez panele (`app-login/postepy/trener`).
+
+---
+
+## 8. Panel administracyjny szkoły (bez SQL) 🏫
+
+Po skonfigurowaniu podstaw możesz zarządzać wszystkim z aplikacji, zamiast pisać SQL.
+
+1. **Uruchom migrację** `backend/schema-admin.sql` (SQL Editor → New query → wklej → Run).
+   Dodaje m.in. `profiles.email` (potrzebne do wyszukiwania rodziców) i funkcje admina.
+2. **Nadaj sobie rolę admina** — w `schema-admin.sql` na dole odkomentuj i uruchom
+   (podmień UID na swój z Authentication → Users):
+   ```sql
+   update public.profiles set rola = 'admin' where id = 'WKLEJ_SWOJ_UID';
+   ```
+3. Zaloguj się na **`app-admin.html`** (albo zaloguj się normalnie — admin jest tam
+   przekierowywany automatycznie). Z panelu możesz:
+   - **Dzieci** — dodawać/edytować/usuwać dzieci, ustawiać cel i postęp, **przypisywać rodziców po e-mailu**;
+   - **Grupy** — tworzyć grupy i przypisywać trenera prowadzącego;
+   - **Kadra** — nadawać rolę **trenera** osobie, która założyła konto (po e-mailu).
+
+> Rodzic musi **najpierw założyć konto** (rejestracja na `app-login.html`), zanim
+> przypiszesz go do dziecka — wyszukiwanie działa po jego adresie e-mail.

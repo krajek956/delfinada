@@ -152,6 +152,108 @@
       return nowy;
     },
 
+    // ---------- ADMIN: grupy, dzieci, trenerzy, rodzice ----------
+
+    // Lista kadry (trenerzy + admini) — do przypisania prowadzącego grupy
+    async kadra() {
+      wymagajKlienta();
+      const { data, error } = await sb
+        .from('profiles')
+        .select('id, imie, nazwisko, email, rola')
+        .in('rola', ['trener', 'admin'])
+        .order('imie');
+      if (error) throw error;
+      return data;
+    },
+
+    // Grupy z liczbą dzieci i danymi trenera
+    async grupyPelne() {
+      wymagajKlienta();
+      const { data, error } = await sb
+        .from('grupy')
+        .select('*, trener:profiles!grupy_trener_id_fkey(imie, nazwisko), dzieci(count)')
+        .order('nazwa');
+      if (error) throw error;
+      return data;
+    },
+
+    async utworzGrupe({ nazwa, opis = null, trener_id = null }) {
+      wymagajKlienta();
+      const { data, error } = await sb.from('grupy')
+        .insert({ nazwa, opis, trener_id }).select().single();
+      if (error) throw error;
+      return data;
+    },
+
+    async aktualizujGrupe(id, zmiany) {
+      wymagajKlienta();
+      const { error } = await sb.from('grupy').update(zmiany).eq('id', id);
+      if (error) throw error;
+    },
+
+    async usunGrupe(id) {
+      wymagajKlienta();
+      const { error } = await sb.from('grupy').delete().eq('id', id);
+      if (error) throw error;
+    },
+
+    // Wszystkie dzieci (dla admina/kadry — RLS i tak przepuści kadrę)
+    async wszystkieDzieci() {
+      wymagajKlienta();
+      const { data, error } = await sb
+        .from('dzieci')
+        .select('*, grupy(nazwa), rodzic_dziecko(rodzic_id, profiles:profiles!rodzic_dziecko_rodzic_id_fkey(imie, nazwisko, email))')
+        .order('imie');
+      if (error) throw error;
+      return data;
+    },
+
+    async utworzDziecko({ imie, nazwisko = null, grupa_id = null, cel_opis = null, cel_postep = 0, data_ur = null }) {
+      wymagajKlienta();
+      const { data, error } = await sb.from('dzieci')
+        .insert({ imie, nazwisko, grupa_id, cel_opis, cel_postep, data_ur }).select().single();
+      if (error) throw error;
+      return data;
+    },
+
+    async aktualizujDziecko(id, zmiany) {
+      wymagajKlienta();
+      const { error } = await sb.from('dzieci').update(zmiany).eq('id', id);
+      if (error) throw error;
+    },
+
+    async usunDziecko(id) {
+      wymagajKlienta();
+      const { error } = await sb.from('dzieci').delete().eq('id', id);
+      if (error) throw error;
+    },
+
+    // Przypisz rodzica (po e-mailu) do dziecka — przez bezpieczną funkcję RPC
+    async przypiszRodzica(email, dzieckoId) {
+      wymagajKlienta();
+      const { data, error } = await sb.rpc('przypisz_rodzica', { p_email: email, p_dziecko: dzieckoId });
+      if (error) throw error;
+      if (data && data !== 'OK') throw new Error(data); // komunikat z funkcji (np. nie znaleziono)
+      return true;
+    },
+
+    async odlaczRodzica(rodzicId, dzieckoId) {
+      wymagajKlienta();
+      const { error } = await sb.from('rodzic_dziecko').delete()
+        .eq('rodzic_id', rodzicId).eq('dziecko_id', dzieckoId);
+      if (error) throw error;
+    },
+
+    // Nadaj/zmień rolę użytkownika (admin). Wyszukuje po e-mailu.
+    async ustawRolePoEmailu(email, rola) {
+      wymagajKlienta();
+      const { data, error } = await sb.from('profiles')
+        .update({ rola }).ilike('email', email.trim()).select('id, email, rola');
+      if (error) throw error;
+      if (!data || !data.length) throw new Error('Nie znaleziono użytkownika o e-mailu: ' + email + '. Czy założył już konto?');
+      return data[0];
+    },
+
     // ---------- STORAGE ----------
     async urlMedia(sciezka) {
       wymagajKlienta();
