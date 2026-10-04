@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — Postępy dziecka 🐬 (prototyp)</title>
+  <meta name="description" content="Prototyp aplikacji DELFINADA — rodzic śledzi postępy dziecka po każdych zajęciach: notatki, zdjęcia, filmy i cele." />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            sky: { 50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270' },
+            coral: { light:'#ffb26b', DEFAULT:'#ff8826', dark:'#e5720f' },
+            sunny: { light:'#ffc98a', DEFAULT:'#ff9d40', dark:'#f07f1a' },
+            mint:  { light:'#bdeef0', DEFAULT:'#22b8c0', dark:'#0e9aa2' },
+          },
+          keyframes: {
+            'float': { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-14px)'} },
+            'fade-up': { '0%':{opacity:'0',transform:'translateY(24px)'}, '100%':{opacity:'1',transform:'translateY(0)'} },
+            'pop': { '0%':{transform:'scale(.9)'}, '60%':{transform:'scale(1.05)'}, '100%':{transform:'scale(1)'} },
+            'grow': { '0%':{width:'0'} },
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'fade-up': 'fade-up .6s ease-out both',
+            'pop': 'pop .4s ease-out both',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color:#eafafc; overflow-x:hidden; }
+    .playful-bg {
+      background:
+        radial-gradient(60px 60px at 10% 15%, rgba(255,136,38,.22), transparent 70%),
+        radial-gradient(90px 90px at 88% 10%, rgba(34,184,192,.20), transparent 70%),
+        linear-gradient(180deg,#d2f2f6 0%,#eafafc 55%,#ffffff 100%);
+    }
+    .card-shadow { box-shadow:0 18px 40px -18px rgba(14,124,139,.35); }
+    /* oś czasu */
+    .timeline::before{
+      content:''; position:absolute; left:22px; top:8px; bottom:8px; width:4px;
+      background:linear-gradient(180deg,#6fd2dd,#22b8c0); border-radius:9999px;
+    }
+    @media (min-width:768px){ .timeline::before{ left:50%; transform:translateX(-50%); } }
+    .ring-progress{ background:conic-gradient(#ff8826 var(--p,0%), #ffe4cb 0); }
+    .chip{ backdrop-filter:blur(6px); }
+    /* prosty podgląd „video" (placeholder) */
+    .play-badge{ background:rgba(14,124,139,.85); }
+  </style>
+</head>
+<body class="font-sans text-sky-700">
+
+  <!-- ===== Pasek demo ===== -->
+  <div class="w-full bg-sky-700 text-white text-center text-xs sm:text-sm py-2 px-3">
+    🐬 <strong>Prototyp</strong> aplikacji DELFINADA — tak rodzic widzi postępy dziecka. Dane są przykładowe.
+  </div>
+
+  <!-- ===== Górny pasek aplikacji ===== -->
+  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-sky-100">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-2xl bg-sky-50 grid place-items-center">
+          <img src="assets/logo-delfinada.png" alt="DELFINADA" class="w-8 h-8 object-contain" onerror="this.style.display='none'" />
+        </div>
+        <div class="leading-tight">
+          <p class="font-display font-800 text-sky-700 text-lg">DELFINADA</p>
+          <p class="text-[11px] text-sky-500 -mt-0.5">Panel rodzica</p>
+        </div>
+      </div>
+      <nav class="ml-auto hidden sm:flex items-center gap-1 text-sm font-700">
+        <a class="px-3 py-2 rounded-xl bg-sky-50 text-sky-700" href="#">Postępy</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-sky-50 text-sky-500" href="#">Kalendarz</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-sky-50 text-sky-500" href="#">Płatności</a>
+      </nav>
+      <button class="ml-auto sm:ml-2 flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-sky-50 hover:bg-sky-100 transition">
+        <span class="w-8 h-8 rounded-full bg-coral text-white grid place-items-center font-800">AK</span>
+        <span class="hidden sm:block text-sm font-700 text-sky-700">Anna K.</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="playful-bg min-h-screen pb-16">
+    <div class="max-w-5xl mx-auto px-4">
+
+      <!-- ===== Nagłówek: wybór dziecka + powitanie ===== -->
+      <section class="pt-6 animate-fade-up">
+        <p class="text-sky-500 font-700">Cześć, Anna! 👋</p>
+        <h1 class="font-display font-800 text-3xl sm:text-4xl text-sky-700">Postępy Twojego dziecka</h1>
+
+        <!-- przełącznik dzieci -->
+        <div class="mt-4 flex gap-2 flex-wrap">
+          <button class="flex items-center gap-2 pl-1 pr-4 py-1.5 rounded-full bg-white card-shadow ring-2 ring-coral">
+            <span class="w-9 h-9 rounded-full bg-coral/15 text-coral grid place-items-center font-800">Z</span>
+            <span class="text-left leading-tight">
+              <span class="block text-sm font-800 text-sky-700">Zosia</span>
+              <span class="block text-[11px] text-sky-400">Grupa Delfinki · 7 lat</span>
+            </span>
+          </button>
+          <button class="flex items-center gap-2 pl-1 pr-4 py-1.5 rounded-full bg-white/70 hover:bg-white transition">
+            <span class="w-9 h-9 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800">K</span>
+            <span class="text-left leading-tight">
+              <span class="block text-sm font-800 text-sky-700">Kuba</span>
+              <span class="block text-[11px] text-sky-400">Grupa Rybki · 5 lat</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Karta „aktualny cel” + statystyki ===== -->
+      <section class="mt-6 grid gap-4 md:grid-cols-3 animate-fade-up">
+        <!-- cel główny -->
+        <div class="md:col-span-2 bg-white rounded-3xl card-shadow p-5 sm:p-6 relative overflow-hidden">
+          <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-sky-50"></div>
+          <div class="relative flex items-start gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-coral/15 grid place-items-center text-coral shrink-0">
+              <i data-lucide="target" class="w-7 h-7"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-xs font-800 uppercase tracking-wide text-coral">Aktualny cel</p>
+              <h2 class="font-display font-800 text-xl text-sky-700">Samodzielne pływanie kraulem — 15 m</h2>
+              <p class="text-sm text-sky-500 mt-1">Zosia robi świetne postępy w oddychaniu. Pracujemy nad równym ruchem nóg.</p>
+              <div class="mt-3">
+                <div class="flex justify-between text-xs font-800 text-sky-600 mb-1">
+                  <span>Postęp</span><span>65%</span>
+                </div>
+                <div class="h-3 rounded-full bg-sky-100 overflow-hidden">
+                  <div class="h-full rounded-full bg-gradient-to-r from-sunny to-coral" style="width:65%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- mini-statystyki -->
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-1">
+          <div class="bg-white rounded-3xl card-shadow p-4 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-sky-50 grid place-items-center text-sky-600"><i data-lucide="calendar-check" class="w-6 h-6"></i></div>
+            <div><p class="font-display font-800 text-2xl text-sky-700 leading-none">24</p><p class="text-xs text-sky-400 font-700">zajęć ukończonych</p></div>
+          </div>
+          <div class="bg-white rounded-3xl card-shadow p-4 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-coral/10 grid place-items-center text-coral"><i data-lucide="award" class="w-6 h-6"></i></div>
+            <div><p class="font-display font-800 text-2xl text-sky-700 leading-none">5</p><p class="text-xs text-sky-400 font-700">zdobytych odznak</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Odznaki (kamienie milowe) ===== -->
+      <section class="mt-6 animate-fade-up">
+        <h3 class="font-display font-800 text-lg text-sky-700 mb-3 flex items-center gap-2">
+          <i data-lucide="medal" class="w-5 h-5 text-coral"></i> Zdobyte odznaki
+        </h3>
+        <div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-sky-50 grid place-items-center text-sky-600 mb-2"><i data-lucide="droplets" class="w-6 h-6"></i></div>
+            <p class="text-xs font-800 text-sky-700">Nie boję się wody</p>
+          </div>
+          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-coral/10 grid place-items-center text-coral mb-2"><i data-lucide="wind" class="w-6 h-6"></i></div>
+            <p class="text-xs font-800 text-sky-700">Wydech do wody</p>
+          </div>
+          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-sky-50 grid place-items-center text-sky-600 mb-2"><i data-lucide="waves" class="w-6 h-6"></i></div>
+            <p class="text-xs font-800 text-sky-700">Leżenie na plecach</p>
+          </div>
+          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-coral/10 grid place-items-center text-coral mb-2"><i data-lucide="rabbit" class="w-6 h-6"></i></div>
+            <p class="text-xs font-800 text-sky-700">Odbicie od ściany</p>
+          </div>
+          <div class="shrink-0 w-28 bg-white/60 rounded-2xl p-3 text-center border-2 border-dashed border-sky-200">
+            <div class="w-12 h-12 mx-auto rounded-full bg-sky-100 grid place-items-center text-sky-300 mb-2"><i data-lucide="lock" class="w-6 h-6"></i></div>
+            <p class="text-xs font-800 text-sky-400">Kraul 15 m</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== OŚ CZASU — wpisy po zajęciach ===== -->
+      <section class="mt-8 animate-fade-up">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display font-800 text-xl text-sky-700 flex items-center gap-2">
+            <i data-lucide="history" class="w-5 h-5 text-coral"></i> Dziennik zajęć
+          </h3>
+          <span class="text-xs font-700 text-sky-400">najnowsze u góry</span>
+        </div>
+
+        <div class="timeline relative pl-12 md:pl-0 space-y-6">
+
+          <!-- WPIS 1 -->
+          <article class="relative md:w-1/2 md:ml-auto md:pl-8">
+            <span class="absolute left-[-34px] md:left-[-10px] top-6 w-5 h-5 rounded-full bg-coral ring-4 ring-white"></span>
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+              <div class="p-5">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="chip text-[11px] font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral">Dziś · 10:00</span>
+                  <span class="text-xs font-700 text-sky-400 flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> trener Marek</span>
+                </div>
+                <h4 class="font-display font-800 text-lg text-sky-700 mt-2">Super oddychanie! 🎉</h4>
+                <p class="text-sm text-sky-600 mt-1 leading-relaxed">
+                  Zosia dziś pierwszy raz przepłynęła całą szerokość basenu z rytmicznym wydechem do wody.
+                  <strong>Nad czym pracujemy:</strong> równa praca nóg przy kraulu — nogi trochę za bardzo się uginają.
+                </p>
+                <!-- media -->
+                <div class="mt-3 grid grid-cols-3 gap-2">
+                  <button class="relative aspect-square rounded-xl overflow-hidden bg-sky-100 group">
+                    <img src="assets/foto1.webp" class="w-full h-full object-cover" alt="zdjęcie z zajęć" onerror="this.src='assets/foto1.jpg'">
+                  </button>
+                  <button class="relative aspect-square rounded-xl overflow-hidden bg-sky-100 group">
+                    <img src="assets/foto3.webp" class="w-full h-full object-cover" alt="zdjęcie z zajęć" onerror="this.src='assets/foto3.jpg'">
+                  </button>
+                  <button class="relative aspect-square rounded-xl overflow-hidden bg-sky-900 grid place-items-center group">
+                    <img src="assets/foto4.webp" class="w-full h-full object-cover opacity-70" alt="film z zajęć" onerror="this.src='assets/foto4.jpg'">
+                    <span class="play-badge absolute w-10 h-10 rounded-full grid place-items-center text-white"><i data-lucide="play" class="w-5 h-5 ml-0.5"></i></span>
+                  </button>
+                </div>
+                <div class="mt-3 flex gap-2 flex-wrap">
+                  <span class="text-[11px] font-800 px-2.5 py-1 rounded-full bg-sky-50 text-sky-600">#oddychanie</span>
+                  <span class="text-[11px] font-800 px-2.5 py-1 rounded-full bg-sky-50 text-sky-600">#kraul</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WPIS 2 -->
+          <article class="relative md:w-1/2 md:pr-8 md:text-right">
+            <span class="absolute left-[-34px] md:left-auto md:right-[-10px] top-6 w-5 h-5 rounded-full bg-sky-400 ring-4 ring-white"></span>
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+              <div class="p-5">
+                <div class="flex items-center justify-between gap-2 md:flex-row-reverse">
+                  <span class="chip text-[11px] font-800 px-2.5 py-1 rounded-full bg-sky-100 text-sky-600">Wt, 1 paź · 10:00</span>
+                  <span class="text-xs font-700 text-sky-400 flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> trener Marek</span>
+                </div>
+                <h4 class="font-display font-800 text-lg text-sky-700 mt-2">Odbicie od ściany ✅</h4>
+                <p class="text-sm text-sky-600 mt-1 leading-relaxed">
+                  Opanowaliśmy mocne odbicie od ściany i poślizg. Zosia zdobyła odznakę „Odbicie od ściany".
+                  <strong>Do poćwiczenia w domu:</strong> wstrzymywanie oddechu w wannie (zabawa „kto dłużej").
+                </p>
+                <div class="mt-3 grid grid-cols-2 gap-2 md:ml-auto md:w-2/3">
+                  <button class="relative aspect-video rounded-xl overflow-hidden bg-sky-100">
+                    <img src="assets/foto5.webp" class="w-full h-full object-cover" alt="zdjęcie z zajęć" onerror="this.src='assets/foto5.jpg'">
+                  </button>
+                  <button class="relative aspect-video rounded-xl overflow-hidden bg-sky-900 grid place-items-center">
+                    <img src="assets/foto3.webp" class="w-full h-full object-cover opacity-70" alt="film" onerror="this.src='assets/foto3.jpg'">
+                    <span class="play-badge absolute w-9 h-9 rounded-full grid place-items-center text-white"><i data-lucide="play" class="w-4 h-4 ml-0.5"></i></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WPIS 3 -->
+          <article class="relative md:w-1/2 md:ml-auto md:pl-8">
+            <span class="absolute left-[-34px] md:left-[-10px] top-6 w-5 h-5 rounded-full bg-sky-400 ring-4 ring-white"></span>
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+              <div class="p-5">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="chip text-[11px] font-800 px-2.5 py-1 rounded-full bg-sky-100 text-sky-600">Wt, 24 wrz · 10:00</span>
+                  <span class="text-xs font-700 text-sky-400 flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> trener Marek</span>
+                </div>
+                <h4 class="font-display font-800 text-lg text-sky-700 mt-2">Leżenie na plecach 🌊</h4>
+                <p class="text-sm text-sky-600 mt-1 leading-relaxed">
+                  Dziś dużo zabawy i rozluźnienia. Zosia potrafi już samodzielnie leżeć na plecach przez kilka sekund.
+                  <strong>Mała trudność:</strong> lekki stres przy zanurzaniu uszu — podchodzimy spokojnie, bez pośpiechu.
+                </p>
+                <div class="mt-3 grid grid-cols-3 gap-2">
+                  <button class="relative aspect-square rounded-xl overflow-hidden bg-sky-100"><img src="assets/foto1.webp" class="w-full h-full object-cover" alt="" onerror="this.src='assets/foto1.jpg'"></button>
+                  <button class="relative aspect-square rounded-xl overflow-hidden bg-sky-100"><img src="assets/foto4.webp" class="w-full h-full object-cover" alt="" onerror="this.src='assets/foto4.jpg'"></button>
+                  <button class="relative aspect-square rounded-xl overflow-hidden bg-sky-100"><img src="assets/foto5.webp" class="w-full h-full object-cover" alt="" onerror="this.src='assets/foto5.jpg'"></button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="text-center mt-6">
+          <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white card-shadow font-800 text-sky-700 hover:bg-sky-50 transition">
+            <i data-lucide="chevron-down" class="w-4 h-4"></i> Pokaż starsze zajęcia
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Przypomnienie o kolejnych zajęciach ===== -->
+      <section class="mt-8 animate-fade-up">
+        <div class="rounded-3xl p-5 sm:p-6 text-white card-shadow relative overflow-hidden" style="background:linear-gradient(120deg,#0e7c8b,#189aad)">
+          <div class="relative flex items-center gap-4 flex-wrap">
+            <div class="w-14 h-14 rounded-2xl bg-white/15 grid place-items-center animate-float"><i data-lucide="calendar-clock" class="w-7 h-7"></i></div>
+            <div class="flex-1 min-w-[180px]">
+              <p class="text-white/80 text-xs font-800 uppercase tracking-wide">Następne zajęcia</p>
+              <p class="font-display font-800 text-xl">Wtorek, 7 paź · 10:00 — Basen Delfinada</p>
+            </div>
+            <button class="px-4 py-2 rounded-full bg-white text-sky-700 font-800 hover:bg-sky-50 transition flex items-center gap-2">
+              <i data-lucide="bell" class="w-4 h-4"></i> Przypomnij mi
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== Dolna nawigacja (mobile) ===== -->
+  <nav class="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white/90 backdrop-blur border-t border-sky-100 flex justify-around py-2 text-[11px] font-800">
+    <a href="#" class="flex flex-col items-center gap-0.5 text-coral"><i data-lucide="activity" class="w-5 h-5"></i> Postępy</a>
+    <a href="#" class="flex flex-col items-center gap-0.5 text-sky-400"><i data-lucide="calendar" class="w-5 h-5"></i> Kalendarz</a>
+    <a href="#" class="flex flex-col items-center gap-0.5 text-sky-400"><i data-lucide="credit-card" class="w-5 h-5"></i> Płatności</a>
+    <a href="#" class="flex flex-col items-center gap-0.5 text-sky-400"><i data-lucide="user" class="w-5 h-5"></i> Profil</a>
+  </nav>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
