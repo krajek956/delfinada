@@ -22,6 +22,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 
+  <!-- Supabase + warstwa API -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="backend/config.js"></script>
+  <script src="backend/api.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -342,6 +347,138 @@
       if (window.lucide) lucide.createIcons();
     });
   </script>
+
+  <!-- ===== Podłączenie do Supabase (dane rodzica) ===== -->
+  <script>
+  (function(){
+    const API = window.DelfinadaAPI;
+    if (!API || !API.skonfigurowane) return; // brak backendu → zostają dane demo
+
+    const el = {
+      childTabs: () => document.querySelector('section .mt-4.flex.gap-2.flex-wrap'),
+      goalTitle: () => document.querySelector('section .md\\:col-span-2 h2'),
+      goalDesc:  () => document.querySelector('section .md\\:col-span-2 p.text-sm.text-sky-500'),
+      goalBar:   () => document.querySelector('section .md\\:col-span-2 .bg-gradient-to-r'),
+      goalPct:   () => document.querySelector('section .md\\:col-span-2 .flex.justify-between span:last-child'),
+      timeline:  () => document.querySelector('.timeline'),
+    };
+
+    const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const dni = ['nd','pn','wt','śr','czw','pt','sob'];
+    function dataLabel(iso){
+      const d = new Date(iso), teraz = new Date();
+      const sameDay = d.toDateString() === teraz.toDateString();
+      const g = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+      if (sameDay) return 'Dziś · '+g;
+      return dni[d.getDay()]+', '+d.getDate()+' '+['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'][d.getMonth()]+' · '+g;
+    }
+
+    function renderChildren(dzieci, activeIdx, onPick){
+      const wrap = el.childTabs(); if(!wrap) return;
+      wrap.innerHTML = dzieci.map((d,i)=>{
+        const akt = i===activeIdx;
+        const ini = (d.imie||'?').charAt(0).toUpperCase();
+        const grupa = d.grupy?.nazwa ? d.grupy.nazwa : 'Grupa';
+        return `<button data-i="${i}" class="flex items-center gap-2 pl-1 pr-4 py-1.5 rounded-full ${akt?'bg-white card-shadow ring-2 ring-coral':'bg-white/70 hover:bg-white'} transition">
+          <span class="w-9 h-9 rounded-full ${akt?'bg-coral/15 text-coral':'bg-sky-100 text-sky-600'} grid place-items-center font-800">${ini}</span>
+          <span class="text-left leading-tight">
+            <span class="block text-sm font-800 text-sky-700">${esc(d.imie)}</span>
+            <span class="block text-[11px] text-sky-400">${esc(grupa)}</span>
+          </span></button>`;
+      }).join('');
+      wrap.querySelectorAll('button').forEach(b=> b.onclick=()=>onPick(parseInt(b.dataset.i,10)));
+    }
+
+    function renderGoal(d){
+      if(el.goalTitle()) el.goalTitle().textContent = d.cel_opis || 'Cel w przygotowaniu';
+      if(el.goalDesc())  el.goalDesc().textContent  = 'Grupa '+(d.grupy?.nazwa||'')+'. Śledź postępy po każdych zajęciach.';
+      const p = d.cel_postep ?? 0;
+      if(el.goalBar()) el.goalBar().style.width = p+'%';
+      if(el.goalPct()) el.goalPct().textContent = p+'%';
+    }
+
+    function mediaHtml(media){
+      if(!media || !media.length) return '';
+      const cells = media.slice(0,3).map(m=>{
+        if(m.typ==='film'){
+          return `<a href="${m.url||'#'}" target="_blank" class="relative aspect-square rounded-xl overflow-hidden bg-sky-900 grid place-items-center">
+            <video src="${m.url||''}" class="w-full h-full object-cover opacity-70"></video>
+            <span class="absolute w-10 h-10 rounded-full grid place-items-center text-white" style="background:rgba(14,124,139,.85)"><i data-lucide="play" class="w-5 h-5 ml-0.5"></i></span></a>`;
+        }
+        return `<a href="${m.url||'#'}" target="_blank" class="relative aspect-square rounded-xl overflow-hidden bg-sky-100">
+          <img src="${m.url||''}" class="w-full h-full object-cover" alt="media z zajęć"></a>`;
+      }).join('');
+      return `<div class="mt-3 grid grid-cols-3 gap-2">${cells}</div>`;
+    }
+
+    function renderWpisy(wpisy){
+      const tl = el.timeline(); if(!tl) return;
+      if(!wpisy.length){
+        tl.innerHTML = `<p class="text-center text-sky-400 py-8">Brak wpisów. Pojawią się tu po pierwszych zajęciach. 🐬</p>`;
+        return;
+      }
+      tl.innerHTML = wpisy.map((w,i)=>{
+        const lewy = i%2===1; // naprzemiennie
+        const trener = w.trener ? ('trener '+(w.trener.imie||'')) : 'trener';
+        const kropkaKlas = i===0 ? 'bg-coral' : 'bg-sky-400';
+        return `<article class="relative md:w-1/2 ${lewy?'md:pr-8 md:text-right':'md:ml-auto md:pl-8'}">
+          <span class="absolute left-[-34px] ${lewy?'md:left-auto md:right-[-10px]':'md:left-[-10px]'} top-6 w-5 h-5 rounded-full ${kropkaKlas} ring-4 ring-white"></span>
+          <div class="bg-white rounded-3xl card-shadow overflow-hidden"><div class="p-5">
+            <div class="flex items-center justify-between gap-2 ${lewy?'md:flex-row-reverse':''}">
+              <span class="text-[11px] font-800 px-2.5 py-1 rounded-full ${i===0?'bg-coral/10 text-coral':'bg-sky-100 text-sky-600'}">${dataLabel(w.data_zajec)}</span>
+              <span class="text-xs font-700 text-sky-400 flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> ${esc(trener)}</span>
+            </div>
+            ${w.co_sie_udalo?`<h4 class="font-display font-800 text-lg text-sky-700 mt-2">${esc(w.co_sie_udalo)}</h4>`:''}
+            ${w.nad_czym?`<p class="text-sm text-sky-600 mt-1 leading-relaxed"><strong>Nad czym pracujemy:</strong> ${esc(w.nad_czym)}</p>`:''}
+            ${w.do_domu?`<p class="text-sm text-sky-600 mt-1 leading-relaxed"><strong>Do domu:</strong> ${esc(w.do_domu)}</p>`:''}
+            ${mediaHtml(w.media)}
+            ${w.odznaka?`<div class="mt-3"><span class="text-[11px] font-800 px-2.5 py-1 rounded-full bg-mint/20 text-mint-dark">🏅 ${esc(w.odznaka)}</span></div>`:''}
+          </div></div></article>`;
+      }).join('');
+      if(window.lucide) lucide.createIcons();
+    }
+
+    async function start(){
+      // ochrona: musi być zalogowany
+      const u = await API.uzytkownik();
+      if(!u){ window.location.href='app-login.html'; return; }
+
+      // nagłówek: imię rodzica + wylogowanie
+      try{
+        const p = await API.mojProfil();
+        const hello = document.querySelector('section p.text-sky-500.font-700');
+        if(hello && p?.imie) hello.textContent = 'Cześć, '+p.imie+'! 👋';
+        const avatar = document.querySelector('header .bg-coral.text-white.grid');
+        if(avatar && p?.imie) avatar.textContent = (p.imie[0]||'')+(p.nazwisko?.[0]||'');
+        const avatarBtn = avatar ? avatar.closest('button') : null;
+        if(avatarBtn){ avatarBtn.title='Wyloguj się'; avatarBtn.onclick=async()=>{ if(confirm('Wylogować się?')){ await API.wyloguj(); window.location.href='app-login.html'; } }; }
+      }catch{}
+
+      const dzieci = await API.mojeDzieci();
+      if(!dzieci.length){
+        const main = document.querySelector('main .max-w-5xl');
+        if(main) main.insertAdjacentHTML('afterbegin',
+          '<div class="mt-6 rounded-3xl bg-white card-shadow p-6 text-center text-sky-500">Nie przypisano jeszcze żadnego dziecka do Twojego konta. Skontaktuj się ze szkołą DELFINADA. 🐬</div>');
+        if(el.timeline()) el.timeline().innerHTML='';
+        return;
+      }
+
+      let idx = 0;
+      async function pokaz(i){
+        idx = i;
+        renderChildren(dzieci, idx, pokaz);
+        renderGoal(dzieci[idx]);
+        if(el.timeline()) el.timeline().innerHTML = '<p class="text-center text-sky-400 py-8">Ładowanie…</p>';
+        const wpisy = await API.wpisyDziecka(dzieci[idx].id);
+        renderWpisy(wpisy);
+      }
+      await pokaz(0);
+    }
+
+    window.addEventListener('DOMContentLoaded', start);
+  })();
+  </script>
+
   <script src="assets/pwa.js" defer></script>
 </body>
 </html>

@@ -22,6 +22,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 
+  <!-- Supabase + warstwa API -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="backend/config.js"></script>
+  <script src="backend/api.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -320,14 +325,30 @@
   </div>
 
   <script>
-    function openSheet(name){
+    const API = window.DelfinadaAPI;
+    const BACKEND = !!(API && API.skonfigurowane);
+
+    // stan panelu (tryb backendu)
+    let STAN = { grupy: [], grupaIdx: 0, dzieci: [], wybraneDziecko: null, pliki: [] };
+
+    function openSheet(nameOrChild){
       const sheet = document.getElementById('sheet');
-      if (name) {
-        document.getElementById('sheetName').textContent = name + ' · Delfinki · 7 paź';
-        document.getElementById('sheetAvatar').textContent = name.charAt(0).toUpperCase();
+      // reset pól formularza
+      document.querySelectorAll('#sheet textarea, #sheet input[type=text]').forEach(e=>e.value='');
+      document.getElementById('mediaPreview').innerHTML='';
+      STAN.pliki = [];
+      const range = document.querySelector('#sheet input[type=range]'); if(range){ range.value=65; document.getElementById('goalVal').textContent='65%'; }
+
+      if (BACKEND && nameOrChild && typeof nameOrChild === 'object') {
+        STAN.wybraneDziecko = nameOrChild;
+        const nazwa = nameOrChild.imie + (nameOrChild.nazwisko? ' '+nameOrChild.nazwisko : '');
+        document.getElementById('sheetName').textContent = nazwa + ' · ' + (STAN.grupy[STAN.grupaIdx]?.nazwa||'');
+        document.getElementById('sheetAvatar').textContent = (nameOrChild.imie||'?').charAt(0).toUpperCase();
       } else {
-        document.getElementById('sheetName').textContent = 'Nowy wpis · Delfinki · 7 paź';
-        document.getElementById('sheetAvatar').textContent = '+';
+        const name = typeof nameOrChild === 'string' ? nameOrChild : '';
+        STAN.wybraneDziecko = null;
+        document.getElementById('sheetName').textContent = (name||'Nowy wpis') + ' · Delfinki';
+        document.getElementById('sheetAvatar').textContent = name ? name.charAt(0).toUpperCase() : '+';
       }
       sheet.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
@@ -340,6 +361,7 @@
     function addPreview(input){
       const wrap = document.getElementById('mediaPreview');
       [...input.files].forEach(file => {
+        STAN.pliki.push(file);
         const url = URL.createObjectURL(file);
         const isVideo = file.type.startsWith('video');
         const el = document.createElement('div');
@@ -351,19 +373,124 @@
       });
       if (window.lucide) lucide.createIcons();
     }
-    function saveEntry(){
-      closeSheet();
+
+    function zbierzFormularz(){
+      const q = sel => document.querySelector(sel);
+      const moodChecked = document.querySelector('#sheet .mood input:checked');
+      const nastroj = moodChecked ? (['m1','m2','m3','m4','m5'].indexOf(moodChecked.id)+1) : null;
+      const textareas = document.querySelectorAll('#sheet textarea');
+      return {
+        nastroj,
+        co_sie_udalo: textareas[0]?.value?.trim() || null,
+        nad_czym:     textareas[1]?.value?.trim() || null,
+        do_domu:      q('#sheet input[type=text]')?.value?.trim() || null,
+        odznaka:      q('#sheet select')?.value || null,
+        cel_postep:   parseInt(q('#sheet input[type=range]')?.value || '0', 10),
+      };
+    }
+
+    function toastOk(msg){
       const toast = document.getElementById('toast');
+      toast.querySelector('div').lastChild.textContent = ' ' + (msg || 'Wpis zapisany — rodzic go zobaczy! 🐬');
       toast.classList.remove('hidden');
-      // zaktualizuj licznik dnia (demo)
-      const c = document.getElementById('doneCount');
-      let n = Math.min(5, parseInt(c.textContent||'1',10) + 1);
-      c.textContent = n;
-      document.getElementById('dayProgress').style.width = (n/5*100) + '%';
-      if (window.lucide) lucide.createIcons();
       setTimeout(() => toast.classList.add('hidden'), 3200);
     }
-    window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
+
+    async function saveEntry(){
+      if (!BACKEND) {
+        // tryb demo (bez backendu)
+        closeSheet();
+        const c = document.getElementById('doneCount');
+        let n = Math.min(5, parseInt(c.textContent||'1',10) + 1);
+        c.textContent = n;
+        document.getElementById('dayProgress').style.width = (n/5*100) + '%';
+        toastOk('Wpis zapisany (demo) 🐬');
+        return;
+      }
+      if (!STAN.wybraneDziecko){ alert('Najpierw wybierz ucznia z listy.'); return; }
+      const btn = document.querySelector('#sheet button[onclick="saveEntry()"]');
+      if(btn){ btn.disabled=true; btn.classList.add('opacity-60'); btn.innerHTML='Zapisywanie…'; }
+      try{
+        const dane = zbierzFormularz();
+        dane.dziecko_id = STAN.wybraneDziecko.id;
+        await API.dodajWpis(dane, STAN.pliki);
+        closeSheet();
+        toastOk('Wpis zapisany — rodzic go zobaczy! 🐬');
+        await zaladujDzieci(); // odśwież listę/oznaczenia
+      }catch(err){
+        alert('Błąd zapisu: ' + (err.message||err));
+      }finally{
+        if(btn){ btn.disabled=false; btn.classList.remove('opacity-60'); btn.innerHTML='<i data-lucide="send" class="w-5 h-5"></i> Zapisz i wyślij rodzicowi'; if(window.lucide) lucide.createIcons(); }
+      }
+    }
+
+    // ----- renderowanie listy uczniów z backendu -----
+    function renderUczniowie(dzieci){
+      const list = document.getElementById('studentList');
+      if(!list) return;
+      if(!dzieci.length){
+        list.innerHTML = '<p class="text-sky-400 col-span-2">Brak dzieci w tej grupie.</p>';
+        return;
+      }
+      list.innerHTML = dzieci.map(d=>{
+        const ini=(d.imie||'?').charAt(0).toUpperCase();
+        const nazwa = (d.imie||'')+(d.nazwisko?' '+d.nazwisko:'');
+        const cel = d.cel_opis ? 'cel: '+d.cel_opis : 'cel: —';
+        return `<button data-id="${d.id}" class="student-btn group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
+          <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">${ini}</span>
+          <span class="flex-1"><span class="block font-800 text-sky-700">${nazwa}</span>
+          <span class="block text-xs text-sky-400">${cel}</span></span>
+          <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>
+        </button>`;
+      }).join('');
+      list.querySelectorAll('.student-btn').forEach(b=>{
+        b.onclick = ()=> openSheet(dzieci.find(x=>x.id===b.dataset.id));
+      });
+      const hdr = document.querySelector('section h3.font-display.text-lg');
+      if(hdr) hdr.innerHTML = '<i data-lucide="users" class="w-5 h-5 text-coral"></i> Grupa '+(STAN.grupy[STAN.grupaIdx]?.nazwa||'')+' ('+dzieci.length+')';
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function renderGrupy(){
+      const wrap = document.querySelector('section .mt-4.flex.gap-2.flex-wrap');
+      if(!wrap || !STAN.grupy.length) return;
+      wrap.innerHTML = STAN.grupy.map((g,i)=>
+        `<button data-i="${i}" class="px-4 py-2 rounded-full ${i===STAN.grupaIdx?'bg-coral text-white card-shadow':'bg-white/70 hover:bg-white text-sky-600'} transition">${g.nazwa}</button>`
+      ).join('');
+      wrap.querySelectorAll('button').forEach(b=> b.onclick=()=>{ STAN.grupaIdx=parseInt(b.dataset.i,10); renderGrupy(); zaladujDzieci(); });
+    }
+
+    async function zaladujDzieci(){
+      const grupa = STAN.grupy[STAN.grupaIdx];
+      STAN.dzieci = grupa ? await API.dzieciGrupy(grupa.id) : [];
+      renderUczniowie(STAN.dzieci);
+    }
+
+    async function startTrener(){
+      const u = await API.uzytkownik();
+      if(!u){ window.location.href='app-login.html'; return; }
+      try{
+        const p = await API.mojProfil();
+        if(p && !(p.rola==='trener'||p.rola==='admin')){
+          // rodzic trafił na panel trenera → odeślij
+          window.location.href='app-postepy.html'; return;
+        }
+        const av = document.querySelector('header .bg-sky-600.text-white.grid');
+        if(av && p?.imie) av.textContent = (p.imie[0]||'M');
+        const label = document.querySelector('header .text-sm.font-700.text-sky-700');
+        if(label && p?.imie) label.textContent = 'trener '+p.imie;
+        const avBtn = av ? av.closest('button') : null;
+        if(avBtn){ avBtn.title='Wyloguj się'; avBtn.onclick=async()=>{ if(confirm('Wylogować się?')){ await API.wyloguj(); window.location.href='app-login.html'; } }; }
+      }catch{}
+      STAN.grupy = await API.grupy();
+      renderGrupy();
+      await zaladujDzieci();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      if (BACKEND) startTrener();   // podmień dane demo na prawdziwe
+    });
   </script>
   <script src="assets/pwa.js" defer></script>
 </body>

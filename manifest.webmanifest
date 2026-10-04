@@ -4,7 +4,7 @@
   "description": "Śledź postępy swojego dziecka w szkole pływania DELFINADA: notatki, zdjęcia, filmy i cele po każdych zajęciach.",
   "lang": "pl",
   "dir": "ltr",
-  "start_url": "./app-postepy.html",
+  "start_url": "./app-login.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

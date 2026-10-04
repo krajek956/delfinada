@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — Logowanie 🐬</title>
+  <meta name="description" content="Zaloguj się do aplikacji DELFINADA — panel rodzica i trenera." />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0e7c8b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="DELFINADA" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Supabase + warstwa API -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="backend/config.js"></script>
+  <script src="backend/api.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans:['Nunito','sans-serif'], display:['"Baloo 2"','sans-serif'] },
+        colors: {
+          sky:{50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270'},
+          coral:{light:'#ffb26b',DEFAULT:'#ff8826',dark:'#e5720f'},
+          mint:{light:'#bdeef0',DEFAULT:'#22b8c0',dark:'#0e9aa2'},
+        },
+      }},
+    };
+  </script>
+  <style>
+    body{background:linear-gradient(180deg,#d2f2f6,#eafafc 60%,#fff);min-height:100vh}
+    .card-shadow{box-shadow:0 18px 40px -18px rgba(14,124,139,.35)}
+  </style>
+</head>
+<body class="font-sans text-sky-700 grid place-items-center p-4">
+
+  <main class="w-full max-w-md">
+    <!-- logo -->
+    <div class="text-center mb-6">
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-white card-shadow grid place-items-center mb-3">
+        <img src="assets/app-icon.svg" alt="DELFINADA" class="w-14 h-14" />
+      </div>
+      <h1 class="font-display font-800 text-3xl text-sky-700">DELFINADA</h1>
+      <p class="text-sky-500 font-700 text-sm">Postępy Twojego dziecka 🐬</p>
+    </div>
+
+    <!-- banner braku konfiguracji -->
+    <div id="cfgWarn" class="hidden mb-4 rounded-2xl bg-coral/10 border border-coral/30 p-4 text-sm text-coral-dark">
+      <strong>Backend nie jest jeszcze skonfigurowany.</strong>
+      Uzupełnij <code>backend/config.js</code> i uruchom <code>backend/schema.sql</code> w Supabase.
+    </div>
+
+    <div class="bg-white rounded-3xl card-shadow p-6">
+      <!-- zakładki logowanie / rejestracja -->
+      <div class="flex gap-2 mb-5 bg-sky-50 p-1 rounded-2xl text-sm font-800">
+        <button id="tabLogin" class="flex-1 py-2 rounded-xl bg-white text-sky-700 card-shadow">Logowanie</button>
+        <button id="tabReg" class="flex-1 py-2 rounded-xl text-sky-500">Rejestracja</button>
+      </div>
+
+      <form id="form" class="space-y-4">
+        <!-- pola rejestracji -->
+        <div id="regFields" class="hidden grid grid-cols-2 gap-3">
+          <input name="imie" placeholder="Imię" class="rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm" />
+          <input name="nazwisko" placeholder="Nazwisko" class="rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm" />
+        </div>
+        <input name="email" type="email" required placeholder="E-mail" class="w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm" />
+        <input name="haslo" type="password" required minlength="6" placeholder="Hasło (min. 6 znaków)" class="w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm" />
+
+        <p id="msg" class="hidden text-sm rounded-2xl p-3"></p>
+
+        <button type="submit" id="submitBtn" class="w-full py-3 rounded-2xl bg-coral text-white font-800 hover:bg-coral-dark transition flex items-center justify-center gap-2">
+          <span id="btnText">Zaloguj się</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-sky-400 mt-5">
+      <a href="index.html" class="hover:text-sky-600 font-700">← Powrót na stronę DELFINADA</a>
+    </p>
+  </main>
+
+  <script>
+    const API = window.DelfinadaAPI;
+    let tryb = 'login';
+
+    function msg(text, ok=false){
+      const el = document.getElementById('msg');
+      el.textContent = text;
+      el.className = 'text-sm rounded-2xl p-3 ' + (ok ? 'bg-mint/15 text-mint-dark' : 'bg-coral/10 text-coral-dark');
+      el.classList.remove('hidden');
+    }
+
+    async function przekierujWgRoli(){
+      try {
+        const profil = await API.mojProfil();
+        const rola = profil?.rola || 'rodzic';
+        window.location.href = (rola === 'trener' || rola === 'admin') ? 'app-trener.html' : 'app-postepy.html';
+      } catch { window.location.href = 'app-postepy.html'; }
+    }
+
+    function setTryb(t){
+      tryb = t;
+      const login = t === 'login';
+      document.getElementById('regFields').classList.toggle('hidden', login);
+      document.getElementById('btnText').textContent = login ? 'Zaloguj się' : 'Załóż konto';
+      document.getElementById('tabLogin').className = 'flex-1 py-2 rounded-xl text-sm font-800 ' + (login?'bg-white text-sky-700 card-shadow':'text-sky-500');
+      document.getElementById('tabReg').className   = 'flex-1 py-2 rounded-xl text-sm font-800 ' + (!login?'bg-white text-sky-700 card-shadow':'text-sky-500');
+      document.getElementById('msg').classList.add('hidden');
+    }
+
+    document.getElementById('tabLogin').onclick = () => setTryb('login');
+    document.getElementById('tabReg').onclick   = () => setTryb('reg');
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!API.skonfigurowane){ msg('Backend nie jest skonfigurowany — uzupełnij backend/config.js.'); return; }
+      const f = e.target;
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; btn.classList.add('opacity-60');
+      try {
+        if (tryb === 'login') {
+          await API.zaloguj(f.email.value, f.haslo.value);
+          await przekierujWgRoli();
+        } else {
+          await API.zarejestruj(f.email.value, f.haslo.value, { imie:f.imie.value, nazwisko:f.nazwisko.value, rola:'rodzic' });
+          msg('Konto utworzone! Jeśli włączone jest potwierdzanie e-mail, sprawdź skrzynkę. Następnie zaloguj się.', true);
+          setTryb('login');
+        }
+      } catch (err) {
+        msg('Błąd: ' + (err.message || err));
+      } finally {
+        btn.disabled = false; btn.classList.remove('opacity-60');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (window.lucide) lucide.createIcons();
+      if (!API.skonfigurowane) { document.getElementById('cfgWarn').classList.remove('hidden'); return; }
+      // już zalogowany? → przekieruj
+      const u = await API.uzytkownik();
+      if (u) przekierujWgRoli();
+    });
+  </script>
+</body>
+</html>

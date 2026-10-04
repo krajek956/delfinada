@@ -10,13 +10,15 @@ const CACHE = `delfinada-${APP_VERSION}`;
 // Pliki do wstępnego zapisania (działanie offline od pierwszej wizyty)
 const PRECACHE = [
   './',
+  './app-login.html',
   './app-postepy.html',
   './app-trener.html',
   './manifest.webmanifest',
   './assets/app-icon.svg',
   './assets/app-icon-maskable.svg',
   './assets/favicon.png',
-  './assets/logo-delfinada.png'
+  './assets/logo-delfinada.png',
+  './assets/pwa.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -49,6 +51,11 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
   const isSameOrigin = url.origin === self.location.origin;
+
+  // 0) Nigdy nie cache'uj wywołań do Supabase (dane muszą być świeże/żywe)
+  if (url.hostname.endsWith('.supabase.co') || url.hostname.endsWith('.supabase.in')) {
+    return; // niech przeglądarka obsłuży normalnie, bez pośrednictwa SW
+  }
 
   // 1) Nawigacje / dokumenty HTML → network-first
   if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
