@@ -138,7 +138,7 @@
           <div class="w-12 h-12 rounded-2xl bg-coral/10 grid place-items-center text-coral"><i data-lucide="clipboard-list" class="w-6 h-6"></i></div>
           <div class="flex-1">
             <div class="flex justify-between text-xs font-800 text-sky-600 mb-1">
-              <span>Wpisy dodane dziś</span><span><span id="doneCount">1</span> / 5</span>
+              <span>Wpisy dodane dziś</span><span><span id="doneCount">0</span> / <span id="dayTotal">0</span></span>
             </div>
             <div class="h-3 rounded-full bg-sky-100 overflow-hidden">
               <div id="dayProgress" class="h-full rounded-full bg-gradient-to-r from-mint to-sky-500 transition-all" style="width:20%"></div>
@@ -152,6 +152,13 @@
         <h3 class="font-display font-800 text-lg text-sky-700 mb-3 flex items-center gap-2">
           <i data-lucide="users" class="w-5 h-5 text-coral"></i> Grupa Delfinki (5)
         </h3>
+
+        <!-- wyszukiwarka uczniów -->
+        <div class="relative mb-3">
+          <i data-lucide="search" class="w-4 h-4 text-sky-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="szukajUcznia" type="search" placeholder="Szukaj ucznia…" oninput="filtrujUczniow(this.value)"
+            class="w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 pl-9 pr-3 py-2.5 text-sm text-sky-700 placeholder:text-sky-300">
+        </div>
 
         <div id="studentList" class="grid gap-3 sm:grid-cols-2">
           <!-- uczeń: gotowy wpis -->
@@ -240,9 +247,16 @@
       <!-- treść formularza -->
       <div class="p-5 space-y-5">
 
+        <!-- 0. Data zajęć -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4 text-sky-500"></i> Data zajęć</label>
+          <input type="date" id="dataZajec" class="mt-1 w-full sm:w-auto rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm text-sky-700">
+          <p class="text-[11px] text-sky-400 mt-1">Domyślnie dziś — zmień, jeśli uzupełniasz wcześniejsze zajęcia.</p>
+        </div>
+
         <!-- 1. Nastrój/ocena zajęć -->
         <div>
-          <label class="text-xs font-800 uppercase tracking-wide text-coral">Jak poszły dziś zajęcia?</label>
+          <label class="text-xs font-800 uppercase tracking-wide text-coral">Jak poszły zajęcia?</label>
           <div class="mood mt-2 flex gap-3 text-3xl">
             <span><input type="radio" name="mood" id="m1"><label for="m1" title="słabo">😟</label></span>
             <span><input type="radio" name="mood" id="m2"><label for="m2" title="ok">🙂</label></span>
@@ -289,6 +303,13 @@
             <div id="mediaPreview" class="contents"></div>
           </div>
           <p class="text-[11px] text-sky-400 mt-1">Robisz zdjęcie telefonem lub wybierasz z galerii. Filmy mile widziane — rodzice je uwielbiają. 🎥</p>
+        </div>
+
+        <!-- 5b. Aktualny cel (opis) -->
+        <div>
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="flag" class="w-4 h-4 text-coral"></i> Aktualny cel dziecka</label>
+          <input type="text" id="celOpis" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 p-3 text-sm text-sky-700 placeholder:text-sky-300" placeholder="np. Kraul 15 m">
+          <p class="text-[11px] text-sky-400 mt-1">Zmień, gdy dziecko przechodzi do kolejnego celu.</p>
         </div>
 
         <!-- 6. Odznaka + postęp celu -->
@@ -343,9 +364,11 @@
 
     // escapowanie HTML (ochrona przed XSS w szablonach)
     function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+    // YYYY-MM-DD dla <input type=date> z lokalnej strefy
+    function dzisISO(){ const d=new Date(); const o=d.getTimezoneOffset(); return new Date(d.getTime()-o*60000).toISOString().slice(0,10); }
 
     // stan panelu (tryb backendu)
-    let STAN = { grupy: [], grupaIdx: 0, dzieci: [], wybraneDziecko: null, pliki: [], edytowanyWpis: null };
+    let STAN = { grupy: [], grupaIdx: 0, dzieci: [], wybraneDziecko: null, pliki: [], edytowanyWpis: null, dzisWpisy: new Set() };
 
     function openSheet(nameOrChild){
       const sheet = document.getElementById('sheet');
@@ -358,6 +381,8 @@
       STAN.edytowanyWpis = null;                 // domyślnie tryb dodawania
       document.getElementById('sheetTytul').textContent = 'Wpis po zajęciach';
       const range = document.querySelector('#sheet input[type=range]'); if(range){ range.value=65; document.getElementById('goalVal').textContent='65%'; }
+      const dataInp = document.getElementById('dataZajec'); if(dataInp) dataInp.value = dzisISO(); // domyślnie dziś
+      const celInp = document.getElementById('celOpis'); if(celInp) celInp.value = '';
 
       const ow = document.getElementById('ostatnieWpisy');
       if (BACKEND && nameOrChild && typeof nameOrChild === 'object') {
@@ -365,6 +390,8 @@
         const nazwa = nameOrChild.imie + (nameOrChild.nazwisko? ' '+nameOrChild.nazwisko : '');
         document.getElementById('sheetName').textContent = nazwa + ' · ' + (STAN.grupy[STAN.grupaIdx]?.nazwa||'');
         document.getElementById('sheetAvatar').textContent = (nameOrChild.imie||'?').charAt(0).toUpperCase();
+        if(celInp) celInp.value = nameOrChild.cel_opis || '';          // podpowiedz aktualny cel
+        if(range && nameOrChild.cel_postep!=null){ range.value=nameOrChild.cel_postep; document.getElementById('goalVal').textContent=nameOrChild.cel_postep+'%'; }
         if(ow) ow.innerHTML = '<p class="text-xs text-sky-400">Ładowanie…</p>';
       } else {
         const name = typeof nameOrChild === 'string' ? nameOrChild : '';
@@ -449,11 +476,15 @@
         const tas = document.querySelectorAll('#sheet textarea');
         if(tas[0]) tas[0].value = w.co_sie_udalo || '';
         if(tas[1]) tas[1].value = w.nad_czym || '';
-        const txt = document.querySelector('#sheet input[type=text]'); if(txt) txt.value = w.do_domu || '';
+        const txt = document.querySelector('#sheet input[type=text]:not(#celOpis)'); if(txt) txt.value = w.do_domu || '';
         const sel = document.querySelector('#sheet select'); if(sel) sel.value = w.odznaka || '';
         const range = document.querySelector('#sheet input[type=range]');
         if(range){ range.value = w.cel_postep ?? 65; document.getElementById('goalVal').textContent = (w.cel_postep ?? 65)+'%'; }
         if(w.nastroj){ const r=document.getElementById('m'+w.nastroj); if(r) r.checked=true; }
+        // data zajęć edytowanego wpisu
+        const dataInp = document.getElementById('dataZajec');
+        if(dataInp && w.data_zajec){ dataInp.value = new Date(w.data_zajec).toISOString().slice(0,10); }
+        // cel: zostaje aktualny cel dziecka (ustawiony w openSheet)
         // istniejące media z opcją usunięcia
         renderIstniejaceMedia(w);
       }catch(e){ alert('Nie udało się wczytać wpisu: '+(e.message||e)); }
@@ -536,12 +567,15 @@
       const moodChecked = document.querySelector('#sheet .mood input:checked');
       const nastroj = moodChecked ? (['m1','m2','m3','m4','m5'].indexOf(moodChecked.id)+1) : null;
       const textareas = document.querySelectorAll('#sheet textarea');
+      const dataVal = q('#dataZajec')?.value;
       return {
         nastroj,
         co_sie_udalo: textareas[0]?.value?.trim() || null,
         nad_czym:     textareas[1]?.value?.trim() || null,
-        do_domu:      q('#sheet input[type=text]')?.value?.trim() || null,
+        do_domu:      q('#sheet input[type=text]:not(#celOpis)')?.value?.trim() || null,
         odznaka:      q('#sheet select')?.value || null,
+        cel_opis:     q('#celOpis')?.value?.trim() || null,
+        data_zajec:   dataVal ? new Date(dataVal + 'T12:00:00').toISOString() : null,
         cel_postep:   parseInt(q('#sheet input[type=range]')?.value || '0', 10),
       };
     }
@@ -607,18 +641,32 @@
         const ini=esc((d.imie||'?').charAt(0).toUpperCase());
         const nazwa = esc((d.imie||'')+(d.nazwisko?' '+d.nazwisko:''));
         const cel = d.cel_opis ? 'cel: '+esc(d.cel_opis) : 'cel: —';
-        return `<button data-id="${d.id}" class="student-btn group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
-          <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">${ini}</span>
+        const dodano = STAN.dzisWpisy.has(d.id);
+        const badge = dodano
+          ? '<span class="text-xs font-800 px-2.5 py-1 rounded-full bg-mint/20 text-mint-dark flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> dodano</span>'
+          : '<span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>';
+        return `<button data-id="${d.id}" class="student-btn group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition ${dodano?'ring-1 ring-mint/40':''}">
+          <span class="w-12 h-12 rounded-full ${dodano?'bg-mint/20 text-mint-dark':'bg-sky-100 text-sky-600'} grid place-items-center font-800 text-lg">${ini}</span>
           <span class="flex-1"><span class="block font-800 text-sky-700">${nazwa}</span>
           <span class="block text-xs text-sky-400">${cel}</span></span>
-          <span class="text-xs font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> dodaj wpis</span>
+          ${badge}
         </button>`;
       }).join('');
       list.querySelectorAll('.student-btn').forEach(b=>{
-        b.onclick = ()=> openSheet(dzieci.find(x=>x.id===b.dataset.id));
+        b.onclick = ()=> openSheet(STAN.dzieci.find(x=>x.id===b.dataset.id));
       });
+      // nagłówek grupy + realny licznik „dodane dziś"
+      const ileWszystkich = STAN.dzieci.length;
+      const ileDzis = STAN.dzieci.filter(d=>STAN.dzisWpisy.has(d.id)).length;
       const hdr = document.querySelector('section h3.font-display.text-lg');
-      if(hdr) hdr.innerHTML = '<i data-lucide="users" class="w-5 h-5 text-coral"></i> Grupa '+(STAN.grupy[STAN.grupaIdx]?.nazwa||'')+' ('+dzieci.length+')';
+      if(hdr) hdr.innerHTML = '<i data-lucide="users" class="w-5 h-5 text-coral"></i> Grupa '+esc(STAN.grupy[STAN.grupaIdx]?.nazwa||'')+' ('+ileWszystkich+')';
+      // zaktualizuj kartę postępu dnia (realnie)
+      const doneC = document.getElementById('doneCount');
+      if(doneC) doneC.textContent = ileDzis;
+      const totalLabel = document.getElementById('dayTotal');
+      if(totalLabel) totalLabel.textContent = ileWszystkich;
+      const bar = document.getElementById('dayProgress');
+      if(bar) bar.style.width = (ileWszystkich? (ileDzis/ileWszystkich*100):0) + '%';
       if(window.lucide) lucide.createIcons();
     }
 
@@ -634,8 +682,19 @@
     async function zaladujDzieci(){
       const grupa = STAN.grupy[STAN.grupaIdx];
       STAN.dzieci = grupa ? await API.dzieciGrupy(grupa.id) : [];
-      renderUczniowie(STAN.dzieci);
+      // które dzieci mają już wpis z dziś?
+      try { STAN.dzisWpisy = await API.dzieciZWpisemDzis(STAN.dzieci.map(d=>d.id)); }
+      catch { STAN.dzisWpisy = new Set(); }
+      const szukaj = document.getElementById('szukajUcznia');
+      renderUczniowie(filtrujListe(STAN.dzieci, szukaj ? szukaj.value : ''));
     }
+
+    function filtrujListe(dzieci, q){
+      q = (q||'').trim().toLowerCase();
+      if(!q) return dzieci;
+      return dzieci.filter(d=> ((d.imie||'')+' '+(d.nazwisko||'')).toLowerCase().includes(q));
+    }
+    function filtrujUczniow(q){ renderUczniowie(filtrujListe(STAN.dzieci, q)); }
 
     async function startTrener(){
       const u = await API.uzytkownik();

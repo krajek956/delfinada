@@ -118,11 +118,24 @@
       return data;
     },
 
+    // Zbiór ID dzieci, które mają wpis z DZISIAJ (do statusu „dodano dziś")
+    async dzieciZWpisemDzis(dzieckoIds = []) {
+      wymagajKlienta();
+      if (!dzieckoIds.length) return new Set();
+      const start = new Date(); start.setHours(0,0,0,0);
+      const { data, error } = await sb
+        .from('wpisy').select('dziecko_id')
+        .in('dziecko_id', dzieckoIds)
+        .gte('data_zajec', start.toISOString());
+      if (error) throw error;
+      return new Set((data || []).map(w => w.dziecko_id));
+    },
+
     async dodajWpis(wpis, pliki = []) {
       wymagajKlienta();
       const u = await API.uzytkownik();
       // 1) utwórz wpis
-      const { data: nowy, error } = await sb.from('wpisy').insert({
+      const rekord = {
         dziecko_id:   wpis.dziecko_id,
         trener_id:    u ? u.id : null,
         nastroj:      wpis.nastroj ?? null,
@@ -131,7 +144,9 @@
         do_domu:      wpis.do_domu ?? null,
         odznaka:      wpis.odznaka || null,
         cel_postep:   wpis.cel_postep ?? null
-      }).select().single();
+      };
+      if (wpis.data_zajec) rekord.data_zajec = wpis.data_zajec; // inaczej baza użyje now()
+      const { data: nowy, error } = await sb.from('wpisy').insert(rekord).select().single();
       if (error) throw error;
 
       // 2) wgraj pliki do storage i zapisz wiersze media
@@ -145,9 +160,12 @@
         if (ins.error) throw ins.error;
       }
 
-      // 3) zaktualizuj aktualny cel dziecka (jeśli podano postęp)
-      if (wpis.cel_postep != null) {
-        await sb.from('dzieci').update({ cel_postep: wpis.cel_postep }).eq('id', wpis.dziecko_id);
+      // 3) zaktualizuj aktualny cel dziecka (postęp i/lub opis)
+      const celUpd = {};
+      if (wpis.cel_postep != null) celUpd.cel_postep = wpis.cel_postep;
+      if (wpis.cel_opis != null)   celUpd.cel_opis = wpis.cel_opis;
+      if (Object.keys(celUpd).length) {
+        await sb.from('dzieci').update(celUpd).eq('id', wpis.dziecko_id);
       }
       return nowy;
     },
@@ -165,14 +183,16 @@
     // Edytuj treść wpisu + opcjonalnie dodaj nowe pliki
     async aktualizujWpis(wpisId, dziecko_id, zmiany, nowePliki = []) {
       wymagajKlienta();
-      const { error } = await sb.from('wpisy').update({
+      const upd = {
         nastroj:      zmiany.nastroj ?? null,
         co_sie_udalo: zmiany.co_sie_udalo ?? null,
         nad_czym:     zmiany.nad_czym ?? null,
         do_domu:      zmiany.do_domu ?? null,
         odznaka:      zmiany.odznaka || null,
         cel_postep:   zmiany.cel_postep ?? null
-      }).eq('id', wpisId);
+      };
+      if (zmiany.data_zajec) upd.data_zajec = zmiany.data_zajec;
+      const { error } = await sb.from('wpisy').update(upd).eq('id', wpisId);
       if (error) throw error;
 
       // dodaj ewentualne nowe media
@@ -186,8 +206,12 @@
         if (ins.error) throw ins.error;
       }
 
-      if (zmiany.cel_postep != null && dziecko_id) {
-        await sb.from('dzieci').update({ cel_postep: zmiany.cel_postep }).eq('id', dziecko_id);
+      // zsynchronizuj cel dziecka (postęp i/lub opis)
+      const celUpd = {};
+      if (zmiany.cel_postep != null) celUpd.cel_postep = zmiany.cel_postep;
+      if (zmiany.cel_opis != null)   celUpd.cel_opis = zmiany.cel_opis;
+      if (dziecko_id && Object.keys(celUpd).length) {
+        await sb.from('dzieci').update(celUpd).eq('id', dziecko_id);
       }
     },
 
