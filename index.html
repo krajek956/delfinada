@@ -10,6 +10,12 @@
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
 
+  <!-- PWA (instalacja aplikacji z sekcji „Pobierz aplikację") -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0e7c8b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="DELFINADA" />
+
   <!-- Tailwind CSS (CDN) -->
   <!-- Przyspieszenie połączeń z CDN -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
@@ -430,6 +436,81 @@
     </div>
   </section>
 
+  <!-- ============ APLIKACJA DLA RODZICÓW ============ -->
+  <section id="aplikacja" class="py-20 md:py-28 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative overflow-hidden rounded-[2rem] card-shadow text-white"
+           style="background:linear-gradient(120deg,#0b6270,#189aad)">
+        <!-- ozdobne bąble -->
+        <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-white/10"></div>
+        <div class="absolute -left-12 -bottom-12 w-56 h-56 rounded-full bg-white/5"></div>
+
+        <div class="relative grid lg:grid-cols-2 gap-8 items-center p-8 sm:p-12">
+          <!-- treść -->
+          <div>
+            <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-bold">
+              <i data-lucide="smartphone" class="w-4 h-4"></i> Dla rodziców naszych kursantów
+            </span>
+            <h2 class="font-display text-4xl sm:text-5xl font-extrabold mt-5 leading-tight">
+              Śledź postępy dziecka <span class="text-sunny-light">w aplikacji</span> 🐬
+            </h2>
+            <p class="mt-4 text-white/90 text-lg max-w-lg">
+              Po każdych zajęciach zobaczysz notatki trenera, zdjęcia i filmy oraz cele,
+              nad którymi pracuje Twoje dziecko. Zainstaluj DELFINADA na telefonie jak zwykłą aplikację.
+            </p>
+
+            <!-- zalety -->
+            <ul class="mt-6 space-y-2 text-white/90">
+              <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny-light"></i> Postępy po każdych zajęciach</li>
+              <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny-light"></i> Zdjęcia i filmy z basenu</li>
+              <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny-light"></i> Powiadomienia o nowych wpisach</li>
+            </ul>
+
+            <!-- przyciski -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+              <button id="btn-pobierz-app"
+                class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-base shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
+                <i data-lucide="download" class="w-5 h-5"></i> Pobierz aplikację
+              </button>
+              <a href="app-login.html"
+                class="inline-flex items-center justify-center gap-2 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold px-8 py-4 text-base transition-colors">
+                <i data-lucide="log-in" class="w-5 h-5"></i> Mam już konto
+              </a>
+            </div>
+            <p id="app-hint" class="mt-3 text-sm text-white/70"></p>
+          </div>
+
+          <!-- wizual: makieta telefonu -->
+          <div class="hidden lg:flex justify-center">
+            <div class="relative w-[230px] h-[460px] rounded-[2.5rem] bg-sky-900/40 border-[6px] border-white/20 shadow-2xl overflow-hidden">
+              <div class="absolute top-0 inset-x-0 h-6 bg-black/30 flex justify-center"><span class="mt-1 w-16 h-1.5 rounded-full bg-white/40"></span></div>
+              <div class="h-full w-full bg-gradient-to-b from-sky-100 to-white p-3 pt-8 text-sky-700">
+                <div class="flex items-center gap-2">
+                  <img src="assets/app-icon.svg" alt="" class="w-9 h-9" />
+                  <div class="leading-tight"><p class="font-display font-extrabold text-sm">DELFINADA</p><p class="text-[10px] text-sky-400">Panel rodzica</p></div>
+                </div>
+                <div class="mt-3 rounded-2xl bg-white card-shadow p-3">
+                  <p class="text-[11px] font-extrabold text-coral uppercase">Aktualny cel</p>
+                  <p class="font-display font-extrabold text-sm leading-tight">Kraul 15 m</p>
+                  <div class="h-2 rounded-full bg-sky-100 mt-2 overflow-hidden"><div class="h-full rounded-full bg-coral" style="width:65%"></div></div>
+                </div>
+                <div class="mt-2 rounded-2xl bg-white card-shadow p-3">
+                  <p class="text-[11px] font-bold text-sky-400">Dziś · 10:00</p>
+                  <p class="text-xs font-extrabold text-sky-700">Super oddychanie! 🎉</p>
+                  <div class="mt-2 grid grid-cols-3 gap-1.5">
+                    <div class="aspect-square rounded-lg bg-sky-200"></div>
+                    <div class="aspect-square rounded-lg bg-sky-300"></div>
+                    <div class="aspect-square rounded-lg bg-sky-900 grid place-items-center"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ ZAPISY / FORMULARZ ============ -->
   <section id="zapisy" class="py-20 md:py-28 playful-bg">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -754,6 +835,79 @@
 
       render();
     })();
+  </script>
+
+  <!-- ===== PWA: rejestracja + inteligentny przycisk „Pobierz aplikację" ===== -->
+  <script>
+  (function(){
+    const btn  = document.getElementById('btn-pobierz-app');
+    const hint = document.getElementById('app-hint');
+    if(!btn) return;
+
+    const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPad "desktop UA"
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // rejestracja service workera (warunek instalowalności PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(()=>{});
+      });
+    }
+
+    // 1) Android/desktop: złap zdarzenie instalacji
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if(hint) hint.textContent = 'Kliknij, aby zainstalować aplikację na swoim urządzeniu.';
+    });
+
+    // 2) jeśli już zainstalowana — zaproś do otwarcia
+    if (standalone) {
+      btn.innerHTML = '<i data-lucide="log-in" class="w-5 h-5"></i> Otwórz aplikację';
+      if (window.lucide) lucide.createIcons();
+      btn.onclick = () => { window.location.href = 'app-login.html'; };
+      if(hint) hint.textContent = 'Aplikacja jest już zainstalowana. 🐬';
+      return;
+    }
+
+    // instrukcja iOS (bo Safari nie wspiera automatycznej instalacji)
+    function pokazInstrukcjeIOS(){
+      const back = document.createElement('div');
+      back.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(11,98,112,.55);backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px;font-family:Nunito,system-ui,sans-serif;';
+      back.innerHTML =
+        '<div style="background:#fff;max-width:420px;width:100%;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(11,98,112,.6)">'
+        + '<div style="background:linear-gradient(120deg,#0b6270,#189aad);color:#fff;padding:18px 22px;font-weight:800;font-size:18px">📲 Zainstaluj DELFINADA na iPhone</div>'
+        + '<div style="padding:20px 22px;color:#0b6270">'
+        + '<p style="margin:0 0 14px;line-height:1.5">W przeglądarce <b>Safari</b> zrób tak:</p>'
+        + '<ol style="margin:0;padding-left:20px;line-height:1.9">'
+        + '<li>Dotknij ikony <b>Udostępnij</b> (kwadrat ze strzałką w górę) na dole ekranu</li>'
+        + '<li>Wybierz <b>„Do ekranu początkowego”</b></li>'
+        + '<li>Potwierdź <b>„Dodaj”</b> — ikona 🐬 pojawi się na ekranie</li>'
+        + '</ol>'
+        + '<button id="ios-ok" style="margin-top:18px;width:100%;background:#ff8826;color:#fff;border:0;border-radius:14px;padding:12px;font-weight:800;font-size:16px;cursor:pointer">Rozumiem</button>'
+        + '</div></div>';
+      document.body.appendChild(back);
+      const close = () => back.remove();
+      back.addEventListener('click', (e)=>{ if(e.target===back) close(); });
+      back.querySelector('#ios-ok').onclick = close;
+    }
+
+    btn.onclick = async () => {
+      if (deferredPrompt) {               // Android/desktop — natywne okno instalacji
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      } else if (isiOS) {                 // iPhone/iPad — instrukcja krok po kroku
+        pokazInstrukcjeIOS();
+      } else {                            // inne przypadki (np. już zainstalowana / brak wsparcia)
+        window.location.href = 'app-login.html';
+      }
+    };
+
+    if(hint && isiOS) hint.textContent = 'Na iPhone: kliknij, a pokażemy, jak dodać aplikację do ekranu początkowego.';
+  })();
   </script>
 </body>
 </html>
