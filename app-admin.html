@@ -198,6 +198,39 @@
         <div><label class="text-xs font-800 text-sky-600">Nazwa grupy *</label><input id="g_nazwa" class="field mt-1" placeholder="np. Delfinki" /></div>
         <div><label class="text-xs font-800 text-sky-600">Opis</label><input id="g_opis" class="field mt-1" placeholder="np. poniedziałki i środy 10:00" /></div>
         <div><label class="text-xs font-800 text-sky-600">Trener prowadzący</label><select id="g_trener" class="field mt-1 bg-white"></select></div>
+
+        <!-- Harmonogram (tylko przy edycji istniejącej grupy) -->
+        <div id="g_harmonogramBox" class="hidden pt-3 border-t border-sky-100">
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="calendar-days" class="w-4 h-4 text-coral"></i> Harmonogram zajęć</label>
+          <div id="g_terminyLista" class="mt-2 space-y-2"></div>
+
+          <!-- formularz dodawania terminu -->
+          <div class="mt-3 rounded-2xl bg-sky-50 p-3 space-y-2">
+            <div class="flex gap-2 text-xs font-800">
+              <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="t_typ" value="tygodniowy" checked onchange="przelaczTypTerminu()"> cykliczny (co tydzień)</label>
+              <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="t_typ" value="jednorazowy" onchange="przelaczTypTerminu()"> jednorazowy</label>
+            </div>
+            <!-- cykliczny: dni tygodnia -->
+            <div id="t_tydzien">
+              <div class="flex gap-1 flex-wrap" id="t_dni">
+                <!-- generowane: pn..nd -->
+              </div>
+              <div class="flex gap-2 mt-2">
+                <div class="flex-1"><label class="text-[10px] font-800 text-sky-500">od</label><input type="date" id="t_od" class="field py-2 text-xs"></div>
+                <div class="flex-1"><label class="text-[10px] font-800 text-sky-500">do</label><input type="date" id="t_do" class="field py-2 text-xs"></div>
+              </div>
+            </div>
+            <!-- jednorazowy: data -->
+            <div id="t_jednorazowy" class="hidden">
+              <label class="text-[10px] font-800 text-sky-500">data</label><input type="date" id="t_data" class="field py-2 text-xs">
+            </div>
+            <div class="flex gap-2 items-end">
+              <div class="w-24"><label class="text-[10px] font-800 text-sky-500">godzina</label><input type="time" id="t_godzina" value="10:00" class="field py-2 text-xs"></div>
+              <button onclick="dodajTermin()" class="px-4 py-2 rounded-xl bg-coral text-white font-800 text-sm hover:bg-coral-dark transition">+ dodaj termin</button>
+            </div>
+          </div>
+          <p class="text-[11px] text-sky-400 mt-1">Terminy pojawią się w kalendarzu rodziców tej grupy.</p>
+        </div>
       </div>
       <div class="p-4 border-t border-sky-100 flex gap-3">
         <button id="g_usun" onclick="usunGrupe()" class="hidden px-4 py-3 rounded-2xl bg-coral/10 text-coral font-800 hover:bg-coral/20 transition">Usuń</button>
@@ -458,7 +491,83 @@
       document.getElementById('g_opis').value = g?.opis || '';
       wypelnijTrenerSelect(document.getElementById('g_trener'), g?.trener_id);
       document.getElementById('g_usun').classList.toggle('hidden', !g);
+      // harmonogram tylko dla istniejącej grupy
+      const hb = document.getElementById('g_harmonogramBox');
+      hb.classList.toggle('hidden', !g);
+      if(g){ zbudujDniTygodnia(); przelaczTypTerminu(); ladujTerminy(g.id); }
       openModal('modalGrupa');
+    }
+
+    // ----- HARMONOGRAM / TERMINY -----
+    const DNI_PL = [ {i:1,n:'pn'},{i:2,n:'wt'},{i:3,n:'śr'},{i:4,n:'czw'},{i:5,n:'pt'},{i:6,n:'sob'},{i:0,n:'nd'} ];
+    function zbudujDniTygodnia(){
+      const box = document.getElementById('t_dni');
+      if(box.dataset.gotowe) return;
+      box.innerHTML = DNI_PL.map(d=>`<label class="cursor-pointer"><input type="checkbox" class="t-dzien hidden peer" value="${d.i}"><span class="px-2.5 py-1.5 rounded-lg bg-white text-sky-500 text-xs font-800 peer-checked:bg-coral peer-checked:text-white transition inline-block">${d.n}</span></label>`).join('');
+      box.dataset.gotowe = '1';
+    }
+    function przelaczTypTerminu(){
+      const typ = document.querySelector('input[name="t_typ"]:checked')?.value || 'tygodniowy';
+      document.getElementById('t_tydzien').classList.toggle('hidden', typ!=='tygodniowy');
+      document.getElementById('t_jednorazowy').classList.toggle('hidden', typ!=='jednorazowy');
+    }
+
+    async function ladujTerminy(grupaId){
+      const box = document.getElementById('g_terminyLista');
+      box.innerHTML = '<p class="text-xs text-sky-400">Ładowanie…</p>';
+      try{
+        const terminy = await API.terminyGrupy(grupaId);
+        if(!terminy.length){ box.innerHTML='<p class="text-xs text-sky-400">Brak terminów. Dodaj pierwszy poniżej.</p>'; return; }
+        const nazwyDni = {0:'nd',1:'pn',2:'wt',3:'śr',4:'czw',5:'pt',6:'sob'};
+        box.innerHTML = terminy.map(t=>{
+          let opis;
+          if(t.typ==='tygodniowy'){
+            const dni = (t.dni_tygodnia||[]).map(d=>nazwyDni[d]).join(', ');
+            opis = 'co tydzień: '+dni+' · '+(t.godzina||'').slice(0,5);
+          } else {
+            opis = (t.data||'')+' · '+(t.godzina||'').slice(0,5);
+          }
+          return `<div class="flex items-center gap-2 bg-sky-50 rounded-xl px-3 py-2 text-sm">
+            <i data-lucide="${t.typ==='tygodniowy'?'repeat':'calendar'}" class="w-4 h-4 text-mint-dark"></i>
+            <span class="flex-1 text-sky-700">${esc(opis)}</span>
+            <button onclick="usunTermin('${t.id}')" class="text-coral hover:text-coral-dark" title="Usuń"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>`;
+        }).join('');
+        if(window.lucide) lucide.createIcons();
+      }catch(e){ box.innerHTML='<p class="text-xs text-coral-dark">Nie udało się wczytać terminów.</p>'; }
+    }
+
+    async function dodajTermin(){
+      const grupaId = document.getElementById('g_id').value;
+      if(!grupaId) return;
+      const typ = document.querySelector('input[name="t_typ"]:checked')?.value || 'tygodniowy';
+      const godzina = document.getElementById('t_godzina').value || '10:00';
+      const t = { grupa_id: grupaId, typ, godzina };
+      if(typ==='tygodniowy'){
+        const dni = [...document.querySelectorAll('.t-dzien:checked')].map(c=>parseInt(c.value,10));
+        if(!dni.length){ toast('Zaznacz przynajmniej jeden dzień tygodnia.', 'error'); return; }
+        t.dni_tygodnia = dni;
+        t.od_dnia = document.getElementById('t_od').value || null;
+        t.do_dnia = document.getElementById('t_do').value || null;
+      } else {
+        const data = document.getElementById('t_data').value;
+        if(!data){ toast('Wybierz datę.', 'error'); return; }
+        t.data = data;
+      }
+      try{
+        await API.dodajTermin(t);
+        toast('Dodano termin 📅');
+        // reset pól
+        document.querySelectorAll('.t-dzien:checked').forEach(c=>c.checked=false);
+        document.getElementById('t_data').value=''; document.getElementById('t_od').value=''; document.getElementById('t_do').value='';
+        ladujTerminy(grupaId);
+      }catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
+    }
+
+    async function usunTermin(id){
+      if(!await potwierdz('Usunąć ten termin z harmonogramu?', {ok:'Usuń'})) return;
+      try{ await API.usunTermin(id); toast('Usunięto termin'); ladujTerminy(document.getElementById('g_id').value); }
+      catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     async function zapiszGrupe(){

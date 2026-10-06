@@ -364,6 +364,67 @@
       if (error) throw error;
     },
 
+    // ---------- TERMINY / KALENDARZ ----------
+    async terminyGrupy(grupaId) {
+      wymagajKlienta();
+      const { data, error } = await sb.from('terminy')
+        .select('*').eq('grupa_id', grupaId).order('typ').order('data');
+      if (error) throw error;
+      return data;
+    },
+
+    async dodajTermin(t) {
+      wymagajKlienta();
+      const { data, error } = await sb.from('terminy').insert({
+        grupa_id: t.grupa_id, tytul: t.tytul || null, typ: t.typ,
+        godzina: t.godzina || '10:00', czas_trwania: t.czas_trwania || 60,
+        data: t.data || null, dni_tygodnia: t.dni_tygodnia || null,
+        od_dnia: t.od_dnia || null, do_dnia: t.do_dnia || null
+      }).select().single();
+      if (error) throw error;
+      return data;
+    },
+
+    async usunTermin(id) {
+      wymagajKlienta();
+      const { error } = await sb.from('terminy').delete().eq('id', id);
+      if (error) throw error;
+    },
+
+    // Wszystkie terminy grup dziecka rozwinięte na konkretne wystąpienia
+    // w danym miesiącu (rok, miesiac: 0-11). Zwraca mapę 'YYYY-MM-DD' -> [wystąpienia].
+    async kalendarzMiesiac(grupaId, rok, miesiac) {
+      wymagajKlienta();
+      if (!grupaId) return {};
+      const terminy = await API.terminyGrupy(grupaId);
+      const mapa = {};
+      const pierwszy = new Date(rok, miesiac, 1);
+      const ostatni = new Date(rok, miesiac + 1, 0);
+      const klucz = (d) => {
+        const o = d.getTimezoneOffset();
+        return new Date(d.getTime() - o*60000).toISOString().slice(0,10);
+      };
+      const dodaj = (dateObj, t) => {
+        const k = klucz(dateObj);
+        (mapa[k] = mapa[k] || []).push({ godzina: (t.godzina||'').slice(0,5), tytul: t.tytul, typ: t.typ, id: t.id });
+      };
+      for (const t of terminy) {
+        if (t.typ === 'jednorazowy' && t.data) {
+          const d = new Date(t.data + 'T12:00:00');
+          if (d >= pierwszy && d <= ostatni) dodaj(d, t);
+        } else if (t.typ === 'tygodniowy' && Array.isArray(t.dni_tygodnia)) {
+          const od = t.od_dnia ? new Date(t.od_dnia + 'T00:00:00') : pierwszy;
+          const doo = t.do_dnia ? new Date(t.do_dnia + 'T23:59:59') : ostatni;
+          for (let d = new Date(pierwszy); d <= ostatni; d.setDate(d.getDate()+1)) {
+            if (d >= od && d <= doo && t.dni_tygodnia.includes(d.getDay())) {
+              dodaj(new Date(d), t);
+            }
+          }
+        }
+      }
+      return mapa;
+    },
+
     // ---------- STORAGE ----------
     async urlMedia(sciezka) {
       wymagajKlienta();
