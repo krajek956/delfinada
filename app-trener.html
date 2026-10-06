@@ -231,7 +231,7 @@
       <div class="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-sky-100 sticky top-0 bg-white z-10">
         <span class="w-11 h-11 rounded-full bg-coral/15 text-coral grid place-items-center font-800" id="sheetAvatar">Z</span>
         <div class="flex-1">
-          <p class="font-display font-800 text-lg text-sky-700 leading-tight">Wpis po zajęciach</p>
+          <p id="sheetTytul" class="font-display font-800 text-lg text-sky-700 leading-tight">Wpis po zajęciach</p>
           <p class="text-xs text-sky-400" id="sheetName">Zosia · Delfinki · 7 paź</p>
         </div>
         <button onclick="closeSheet()" class="w-9 h-9 rounded-full hover:bg-sky-50 grid place-items-center text-sky-400"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -279,6 +279,8 @@
         <!-- 5. Zdjęcia / filmy -->
         <div>
           <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-sky-500"></i> Zdjęcia i filmy</label>
+          <!-- istniejące media (tylko w trybie edycji) -->
+          <div id="istniejaceMedia" class="hidden mt-2 grid grid-cols-4 gap-2"></div>
           <div class="mt-2 grid grid-cols-4 gap-2">
             <label class="media-add aspect-square rounded-xl grid place-items-center text-sky-400 hover:text-coral hover:border-coral cursor-pointer transition">
               <input type="file" accept="image/*,video/*" multiple class="hidden" onchange="addPreview(this)">
@@ -308,6 +310,14 @@
           </div>
         </div>
 
+        <!-- 7. Ostatnie wpisy ucznia (edycja/usuwanie) -->
+        <div class="pt-2 border-t border-sky-100">
+          <label class="text-xs font-800 uppercase tracking-wide text-sky-600 flex items-center gap-1"><i data-lucide="history" class="w-4 h-4 text-sky-500"></i> Ostatnie wpisy</label>
+          <div id="ostatnieWpisy" class="mt-2 space-y-2">
+            <p class="text-xs text-sky-400">Wybierz ucznia, aby zobaczyć wcześniejsze wpisy.</p>
+          </div>
+        </div>
+
       </div>
 
       <!-- stopka panelu -->
@@ -332,30 +342,39 @@
     const BACKEND = !!(API && API.skonfigurowane);
 
     // stan panelu (tryb backendu)
-    let STAN = { grupy: [], grupaIdx: 0, dzieci: [], wybraneDziecko: null, pliki: [] };
+    let STAN = { grupy: [], grupaIdx: 0, dzieci: [], wybraneDziecko: null, pliki: [], edytowanyWpis: null };
 
     function openSheet(nameOrChild){
       const sheet = document.getElementById('sheet');
       // reset pól formularza
       document.querySelectorAll('#sheet textarea, #sheet input[type=text]').forEach(e=>e.value='');
       document.getElementById('mediaPreview').innerHTML='';
+      document.getElementById('istniejaceMedia').classList.add('hidden');
+      document.getElementById('istniejaceMedia').innerHTML='';
       STAN.pliki = [];
+      STAN.edytowanyWpis = null;                 // domyślnie tryb dodawania
+      document.getElementById('sheetTytul').textContent = 'Wpis po zajęciach';
       const range = document.querySelector('#sheet input[type=range]'); if(range){ range.value=65; document.getElementById('goalVal').textContent='65%'; }
 
+      const ow = document.getElementById('ostatnieWpisy');
       if (BACKEND && nameOrChild && typeof nameOrChild === 'object') {
         STAN.wybraneDziecko = nameOrChild;
         const nazwa = nameOrChild.imie + (nameOrChild.nazwisko? ' '+nameOrChild.nazwisko : '');
         document.getElementById('sheetName').textContent = nazwa + ' · ' + (STAN.grupy[STAN.grupaIdx]?.nazwa||'');
         document.getElementById('sheetAvatar').textContent = (nameOrChild.imie||'?').charAt(0).toUpperCase();
+        if(ow) ow.innerHTML = '<p class="text-xs text-sky-400">Ładowanie…</p>';
       } else {
         const name = typeof nameOrChild === 'string' ? nameOrChild : '';
         STAN.wybraneDziecko = null;
         document.getElementById('sheetName').textContent = (name||'Nowy wpis') + ' · Delfinki';
         document.getElementById('sheetAvatar').textContent = name ? name.charAt(0).toUpperCase() : '+';
+        if(ow) ow.innerHTML = '<p class="text-xs text-sky-400">Wybierz ucznia z listy, aby zobaczyć i edytować wcześniejsze wpisy.</p>';
       }
       sheet.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
       if (window.lucide) lucide.createIcons();
+      // dociągnij ostatnie wpisy wybranego ucznia (tryb dodawania)
+      if (STAN.wybraneDziecko && !STAN.edytowanyWpis) odswiezWpisyUcznia();
     }
     function closeSheet(){
       document.getElementById('sheet').classList.add('hidden');
@@ -415,6 +434,100 @@
       return wynik;
     }
 
+    // ===== EDYCJA WPISU =====
+    async function edytujWpis(wpisId, dziecko){
+      try{
+        const w = await API.wpis(wpisId);
+        // otwórz arkusz dla danego dziecka, potem przełącz w tryb edycji
+        openSheet(dziecko || STAN.wybraneDziecko);
+        STAN.edytowanyWpis = w;
+        document.getElementById('sheetTytul').textContent = 'Edytuj wpis';
+        // wypełnij pola
+        const tas = document.querySelectorAll('#sheet textarea');
+        if(tas[0]) tas[0].value = w.co_sie_udalo || '';
+        if(tas[1]) tas[1].value = w.nad_czym || '';
+        const txt = document.querySelector('#sheet input[type=text]'); if(txt) txt.value = w.do_domu || '';
+        const sel = document.querySelector('#sheet select'); if(sel) sel.value = w.odznaka || '';
+        const range = document.querySelector('#sheet input[type=range]');
+        if(range){ range.value = w.cel_postep ?? 65; document.getElementById('goalVal').textContent = (w.cel_postep ?? 65)+'%'; }
+        if(w.nastroj){ const r=document.getElementById('m'+w.nastroj); if(r) r.checked=true; }
+        // istniejące media z opcją usunięcia
+        renderIstniejaceMedia(w);
+      }catch(e){ alert('Nie udało się wczytać wpisu: '+(e.message||e)); }
+    }
+
+    function renderIstniejaceMedia(w){
+      const box = document.getElementById('istniejaceMedia');
+      const media = w.media || [];
+      if(!media.length){ box.classList.add('hidden'); box.innerHTML=''; return; }
+      box.classList.remove('hidden');
+      box.innerHTML = media.map(m=>{
+        const inner = m.typ==='film'
+          ? `<video src="${m.url||''}" class="w-full h-full object-cover opacity-80"></video><span class="absolute inset-0 grid place-items-center text-white"><i data-lucide="play" class="w-5 h-5"></i></span>`
+          : `<img src="${m.url||''}" class="w-full h-full object-cover">`;
+        return `<div class="relative aspect-square rounded-xl overflow-hidden bg-sky-900" data-media-id="${m.id}">
+          ${inner}
+          <button type="button" onclick="usunMedium('${m.id}','${(m.sciezka||'').replace(/'/g,'')}')"
+            class="absolute top-1 right-1 w-6 h-6 rounded-full bg-coral text-white grid place-items-center shadow" title="Usuń">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        </div>`;
+      }).join('');
+      if(window.lucide) lucide.createIcons();
+    }
+
+    async function usunMedium(mediaId, sciezka){
+      if(!confirm('Usunąć ten plik z wpisu?')) return;
+      try{
+        await API.usunMedium(mediaId, sciezka);
+        // odśwież istniejące media w arkuszu
+        if(STAN.edytowanyWpis){
+          STAN.edytowanyWpis.media = (STAN.edytowanyWpis.media||[]).filter(m=>m.id!==mediaId);
+          renderIstniejaceMedia(STAN.edytowanyWpis);
+        }
+        toastOk('Plik usunięty');
+      }catch(e){ alert('Błąd: '+(e.message||e)); }
+    }
+
+    // ===== OSTATNIE WPISY UCZNIA (lista z akcjami) =====
+    const PL_MIES = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+    function fmtData(iso){ const d=new Date(iso); return d.getDate()+' '+PL_MIES[d.getMonth()]+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+
+    async function odswiezWpisyUcznia(){
+      const box = document.getElementById('ostatnieWpisy');
+      if(!box || !STAN.wybraneDziecko){ return; }
+      box.innerHTML = '<p class="text-xs text-sky-400">Ładowanie…</p>';
+      try{
+        const wpisy = await API.wpisyDziecka(STAN.wybraneDziecko.id);
+        if(!wpisy.length){ box.innerHTML = '<p class="text-xs text-sky-400">Brak wcześniejszych wpisów.</p>'; return; }
+        box.innerHTML = wpisy.slice(0,5).map(w=>{
+          const tytul = w.co_sie_udalo ? w.co_sie_udalo : (w.nad_czym || 'Wpis z zajęć');
+          const liczbaMediow = (w.media||[]).length;
+          const mediaInfo = liczbaMediow ? `<span class="text-[11px] text-sky-400">📎 ${liczbaMediow}</span>` : '';
+          return `<div class="flex items-center gap-2 bg-sky-50 rounded-xl px-3 py-2">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-800 text-sky-700 truncate">${esc(tytul)}</p>
+              <p class="text-[11px] text-sky-400">${fmtData(w.data_zajec)} ${mediaInfo?'· '+liczbaMediow+' plik(ów)':''}</p>
+            </div>
+            <button onclick="edytujWpis('${w.id}')" class="w-8 h-8 rounded-lg bg-white hover:bg-sky-100 grid place-items-center text-sky-600" title="Edytuj"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+            <button onclick="usunWpis('${w.id}')" class="w-8 h-8 rounded-lg bg-white hover:bg-coral/10 grid place-items-center text-coral" title="Usuń"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>`;
+        }).join('');
+        if(window.lucide) lucide.createIcons();
+      }catch(e){ box.innerHTML = '<p class="text-xs text-coral-dark">Nie udało się wczytać wpisów.</p>'; }
+    }
+
+    async function usunWpis(wpisId){
+      if(!confirm('Usunąć cały wpis wraz ze zdjęciami/filmami? Tej operacji nie można cofnąć.')) return;
+      try{
+        await API.usunWpis(wpisId);
+        // jeśli właśnie edytowany — wyczyść tryb edycji
+        if(STAN.edytowanyWpis && STAN.edytowanyWpis.id===wpisId){ STAN.edytowanyWpis=null; }
+        toastOk('Wpis usunięty 🗑️');
+        await odswiezWpisyUcznia();
+        await zaladujDzieci();
+      }catch(e){ alert('Błąd: '+(e.message||e)); }
+    }
+
     function zbierzFormularz(){
       const q = sel => document.querySelector(sel);
       const moodChecked = document.querySelector('#sheet .mood input:checked');
@@ -458,10 +571,20 @@
         if(btn && STAN.pliki.some(f=>f.type.startsWith('image/'))) btn.innerHTML='Optymalizuję zdjęcia…';
         const pliki = await przygotujPliki(STAN.pliki);
         if(btn) btn.innerHTML='Wysyłanie…';
-        await API.dodajWpis(dane, pliki);
-        closeSheet();
-        toastOk('Wpis zapisany — rodzic dostanie powiadomienie e-mail! 🐬');
-        await zaladujDzieci(); // odśwież listę/oznaczenia
+
+        if(STAN.edytowanyWpis){
+          // TRYB EDYCJI — aktualizuj istniejący wpis (+ ewentualne nowe pliki)
+          await API.aktualizujWpis(STAN.edytowanyWpis.id, dane.dziecko_id, dane, pliki);
+          closeSheet();
+          toastOk('Wpis zaktualizowany ✏️');
+        } else {
+          // TRYB DODAWANIA
+          await API.dodajWpis(dane, pliki);
+          closeSheet();
+          toastOk('Wpis zapisany — rodzic dostanie powiadomienie e-mail! 🐬');
+        }
+        await odswiezWpisyUcznia(); // odśwież listę ostatnich wpisów
+        await zaladujDzieci();      // odśwież listę/oznaczenia
       }catch(err){
         alert('Błąd zapisu: ' + (err.message||err));
       }finally{

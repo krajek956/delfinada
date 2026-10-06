@@ -152,6 +152,64 @@
       return nowy;
     },
 
+    // Pobierz pojedynczy wpis z mediami (do edycji)
+    async wpis(wpisId) {
+      wymagajKlienta();
+      const { data, error } = await sb
+        .from('wpisy').select('*, media(*)').eq('id', wpisId).single();
+      if (error) throw error;
+      for (const m of data.media || []) m.url = await API.urlMedia(m.sciezka);
+      return data;
+    },
+
+    // Edytuj treść wpisu + opcjonalnie dodaj nowe pliki
+    async aktualizujWpis(wpisId, dziecko_id, zmiany, nowePliki = []) {
+      wymagajKlienta();
+      const { error } = await sb.from('wpisy').update({
+        nastroj:      zmiany.nastroj ?? null,
+        co_sie_udalo: zmiany.co_sie_udalo ?? null,
+        nad_czym:     zmiany.nad_czym ?? null,
+        do_domu:      zmiany.do_domu ?? null,
+        odznaka:      zmiany.odznaka || null,
+        cel_postep:   zmiany.cel_postep ?? null
+      }).eq('id', wpisId);
+      if (error) throw error;
+
+      // dodaj ewentualne nowe media
+      for (const file of nowePliki) {
+        const typ = file.type.startsWith('video') ? 'film' : 'foto';
+        const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+        const sciezka = `${dziecko_id}/${wpisId}/${crypto.randomUUID()}.${ext}`;
+        const up = await sb.storage.from('media').upload(sciezka, file, { upsert: false });
+        if (up.error) throw up.error;
+        const ins = await sb.from('media').insert({ wpis_id: wpisId, sciezka, typ });
+        if (ins.error) throw ins.error;
+      }
+
+      if (zmiany.cel_postep != null && dziecko_id) {
+        await sb.from('dzieci').update({ cel_postep: zmiany.cel_postep }).eq('id', dziecko_id);
+      }
+    },
+
+    // Usuń pojedyncze medium (plik ze storage + wiersz)
+    async usunMedium(mediaId, sciezka) {
+      wymagajKlienta();
+      if (sciezka) await sb.storage.from('media').remove([sciezka]);
+      const { error } = await sb.from('media').delete().eq('id', mediaId);
+      if (error) throw error;
+    },
+
+    // Usuń cały wpis (jego media znikają kaskadowo z tabeli; pliki ze storage czyścimy ręcznie)
+    async usunWpis(wpisId) {
+      wymagajKlienta();
+      // pobierz ścieżki plików, by usunąć je ze storage
+      const { data: media } = await sb.from('media').select('sciezka').eq('wpis_id', wpisId);
+      const sciezki = (media || []).map(m => m.sciezka).filter(Boolean);
+      if (sciezki.length) await sb.storage.from('media').remove(sciezki);
+      const { error } = await sb.from('wpisy').delete().eq('id', wpisId);
+      if (error) throw error;
+    },
+
     // ---------- ADMIN: grupy, dzieci, trenerzy, rodzice ----------
 
     // Lista kadry (trenerzy + admini) — do przypisania prowadzącego grupy

@@ -4,7 +4,7 @@
  *  - Statyki (css/js/obrazy/czcionki): stale-while-revalidate → szybko z cache, aktualizacja w tle.
  *  - Wersjonowany cache: podbij APP_VERSION, by wymusić odświeżenie u wszystkich.
  */
-const APP_VERSION = 'v1.1.0';
+const APP_VERSION = 'v1.2.0';
 const CACHE = `delfinada-${APP_VERSION}`;
 
 // Pliki do wstępnego zapisania (działanie offline od pierwszej wizyty)
