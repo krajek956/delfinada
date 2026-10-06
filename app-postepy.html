@@ -334,6 +334,29 @@
     </div>
   </main>
 
+  <!-- ===== LIGHTBOX (pełnoekranowy podgląd zdjęć/filmów) ===== -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div class="absolute inset-0 bg-sky-900/90 backdrop-blur-sm"></div>
+    <!-- górny pasek: licznik + zamknij -->
+    <div class="absolute top-0 inset-x-0 z-10 flex items-center justify-between p-4 text-white">
+      <span id="lb-count" class="text-sm font-800 bg-white/15 rounded-full px-3 py-1">1 / 1</span>
+      <button id="lb-close" class="w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 grid place-items-center transition" aria-label="Zamknij">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+    <!-- treść -->
+    <div id="lb-stage" class="absolute inset-0 grid place-items-center p-4 pt-16 pb-16 select-none">
+      <!-- tu wstawiany jest obraz lub film -->
+    </div>
+    <!-- strzałki -->
+    <button id="lb-prev" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 grid place-items-center text-white transition" aria-label="Poprzednie">
+      <i data-lucide="chevron-left" class="w-7 h-7"></i>
+    </button>
+    <button id="lb-next" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 grid place-items-center text-white transition" aria-label="Następne">
+      <i data-lucide="chevron-right" class="w-7 h-7"></i>
+    </button>
+  </div>
+
   <!-- ===== Dolna nawigacja (mobile) ===== -->
   <nav class="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white/90 backdrop-blur border-t border-sky-100 flex justify-around py-2 text-[11px] font-800">
     <a href="#" class="flex flex-col items-center gap-0.5 text-coral"><i data-lucide="activity" class="w-5 h-5"></i> Postępy</a>
@@ -397,22 +420,30 @@
       if(el.goalPct()) el.goalPct().textContent = p+'%';
     }
 
+    // globalna galeria do lightboxa (zbiera media ze wszystkich wpisów dziecka)
+    let GALERIA = [];
+
     function mediaHtml(media){
       if(!media || !media.length) return '';
-      const cells = media.slice(0,3).map(m=>{
+      const cells = media.slice(0,3).map((m, j)=>{
+        const idx = GALERIA.length;            // globalny indeks w galerii
+        GALERIA.push({ url: m.url || '', typ: m.typ });
+        const nadmiar = (j===2 && media.length>3) ? media.length-3 : 0; // „+N" na 3. kafelku
+        const overlayPlus = nadmiar ? `<span class="absolute inset-0 bg-sky-900/55 grid place-items-center text-white font-800 text-lg">+${nadmiar}</span>` : '';
         if(m.typ==='film'){
-          return `<a href="${m.url||'#'}" target="_blank" class="relative aspect-square rounded-xl overflow-hidden bg-sky-900 grid place-items-center">
-            <video src="${m.url||''}" class="w-full h-full object-cover opacity-70"></video>
-            <span class="absolute w-10 h-10 rounded-full grid place-items-center text-white" style="background:rgba(14,124,139,.85)"><i data-lucide="play" class="w-5 h-5 ml-0.5"></i></span></a>`;
+          return `<button type="button" data-media-idx="${idx}" class="media-cell relative aspect-square rounded-xl overflow-hidden bg-sky-900 grid place-items-center">
+            <video src="${m.url||''}" class="w-full h-full object-cover opacity-70" preload="metadata" muted playsinline></video>
+            <span class="absolute w-10 h-10 rounded-full grid place-items-center text-white" style="background:rgba(14,124,139,.85)"><i data-lucide="play" class="w-5 h-5 ml-0.5"></i></span>${overlayPlus}</button>`;
         }
-        return `<a href="${m.url||'#'}" target="_blank" class="relative aspect-square rounded-xl overflow-hidden bg-sky-100">
-          <img src="${m.url||''}" class="w-full h-full object-cover" alt="media z zajęć"></a>`;
+        return `<button type="button" data-media-idx="${idx}" class="media-cell relative aspect-square rounded-xl overflow-hidden bg-sky-100">
+          <img src="${m.url||''}" class="w-full h-full object-cover" alt="media z zajęć" loading="lazy">${overlayPlus}</button>`;
       }).join('');
       return `<div class="mt-3 grid grid-cols-3 gap-2">${cells}</div>`;
     }
 
     function renderWpisy(wpisy){
       const tl = el.timeline(); if(!tl) return;
+      GALERIA = []; // zacznij galerię od nowa dla aktualnego dziecka
       if(!wpisy.length){
         tl.innerHTML = `<p class="text-center text-sky-400 py-8">Brak wpisów. Pojawią się tu po pierwszych zajęciach. 🐬</p>`;
         return;
@@ -436,7 +467,87 @@
           </div></div></article>`;
       }).join('');
       if(window.lucide) lucide.createIcons();
+      // podepnij otwieranie lightboxa na kafelkach mediów
+      tl.querySelectorAll('.media-cell').forEach(btn=>{
+        btn.onclick = ()=> otworzLightbox(parseInt(btn.dataset.mediaIdx,10));
+      });
     }
+
+    // ===== LIGHTBOX =====
+    const LB = {
+      el: null, stage: null, count: null, idx: 0,
+      get() {
+        if(!this.el){
+          this.el = document.getElementById('lightbox');
+          this.stage = document.getElementById('lb-stage');
+          this.count = document.getElementById('lb-count');
+        }
+        return this.el;
+      }
+    };
+
+    function renderLB(){
+      const m = GALERIA[LB.idx];
+      if(!m){ zamknijLightbox(); return; }
+      // zatrzymaj ewentualny poprzedni film
+      LB.stage.innerHTML = '';
+      if(m.typ==='film'){
+        LB.stage.innerHTML = `<video src="${m.url}" class="max-h-full max-w-full rounded-xl shadow-2xl" controls autoplay playsinline></video>`;
+      } else {
+        LB.stage.innerHTML = `<img src="${m.url}" class="max-h-full max-w-full rounded-xl shadow-2xl object-contain" alt="podgląd zdjęcia">`;
+      }
+      LB.count.textContent = (LB.idx+1) + ' / ' + GALERIA.length;
+      // ukryj strzałki, gdy jest tylko jeden element
+      const jeden = GALERIA.length <= 1;
+      document.getElementById('lb-prev').style.display = jeden ? 'none' : '';
+      document.getElementById('lb-next').style.display = jeden ? 'none' : '';
+    }
+
+    function otworzLightbox(i){
+      LB.get();
+      if(!GALERIA.length) return;
+      LB.idx = Math.max(0, Math.min(i, GALERIA.length-1));
+      LB.el.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      renderLB();
+      if(window.lucide) lucide.createIcons();
+    }
+    function zamknijLightbox(){
+      if(!LB.el) return;
+      LB.stage.innerHTML = ''; // zatrzymaj film
+      LB.el.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    function nastepne(){ LB.idx = (LB.idx+1) % GALERIA.length; renderLB(); if(window.lucide) lucide.createIcons(); }
+    function poprzednie(){ LB.idx = (LB.idx-1+GALERIA.length) % GALERIA.length; renderLB(); if(window.lucide) lucide.createIcons(); }
+
+    // podłącz sterowanie lightboxa (raz)
+    (function initLB(){
+      LB.get();
+      document.getElementById('lb-close').onclick = zamknijLightbox;
+      document.getElementById('lb-next').onclick = nastepne;
+      document.getElementById('lb-prev').onclick = poprzednie;
+      // klik w tło (nie w zdjęcie/film) zamyka
+      LB.el.addEventListener('click', (e)=>{
+        if(e.target === LB.el || e.target === LB.stage || e.target.classList.contains('bg-sky-900/90')) zamknijLightbox();
+      });
+      // klawiatura
+      document.addEventListener('keydown', (e)=>{
+        if(LB.el.classList.contains('hidden')) return;
+        if(e.key==='Escape') zamknijLightbox();
+        else if(e.key==='ArrowRight') nastepne();
+        else if(e.key==='ArrowLeft') poprzednie();
+      });
+      // gest przesunięcia (swipe) na telefonie
+      let x0=null;
+      LB.stage.addEventListener('touchstart', (e)=>{ x0 = e.touches[0].clientX; }, {passive:true});
+      LB.stage.addEventListener('touchend', (e)=>{
+        if(x0===null) return;
+        const dx = e.changedTouches[0].clientX - x0;
+        if(Math.abs(dx) > 50){ dx<0 ? nastepne() : poprzednie(); }
+        x0=null;
+      });
+    })();
 
     async function start(){
       // ochrona: musi być zalogowany
