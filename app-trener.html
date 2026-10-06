@@ -377,6 +377,44 @@
       if (window.lucide) lucide.createIcons();
     }
 
+    // ===== KOMPRESJA ZDJĘĆ (w przeglądarce, przed uploadem) =====
+    // Zmniejsza wymiary i konwertuje do WebP; filmy zostawia bez zmian.
+    const MAX_BOK = 1600;      // maks. dłuższy bok zdjęcia (px)
+    const JAKOSC = 0.82;       // jakość WebP (0–1)
+
+    function kompresujObraz(file){
+      return new Promise((resolve)=>{
+        // tylko zdjęcia (nie GIF — mógłby stracić animację); reszta bez zmian
+        if(!file.type.startsWith('image/') || file.type === 'image/gif'){ resolve(file); return; }
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = ()=>{
+          URL.revokeObjectURL(url);
+          let { width:w, height:h } = img;
+          const skala = Math.min(1, MAX_BOK / Math.max(w, h));
+          w = Math.round(w*skala); h = Math.round(h*skala);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob((blob)=>{
+            // jeśli kompresja nie pomogła (np. już mały plik) — zostaw oryginał
+            if(!blob || blob.size >= file.size){ resolve(file); return; }
+            const nazwa = (file.name||'zdjecie').replace(/\.[^.]+$/, '') + '.webp';
+            resolve(new File([blob], nazwa, { type:'image/webp', lastModified: Date.now() }));
+          }, 'image/webp', JAKOSC);
+        };
+        img.onerror = ()=>{ URL.revokeObjectURL(url); resolve(file); }; // błąd → oryginał
+        img.src = url;
+      });
+    }
+
+    async function przygotujPliki(pliki){
+      const wynik = [];
+      for(const f of pliki){ wynik.push(await kompresujObraz(f)); }
+      return wynik;
+    }
+
     function zbierzFormularz(){
       const q = sel => document.querySelector(sel);
       const moodChecked = document.querySelector('#sheet .mood input:checked');
@@ -416,7 +454,11 @@
       try{
         const dane = zbierzFormularz();
         dane.dziecko_id = STAN.wybraneDziecko.id;
-        await API.dodajWpis(dane, STAN.pliki);
+        // zoptymalizuj zdjęcia przed wysłaniem (filmy bez zmian)
+        if(btn && STAN.pliki.some(f=>f.type.startsWith('image/'))) btn.innerHTML='Optymalizuję zdjęcia…';
+        const pliki = await przygotujPliki(STAN.pliki);
+        if(btn) btn.innerHTML='Wysyłanie…';
+        await API.dodajWpis(dane, pliki);
         closeSheet();
         toastOk('Wpis zapisany — rodzic dostanie powiadomienie e-mail! 🐬');
         await zaladujDzieci(); // odśwież listę/oznaczenia
