@@ -341,6 +341,9 @@
     const API = window.DelfinadaAPI;
     const BACKEND = !!(API && API.skonfigurowane);
 
+    // escapowanie HTML (ochrona przed XSS w szablonach)
+    function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
     // stan panelu (tryb backendu)
     let STAN = { grupy: [], grupaIdx: 0, dzieci: [], wybraneDziecko: null, pliki: [], edytowanyWpis: null };
 
@@ -601,9 +604,9 @@
         return;
       }
       list.innerHTML = dzieci.map(d=>{
-        const ini=(d.imie||'?').charAt(0).toUpperCase();
-        const nazwa = (d.imie||'')+(d.nazwisko?' '+d.nazwisko:'');
-        const cel = d.cel_opis ? 'cel: '+d.cel_opis : 'cel: —';
+        const ini=esc((d.imie||'?').charAt(0).toUpperCase());
+        const nazwa = esc((d.imie||'')+(d.nazwisko?' '+d.nazwisko:''));
+        const cel = d.cel_opis ? 'cel: '+esc(d.cel_opis) : 'cel: —';
         return `<button data-id="${d.id}" class="student-btn group text-left bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 hover:ring-2 hover:ring-coral/40 transition">
           <span class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800 text-lg">${ini}</span>
           <span class="flex-1"><span class="block font-800 text-sky-700">${nazwa}</span>
