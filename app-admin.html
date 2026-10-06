@@ -95,6 +95,18 @@
             <i data-lucide="plus" class="w-4 h-4"></i> Dodaj dziecko
           </button>
         </div>
+        <!-- wyszukiwarka + filtr grupy -->
+        <div class="flex flex-col sm:flex-row gap-2 mb-3">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 text-sky-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input id="szukajDziecko" type="search" placeholder="Szukaj dziecka…" oninput="filtrujDzieci()"
+              class="w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:ring-0 pl-9 pr-3 py-2.5 text-sm text-sky-700 placeholder:text-sky-300">
+          </div>
+          <select id="filtrGrupa" onchange="filtrujDzieci()" class="field sm:w-56 bg-white">
+            <option value="">Wszystkie grupy</option>
+          </select>
+        </div>
+        <p id="licznikDzieci" class="text-xs text-sky-400 mb-2"></p>
         <div id="listaDzieci" class="grid gap-3 sm:grid-cols-2">
           <p class="text-sky-400">Ładowanie…</p>
         </div>
@@ -204,7 +216,7 @@
 
   <script>
     const API = window.DelfinadaAPI;
-    let CACHE = { grupy: [], kadra: [] };
+    let CACHE = { grupy: [], kadra: [], dzieci: [] };
 
     function toast(msg){
       document.getElementById('toastText').textContent = msg;
@@ -226,13 +238,50 @@
 
     // ---------- DZIECI ----------
     async function ladujDzieci(){
-      const dzieci = await API.wszystkieDzieci();
       const box = document.getElementById('listaDzieci');
-      if(!dzieci.length){ box.innerHTML='<p class="text-sky-400 col-span-2">Brak dzieci. Dodaj pierwsze dziecko. 🐬</p>'; return; }
-      box.innerHTML = dzieci.map(d=>{
+      try{
+        CACHE.dzieci = await API.wszystkieDzieci();
+      }catch(e){
+        box.innerHTML = '<p class="text-coral-dark col-span-2">Nie udało się wczytać dzieci. Odśwież stronę.</p>';
+        return;
+      }
+      wypelnijFiltrGrup();
+      renderujDzieci();
+    }
+
+    function wypelnijFiltrGrup(){
+      const sel = document.getElementById('filtrGrupa');
+      if(!sel) return;
+      const biezaca = sel.value;
+      sel.innerHTML = '<option value="">Wszystkie grupy</option>'
+        + CACHE.grupy.map(g=>`<option value="${g.id}">${esc(g.nazwa)}</option>`).join('')
+        + '<option value="__brak__">— bez grupy —</option>';
+      sel.value = biezaca;
+    }
+
+    function filtrujDzieci(){
+      renderujDzieci();
+    }
+
+    function renderujDzieci(){
+      const box = document.getElementById('listaDzieci');
+      const q = (document.getElementById('szukajDziecko')?.value||'').trim().toLowerCase();
+      const grupaF = document.getElementById('filtrGrupa')?.value || '';
+      let lista = CACHE.dzieci;
+      if(q) lista = lista.filter(d=> ((d.imie||'')+' '+(d.nazwisko||'')).toLowerCase().includes(q));
+      if(grupaF==='__brak__') lista = lista.filter(d=> !d.grupa_id);
+      else if(grupaF) lista = lista.filter(d=> d.grupa_id===grupaF);
+
+      const lic = document.getElementById('licznikDzieci');
+      if(lic) lic.textContent = lista.length + ' z ' + CACHE.dzieci.length + ' dzieci';
+
+      if(!CACHE.dzieci.length){ box.innerHTML='<p class="text-sky-400 col-span-2">Brak dzieci. Dodaj pierwsze dziecko. 🐬</p>'; return; }
+      if(!lista.length){ box.innerHTML='<p class="text-sky-400 col-span-2">Brak wyników dla podanego filtra.</p>'; return; }
+
+      box.innerHTML = lista.map(d=>{
         const rodzice = (d.rodzic_dziecko||[]).map(r=> r.profiles ? (r.profiles.imie||r.profiles.email||'rodzic') : 'rodzic');
         const rodziceTxt = rodzice.length ? rodzice.join(', ') : 'brak przypisanego rodzica';
-        return `<button onclick='openDziecko(${JSON.stringify(JSON.stringify(d))})' class="text-left bg-white rounded-2xl card-shadow p-4 hover:ring-2 hover:ring-coral/40 transition">
+        return `<button data-id="${d.id}" class="dziecko-btn text-left bg-white rounded-2xl card-shadow p-4 hover:ring-2 hover:ring-coral/40 transition">
           <div class="flex items-center gap-3">
             <span class="w-11 h-11 rounded-full bg-coral/15 text-coral grid place-items-center font-800">${esc((d.imie||'?')[0])}</span>
             <div class="flex-1"><p class="font-800 text-sky-700">${esc(d.imie)} ${esc(d.nazwisko||'')}</p>
@@ -242,6 +291,9 @@
           <p class="text-[11px] text-sky-400 mt-2 flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i> ${esc(rodziceTxt)}</p>
         </button>`;
       }).join('');
+      box.querySelectorAll('.dziecko-btn').forEach(b=>{
+        b.onclick = ()=> openDziecko(CACHE.dzieci.find(x=>x.id===b.dataset.id));
+      });
       if(window.lucide) lucide.createIcons();
     }
 
@@ -250,8 +302,9 @@
         CACHE.grupy.map(g=>`<option value="${g.id}" ${g.id===wybrane?'selected':''}>${esc(g.nazwa)}</option>`).join('');
     }
 
-    function openDziecko(json){
-      const d = json ? JSON.parse(json) : null;
+    function openDziecko(d){
+      // akceptuje obiekt dziecka (z listy) albo brak (nowe)
+      if(typeof d === 'string'){ try{ d = JSON.parse(d); }catch{ d = null; } }
       document.getElementById('dzieckoTytul').textContent = d ? 'Edytuj dziecko' : 'Nowe dziecko';
       document.getElementById('d_id').value = d?.id || '';
       document.getElementById('d_imie').value = d?.imie || '';
@@ -344,24 +397,34 @@
     }
 
     async function ladujGrupy(){
-      CACHE.grupy = await API.grupyPelne();
-      CACHE.kadra = await API.kadra();
       const box = document.getElementById('listaGrup');
+      try{
+        CACHE.grupy = await API.grupyPelne();
+        CACHE.kadra = await API.kadra();
+      }catch(e){
+        box.innerHTML = '<p class="text-coral-dark col-span-2">Nie udało się wczytać grup. Odśwież stronę.</p>';
+        return;
+      }
       if(!CACHE.grupy.length){ box.innerHTML='<p class="text-sky-400 col-span-2">Brak grup. Dodaj pierwszą grupę.</p>'; }
-      else box.innerHTML = CACHE.grupy.map(g=>{
-        const liczba = g.dzieci?.[0]?.count ?? 0;
-        const tr = g.trener ? ((g.trener.imie||'')+' '+(g.trener.nazwisko||'')).trim() : 'brak trenera';
-        return `<button onclick='openGrupa(${JSON.stringify(JSON.stringify(g))})' class="text-left bg-white rounded-2xl card-shadow p-4 hover:ring-2 hover:ring-coral/40 transition flex items-center gap-3">
-          <span class="w-11 h-11 rounded-2xl bg-mint/20 text-mint-dark grid place-items-center"><i data-lucide="waves" class="w-5 h-5"></i></span>
-          <div class="flex-1"><p class="font-800 text-sky-700">${esc(g.nazwa)}</p>
-          <p class="text-xs text-sky-400">${liczba} dzieci · trener: ${esc(tr)}</p></div>
-          <i data-lucide="chevron-right" class="w-5 h-5 text-sky-300"></i></button>`;
-      }).join('');
+      else {
+        box.innerHTML = CACHE.grupy.map(g=>{
+          const liczba = g.dzieci?.[0]?.count ?? 0;
+          const tr = g.trener ? ((g.trener.imie||'')+' '+(g.trener.nazwisko||'')).trim() : 'brak trenera';
+          return `<button data-id="${g.id}" class="grupa-btn text-left bg-white rounded-2xl card-shadow p-4 hover:ring-2 hover:ring-coral/40 transition flex items-center gap-3">
+            <span class="w-11 h-11 rounded-2xl bg-mint/20 text-mint-dark grid place-items-center"><i data-lucide="waves" class="w-5 h-5"></i></span>
+            <div class="flex-1"><p class="font-800 text-sky-700">${esc(g.nazwa)}</p>
+            <p class="text-xs text-sky-400">${liczba} dzieci · trener: ${esc(tr||'brak trenera')}</p></div>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-sky-300"></i></button>`;
+        }).join('');
+        box.querySelectorAll('.grupa-btn').forEach(b=>{
+          b.onclick = ()=> openGrupa(CACHE.grupy.find(x=>x.id===b.dataset.id));
+        });
+      }
       if(window.lucide) lucide.createIcons();
     }
 
-    function openGrupa(json){
-      const g = json ? JSON.parse(json) : null;
+    function openGrupa(g){
+      if(typeof g === 'string'){ try{ g = JSON.parse(g); }catch{ g = null; } }
       document.getElementById('grupaTytul').textContent = g ? 'Edytuj grupę' : 'Nowa grupa';
       document.getElementById('g_id').value = g?.id || '';
       document.getElementById('g_nazwa').value = g?.nazwa || '';
@@ -395,16 +458,54 @@
     }
 
     // ---------- KADRA ----------
+    let MOJE_ID = null; // ID zalogowanego admina (by nie odebrał roli sobie)
+
     async function ladujKadre(){
-      CACHE.kadra = await API.kadra();
       const box = document.getElementById('listaKadry');
+      try{ CACHE.kadra = await API.kadra(); }
+      catch(e){ box.innerHTML='<p class="text-coral-dark col-span-2">Nie udało się wczytać kadry.</p>'; return; }
       if(!CACHE.kadra.length){ box.innerHTML='<p class="text-sky-400 col-span-2">Brak kadry.</p>'; return; }
-      box.innerHTML = CACHE.kadra.map(k=>`<div class="bg-white rounded-2xl card-shadow p-4 flex items-center gap-3">
-        <span class="w-11 h-11 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800">${esc((k.imie||k.email||'?')[0].toUpperCase())}</span>
-        <div class="flex-1"><p class="font-800 text-sky-700">${esc((k.imie||'')+' '+(k.nazwisko||''))||esc(k.email)}</p>
-        <p class="text-xs text-sky-400">${esc(k.email||'')}</p></div>
-        <span class="text-[11px] font-800 px-2.5 py-1 rounded-full ${k.rola==='admin'?'bg-coral/10 text-coral':'bg-mint/20 text-mint-dark'}">${esc(k.rola)}</span>
-      </div>`).join('');
+      box.innerHTML = CACHE.kadra.map(k=>{
+        const nazwa = (k.imie||'')+' '+(k.nazwisko||'');
+        const jaSam = k.id===MOJE_ID;
+        // akcje zależne od roli
+        let akcje = '';
+        if(k.rola==='trener'){
+          akcje = `<button data-id="${k.id}" data-rola="admin" class="rola-btn text-[11px] font-800 px-2.5 py-1 rounded-full bg-coral/10 text-coral hover:bg-coral/20">↑ admin</button>
+                   <button data-id="${k.id}" data-rola="rodzic" class="rola-btn text-[11px] font-800 px-2.5 py-1 rounded-full bg-sky-50 text-sky-500 hover:bg-sky-100">odbierz</button>`;
+        } else if(k.rola==='admin' && !jaSam){
+          akcje = `<button data-id="${k.id}" data-rola="trener" class="rola-btn text-[11px] font-800 px-2.5 py-1 rounded-full bg-mint/20 text-mint-dark hover:bg-mint/30">↓ trener</button>
+                   <button data-id="${k.id}" data-rola="rodzic" class="rola-btn text-[11px] font-800 px-2.5 py-1 rounded-full bg-sky-50 text-sky-500 hover:bg-sky-100">odbierz</button>`;
+        } else if(jaSam){
+          akcje = `<span class="text-[11px] text-sky-300 font-800">to Ty</span>`;
+        }
+        return `<div class="bg-white rounded-2xl card-shadow p-4 flex items-center gap-3 flex-wrap">
+          <span class="w-11 h-11 rounded-full bg-sky-100 text-sky-600 grid place-items-center font-800">${esc((k.imie||k.email||'?')[0].toUpperCase())}</span>
+          <div class="flex-1 min-w-0"><p class="font-800 text-sky-700 truncate">${esc(nazwa.trim()||k.email)}</p>
+          <p class="text-xs text-sky-400 truncate">${esc(k.email||'')}</p></div>
+          <span class="text-[11px] font-800 px-2.5 py-1 rounded-full ${k.rola==='admin'?'bg-coral/10 text-coral':'bg-mint/20 text-mint-dark'}">${esc(k.rola)}</span>
+          <div class="flex gap-1.5 w-full sm:w-auto">${akcje}</div>
+        </div>`;
+      }).join('');
+      box.querySelectorAll('.rola-btn').forEach(b=>{
+        b.onclick = ()=> zmienRoleKadry(b.dataset.id, b.dataset.rola);
+      });
+      if(window.lucide) lucide.createIcons();
+    }
+
+    async function zmienRoleKadry(id, rola){
+      const osoba = CACHE.kadra.find(k=>k.id===id);
+      const etykieta = osoba ? (osoba.imie||osoba.email||'tę osobę') : 'tę osobę';
+      const opis = rola==='rodzic' ? ('Odebrać dostęp (rola rodzica) dla: '+etykieta+'?')
+                 : rola==='admin'  ? ('Nadać uprawnienia ADMINA dla: '+etykieta+'?')
+                 : ('Zmienić rolę na trenera dla: '+etykieta+'?');
+      if(!confirm(opis)) return;
+      try{
+        await API.ustawRolePoId(id, rola);
+        toast('Zmieniono rolę ✅');
+        await ladujKadre();
+        wypelnijFiltrGrup(); // kadra używana też przy grupach
+      }catch(e){ alert('Błąd: '+(e.message||e)); }
     }
 
     async function nadajTrenera(){
@@ -433,6 +534,7 @@
         return;
       }
       document.getElementById('adminAvatar').textContent = (p.imie?.[0]||'A').toUpperCase();
+      MOJE_ID = p.id; // by admin nie odebrał roli samemu sobie
       // wczytaj grupy+kadrę (potrzebne do selectów), potem listy
       await ladujGrupy();
       await Promise.all([ladujDzieci(), ladujKadre()]);

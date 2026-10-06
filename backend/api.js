@@ -336,6 +336,13 @@
       return data[0];
     },
 
+    // Zmień rolę użytkownika po ID (nadanie admina / odebranie roli → 'rodzic')
+    async ustawRolePoId(id, rola) {
+      wymagajKlienta();
+      const { error } = await sb.from('profiles').update({ rola }).eq('id', id);
+      if (error) throw error;
+    },
+
     // ---------- STORAGE ----------
     async urlMedia(sciezka) {
       wymagajKlienta();
