@@ -487,7 +487,7 @@
         // cel: zostaje aktualny cel dziecka (ustawiony w openSheet)
         // istniejące media z opcją usunięcia
         renderIstniejaceMedia(w);
-      }catch(e){ alert('Nie udało się wczytać wpisu: '+(e.message||e)); }
+      }catch(e){ toastErr('Nie udało się wczytać wpisu: '+(e.message||e)); }
     }
 
     function renderIstniejaceMedia(w){
@@ -510,7 +510,7 @@
     }
 
     async function usunMedium(mediaId, sciezka){
-      if(!confirm('Usunąć ten plik z wpisu?')) return;
+      if(!await potwierdz('Usunąć ten plik z wpisu?', {ok:'Usuń'})) return;
       try{
         await API.usunMedium(mediaId, sciezka);
         // odśwież istniejące media w arkuszu
@@ -519,7 +519,7 @@
           renderIstniejaceMedia(STAN.edytowanyWpis);
         }
         toastOk('Plik usunięty');
-      }catch(e){ alert('Błąd: '+(e.message||e)); }
+      }catch(e){ toastErr('Błąd: '+(e.message||e)); }
     }
 
     // ===== OSTATNIE WPISY UCZNIA (lista z akcjami) =====
@@ -551,7 +551,7 @@
     }
 
     async function usunWpis(wpisId){
-      if(!confirm('Usunąć cały wpis wraz ze zdjęciami/filmami? Tej operacji nie można cofnąć.')) return;
+      if(!await potwierdz('Usunąć cały wpis wraz ze zdjęciami/filmami? Tej operacji nie można cofnąć.', {ok:'Usuń'})) return;
       try{
         await API.usunWpis(wpisId);
         // jeśli właśnie edytowany — wyczyść tryb edycji
@@ -559,7 +559,7 @@
         toastOk('Wpis usunięty 🗑️');
         await odswiezWpisyUcznia();
         await zaladujDzieci();
-      }catch(e){ alert('Błąd: '+(e.message||e)); }
+      }catch(e){ toastErr('Błąd: '+(e.message||e)); }
     }
 
     function zbierzFormularz(){
@@ -580,11 +580,39 @@
       };
     }
 
-    function toastOk(msg){
+    function toastOk(msg, typ){
       const toast = document.getElementById('toast');
-      toast.querySelector('div').lastChild.textContent = ' ' + (msg || 'Wpis zapisany — rodzic go zobaczy! 🐬');
+      const box = toast.querySelector('div');
+      const ico = box.querySelector('i');
+      // ustaw tekst (ostatni węzeł tekstowy) bez psucia ikony
+      box.lastChild.textContent = ' ' + (msg || 'Zapisano 🐬');
+      if(typ==='error'){ box.style.background='#e5720f'; if(ico) ico.setAttribute('data-lucide','alert-triangle'); }
+      else { box.style.background=''; if(ico) ico.setAttribute('data-lucide','check-circle-2'); }
       toast.classList.remove('hidden');
+      if(window.lucide) lucide.createIcons();
       setTimeout(() => toast.classList.add('hidden'), 3200);
+    }
+    function toastErr(msg){ toastOk(msg, 'error'); }
+
+    // ładne potwierdzenie (zamiast confirm) — Promise<boolean>
+    function potwierdz(tekst, { ok='Tak', anuluj='Anuluj' } = {}){
+      return new Promise(res=>{
+        const back = document.createElement('div');
+        back.className = 'fixed inset-0 z-[60] grid place-items-center p-4';
+        back.innerHTML =
+          '<div class="sheet-backdrop absolute inset-0"></div>'
+          + '<div class="relative bg-white rounded-3xl card-shadow max-w-sm w-full p-6 text-center">'
+          + '<p class="text-sky-700 font-700 text-base mb-5">'+esc(tekst)+'</p>'
+          + '<div class="flex gap-3">'
+          + '<button data-no class="flex-1 px-4 py-3 rounded-2xl bg-sky-50 text-sky-600 font-800 hover:bg-sky-100 transition">'+esc(anuluj)+'</button>'
+          + '<button data-yes class="flex-1 px-4 py-3 rounded-2xl bg-coral text-white font-800 hover:bg-coral-dark transition">'+esc(ok)+'</button>'
+          + '</div></div>';
+        document.body.appendChild(back);
+        const zamknij=(v)=>{ back.remove(); res(v); };
+        back.querySelector('[data-yes]').onclick=()=>zamknij(true);
+        back.querySelector('[data-no]').onclick=()=>zamknij(false);
+        back.querySelector('.sheet-backdrop').onclick=()=>zamknij(false);
+      });
     }
 
     async function saveEntry(){
@@ -598,7 +626,7 @@
         toastOk('Wpis zapisany (demo) 🐬');
         return;
       }
-      if (!STAN.wybraneDziecko){ alert('Najpierw wybierz ucznia z listy.'); return; }
+      if (!STAN.wybraneDziecko){ toastErr('Najpierw wybierz ucznia z listy.'); return; }
       const btn = document.querySelector('#sheet button[onclick="saveEntry()"]');
       if(btn){ btn.disabled=true; btn.classList.add('opacity-60'); btn.innerHTML='Zapisywanie…'; }
       try{
@@ -623,7 +651,7 @@
         await odswiezWpisyUcznia(); // odśwież listę ostatnich wpisów
         await zaladujDzieci();      // odśwież listę/oznaczenia
       }catch(err){
-        alert('Błąd zapisu: ' + (err.message||err));
+        toastErr('Błąd zapisu: ' + (err.message||err));
       }finally{
         if(btn){ btn.disabled=false; btn.classList.remove('opacity-60'); btn.innerHTML='<i data-lucide="send" class="w-5 h-5"></i> Zapisz i wyślij rodzicowi'; if(window.lucide) lucide.createIcons(); }
       }
@@ -710,7 +738,7 @@
         const label = document.querySelector('header .text-sm.font-700.text-sky-700');
         if(label && p?.imie) label.textContent = 'trener '+p.imie;
         const avBtn = av ? av.closest('button') : null;
-        if(avBtn){ avBtn.title='Wyloguj się'; avBtn.onclick=async()=>{ if(confirm('Wylogować się?')){ await API.wyloguj(); window.location.href='app-login.html'; } }; }
+        if(avBtn){ avBtn.title='Wyloguj się'; avBtn.onclick=async()=>{ if(await potwierdz('Wylogować się?', {ok:'Wyloguj'})){ await API.wyloguj(); window.location.href='app-login.html'; } }; }
         // link do panelu szkoły tylko dla admina
         if(p && p.rola==='admin'){ const la=document.getElementById('linkAdmin'); if(la){ la.classList.remove('hidden'); la.classList.add('flex'); } }
       }catch{}

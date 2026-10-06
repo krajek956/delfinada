@@ -91,15 +91,36 @@
       wymagajKlienta();
       const { data, error } = await sb
         .from('wpisy')
-        .select('*, media(*), trener:profiles!wpisy_trener_id_fkey(imie, nazwisko)')
+        .select('*, media(*), trener:profiles!wpisy_trener_id_fkey(imie, nazwisko), reakcje(user_id, emoji)')
         .eq('dziecko_id', dzieckoId)
         .order('data_zajec', { ascending: false });
       if (error) throw error;
-      // dołącz publiczne/signed URL-e do mediów
+      const u = await API.uzytkownik();
       for (const w of data || []) {
         for (const m of w.media || []) m.url = await API.urlMedia(m.sciezka);
+        // moja reakcja + łączna liczba
+        const rk = w.reakcje || [];
+        w.moja_reakcja = u ? (rk.find(r => r.user_id === u.id)?.emoji || null) : null;
+        w.reakcje_liczba = rk.length;
       }
       return data;
+    },
+
+    // Ustaw/zmień reakcję rodzica na wpis (upsert); emoji=null -> usuń
+    async ustawReakcje(wpisId, emoji) {
+      wymagajKlienta();
+      const u = await API.uzytkownik();
+      if (!u) throw new Error('Niezalogowany');
+      if (!emoji) {
+        const { error } = await sb.from('reakcje').delete()
+          .eq('wpis_id', wpisId).eq('user_id', u.id);
+        if (error) throw error;
+        return null;
+      }
+      const { error } = await sb.from('reakcje')
+        .upsert({ wpis_id: wpisId, user_id: u.id, emoji }, { onConflict: 'wpis_id,user_id' });
+      if (error) throw error;
+      return emoji;
     },
 
     // ---------- TRENER: grupy, dzieci, dodawanie wpisu ----------

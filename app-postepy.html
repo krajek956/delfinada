@@ -186,27 +186,8 @@
         <h3 class="font-display font-800 text-lg text-sky-700 mb-3 flex items-center gap-2">
           <i data-lucide="medal" class="w-5 h-5 text-coral"></i> Zdobyte odznaki
         </h3>
-        <div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
-          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-sky-50 grid place-items-center text-sky-600 mb-2"><i data-lucide="droplets" class="w-6 h-6"></i></div>
-            <p class="text-xs font-800 text-sky-700">Nie boję się wody</p>
-          </div>
-          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-coral/10 grid place-items-center text-coral mb-2"><i data-lucide="wind" class="w-6 h-6"></i></div>
-            <p class="text-xs font-800 text-sky-700">Wydech do wody</p>
-          </div>
-          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-sky-50 grid place-items-center text-sky-600 mb-2"><i data-lucide="waves" class="w-6 h-6"></i></div>
-            <p class="text-xs font-800 text-sky-700">Leżenie na plecach</p>
-          </div>
-          <div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
-            <div class="w-12 h-12 mx-auto rounded-full bg-coral/10 grid place-items-center text-coral mb-2"><i data-lucide="rabbit" class="w-6 h-6"></i></div>
-            <p class="text-xs font-800 text-sky-700">Odbicie od ściany</p>
-          </div>
-          <div class="shrink-0 w-28 bg-white/60 rounded-2xl p-3 text-center border-2 border-dashed border-sky-200">
-            <div class="w-12 h-12 mx-auto rounded-full bg-sky-100 grid place-items-center text-sky-300 mb-2"><i data-lucide="lock" class="w-6 h-6"></i></div>
-            <p class="text-xs font-800 text-sky-400">Kraul 15 m</p>
-          </div>
+        <div id="odznakiLista" class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+          <!-- generowane dynamicznie -->
         </div>
       </section>
 
@@ -464,6 +445,7 @@
             ${w.do_domu?`<p class="text-sm text-sky-600 mt-1 leading-relaxed"><strong>Do domu:</strong> ${esc(w.do_domu)}</p>`:''}
             ${mediaHtml(w.media)}
             ${w.odznaka?`<div class="mt-3"><span class="text-[11px] font-800 px-2.5 py-1 rounded-full bg-mint/20 text-mint-dark">🏅 ${esc(w.odznaka)}</span></div>`:''}
+            ${reakcjeHtml(w)}
           </div></div></article>`;
       }).join('');
       if(window.lucide) lucide.createIcons();
@@ -471,6 +453,73 @@
       tl.querySelectorAll('.media-cell').forEach(btn=>{
         btn.onclick = ()=> otworzLightbox(parseInt(btn.dataset.mediaIdx,10));
       });
+      // podepnij reakcje
+      tl.querySelectorAll('.reakcja-btn').forEach(btn=>{
+        btn.onclick = ()=> klikReakcja(btn.dataset.wpis, btn.dataset.emoji, btn);
+      });
+      // odśwież galerię odznak na podstawie wpisów
+      renderOdznaki(wpisy);
+    }
+
+    // ===== ODZNAKI (katalog + render) =====
+    const KATALOG_ODZNAK = [
+      { nazwa:'Nie boję się wody', ikona:'droplets' },
+      { nazwa:'Wydech do wody',    ikona:'wind' },
+      { nazwa:'Leżenie na plecach',ikona:'waves' },
+      { nazwa:'Odbicie od ściany', ikona:'rabbit' },
+      { nazwa:'Kraul 15 m',        ikona:'medal' },
+    ];
+    function renderOdznaki(wpisy){
+      const box = document.getElementById('odznakiLista'); if(!box) return;
+      const zdobyte = new Set((wpisy||[]).map(w=>w.odznaka).filter(Boolean));
+      // policz w karcie statystyk
+      const stat = document.querySelector('section .text-2xl.text-sky-700');
+      box.innerHTML = KATALOG_ODZNAK.map(o=>{
+        const ma = zdobyte.has(o.nazwa);
+        if(ma){
+          return `<div class="shrink-0 w-28 bg-white rounded-2xl card-shadow p-3 text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-coral/10 grid place-items-center text-coral mb-2"><i data-lucide="${o.ikona}" class="w-6 h-6"></i></div>
+            <p class="text-xs font-800 text-sky-700">${esc(o.nazwa)}</p></div>`;
+        }
+        return `<div class="shrink-0 w-28 bg-white/60 rounded-2xl p-3 text-center border-2 border-dashed border-sky-200">
+          <div class="w-12 h-12 mx-auto rounded-full bg-sky-100 grid place-items-center text-sky-300 mb-2"><i data-lucide="lock" class="w-6 h-6"></i></div>
+          <p class="text-xs font-800 text-sky-400">${esc(o.nazwa)}</p></div>`;
+      }).join('');
+      // zaktualizuj licznik „zdobytych odznak"
+      const liczniki = document.querySelectorAll('section .font-display.font-800.text-2xl.text-sky-700');
+      if(liczniki[1]) liczniki[1].textContent = zdobyte.size; // druga statystyka = odznaki
+      if(window.lucide) lucide.createIcons();
+    }
+
+    const EMOJI = ['❤️','👍','🎉','💪','😍'];
+    function reakcjeHtml(w){
+      const moja = w.moja_reakcja || null;
+      const przyciski = EMOJI.map(e=>{
+        const akt = e===moja;
+        return `<button type="button" data-wpis="${w.id}" data-emoji="${e}"
+          class="reakcja-btn w-9 h-9 rounded-full grid place-items-center text-lg transition ${akt?'bg-coral/15 ring-2 ring-coral scale-110':'bg-sky-50 hover:bg-sky-100'}">${e}</button>`;
+      }).join('');
+      const licznik = (w.reakcje_liczba||0) > 0
+        ? `<span class="ml-auto text-xs font-800 text-sky-400 self-center">${w.reakcje_liczba} reakcji</span>` : '';
+      return `<div class="mt-4 pt-3 border-t border-sky-100 flex items-center gap-1.5 flex-wrap">
+        <span class="text-[11px] font-800 text-sky-400 self-center mr-1">Zareaguj:</span>${przyciski}${licznik}</div>`;
+    }
+
+    async function klikReakcja(wpisId, emoji, btn){
+      // wyznacz aktualną reakcję z UI (podświetlony przycisk w tym wpisie)
+      const grupa = btn.parentElement;
+      const aktywny = grupa.querySelector('.ring-coral');
+      const obecne = aktywny ? aktywny.dataset.emoji : null;
+      const nowe = (obecne === emoji) ? null : emoji; // ponowny klik = cofnij
+      try{
+        await API.ustawReakcje(wpisId, nowe);
+        // zaktualizuj UI lokalnie
+        grupa.querySelectorAll('.reakcja-btn').forEach(b=>{
+          const on = (b.dataset.emoji === nowe);
+          b.className = 'reakcja-btn w-9 h-9 rounded-full grid place-items-center text-lg transition '
+            + (on?'bg-coral/15 ring-2 ring-coral scale-110':'bg-sky-50 hover:bg-sky-100');
+        });
+      }catch(e){ /* cicho — reakcja to drobiazg */ }
     }
 
     // ===== LIGHTBOX =====

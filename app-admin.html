@@ -218,12 +218,39 @@
     const API = window.DelfinadaAPI;
     let CACHE = { grupy: [], kadra: [], dzieci: [] };
 
-    function toast(msg){
+    function toast(msg, typ){
+      const t = document.getElementById('toast');
+      const box = t.querySelector('div');
+      const ico = box.querySelector('i');
       document.getElementById('toastText').textContent = msg;
-      const t = document.getElementById('toast'); t.classList.remove('hidden');
-      setTimeout(()=>t.classList.add('hidden'), 2800);
+      if(typ==='error'){ box.style.background='#e5720f'; if(ico) ico.setAttribute('data-lucide','alert-triangle'); }
+      else { box.style.background=''; if(ico) ico.setAttribute('data-lucide','check-circle-2'); }
+      t.classList.remove('hidden');
+      if(window.lucide) lucide.createIcons();
+      setTimeout(()=>t.classList.add('hidden'), 3200);
     }
     function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+    // ładne potwierdzenie (zamiast natywnego confirm) — zwraca Promise<boolean>
+    function potwierdz(tekst, { ok='Tak', anuluj='Anuluj', groźny=false } = {}){
+      return new Promise(res=>{
+        const back = document.createElement('div');
+        back.className = 'fixed inset-0 z-[60] grid place-items-center p-4';
+        back.innerHTML =
+          '<div class="sheet-backdrop absolute inset-0"></div>'
+          + '<div class="relative bg-white rounded-3xl card-shadow max-w-sm w-full p-6 text-center">'
+          + '<p class="text-sky-700 font-700 text-base mb-5">'+esc(tekst)+'</p>'
+          + '<div class="flex gap-3">'
+          + '<button data-no class="flex-1 px-4 py-3 rounded-2xl bg-sky-50 text-sky-600 font-800 hover:bg-sky-100 transition">'+esc(anuluj)+'</button>'
+          + '<button data-yes class="flex-1 px-4 py-3 rounded-2xl '+(groźny?'bg-coral':'bg-coral')+' text-white font-800 hover:bg-coral-dark transition">'+esc(ok)+'</button>'
+          + '</div></div>';
+        document.body.appendChild(back);
+        const zamknij = (v)=>{ back.remove(); res(v); };
+        back.querySelector('[data-yes]').onclick = ()=>zamknij(true);
+        back.querySelector('[data-no]').onclick = ()=>zamknij(false);
+        back.querySelector('.sheet-backdrop').onclick = ()=>zamknij(false);
+      });
+    }
     function closeModal(id){ document.getElementById(id).classList.add('hidden'); document.body.style.overflow=''; }
     function openModal(id){ document.getElementById(id).classList.remove('hidden'); document.body.style.overflow='hidden'; if(window.lucide) lucide.createIcons(); }
 
@@ -348,20 +375,20 @@
         cel_opis: document.getElementById('d_cel').value.trim() || null,
         cel_postep: parseInt(document.getElementById('d_postep').value,10),
       };
-      if(!dane.imie){ alert('Podaj imię dziecka.'); return; }
+      if(!dane.imie){ toast('Podaj imię dziecka.', 'error'); return; }
       try{
         if(id) await API.aktualizujDziecko(id, dane);
         else   await API.utworzDziecko(dane);
         closeModal('modalDziecko'); toast('Zapisano dziecko 🐬'); await ladujDzieci();
-      }catch(e){ alert('Błąd: '+(e.message||e)); }
+      }catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     async function usunDziecko(){
       const id = document.getElementById('d_id').value;
       if(!id) return;
-      if(!confirm('Usunąć dziecko wraz z jego wpisami? Tej operacji nie można cofnąć.')) return;
+      if(!await potwierdz('Usunąć dziecko wraz z jego wpisami? Tej operacji nie można cofnąć.', {ok:'Usuń', groźny:true})) return;
       try{ await API.usunDziecko(id); closeModal('modalDziecko'); toast('Usunięto'); await ladujDzieci(); }
-      catch(e){ alert('Błąd: '+(e.message||e)); }
+      catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     async function przypiszRodzica(){
@@ -381,13 +408,13 @@
     }
 
     async function odlaczRodzica(rodzicId, dzieckoId){
-      if(!confirm('Odłączyć tego rodzica od dziecka?')) return;
+      if(!await potwierdz('Odłączyć tego rodzica od dziecka?', {ok:'Odłącz'})) return;
       try{
         await API.odlaczRodzica(rodzicId, dzieckoId);
         const dzieci = await API.wszystkieDzieci();
         const d = dzieci.find(x=>x.id===dzieckoId); if(d) renderRodzice(d);
         await ladujDzieci(); toast('Odłączono rodzica');
-      }catch(e){ alert('Błąd: '+(e.message||e)); }
+      }catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     // ---------- GRUPY ----------
@@ -441,20 +468,20 @@
         opis: document.getElementById('g_opis').value.trim() || null,
         trener_id: document.getElementById('g_trener').value || null,
       };
-      if(!dane.nazwa){ alert('Podaj nazwę grupy.'); return; }
+      if(!dane.nazwa){ toast('Podaj nazwę grupy.', 'error'); return; }
       try{
         if(id) await API.aktualizujGrupe(id, dane);
         else   await API.utworzGrupe(dane);
         closeModal('modalGrupa'); toast('Zapisano grupę 🐬'); await ladujGrupy();
-      }catch(e){ alert('Błąd: '+(e.message||e)); }
+      }catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     async function usunGrupe(){
       const id = document.getElementById('g_id').value;
       if(!id) return;
-      if(!confirm('Usunąć grupę? Dzieci pozostaną, ale stracą przypisanie do tej grupy.')) return;
+      if(!await potwierdz('Usunąć grupę? Dzieci pozostaną, ale stracą przypisanie do tej grupy.', {ok:'Usuń', groźny:true})) return;
       try{ await API.usunGrupe(id); closeModal('modalGrupa'); toast('Usunięto grupę'); await ladujGrupy(); await ladujDzieci(); }
-      catch(e){ alert('Błąd: '+(e.message||e)); }
+      catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     // ---------- KADRA ----------
@@ -499,13 +526,13 @@
       const opis = rola==='rodzic' ? ('Odebrać dostęp (rola rodzica) dla: '+etykieta+'?')
                  : rola==='admin'  ? ('Nadać uprawnienia ADMINA dla: '+etykieta+'?')
                  : ('Zmienić rolę na trenera dla: '+etykieta+'?');
-      if(!confirm(opis)) return;
+      if(!await potwierdz(opis, {ok:'Potwierdź'})) return;
       try{
         await API.ustawRolePoId(id, rola);
         toast('Zmieniono rolę ✅');
         await ladujKadre();
         wypelnijFiltrGrup(); // kadra używana też przy grupach
-      }catch(e){ alert('Błąd: '+(e.message||e)); }
+      }catch(e){ toast('Błąd: '+(e.message||e), 'error'); }
     }
 
     async function nadajTrenera(){
@@ -521,7 +548,7 @@
     }
 
     // ---------- start ----------
-    document.getElementById('logoutBtn').onclick = async ()=>{ if(confirm('Wylogować się?')){ await API.wyloguj(); window.location.href='app-login.html'; } };
+    document.getElementById('logoutBtn').onclick = async ()=>{ if(await potwierdz('Wylogować się?', {ok:'Wyloguj'})){ await API.wyloguj(); window.location.href='app-login.html'; } };
 
     async function start(){
       if(!API || !API.skonfigurowane){ document.getElementById('cfgWarn').classList.remove('hidden'); return; }
