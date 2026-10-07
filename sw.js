@@ -4,7 +4,7 @@
  *  - Statyki (css/js/obrazy/czcionki): stale-while-revalidate → szybko z cache, aktualizacja w tle.
  *  - Wersjonowany cache: podbij APP_VERSION, by wymusić odświeżenie u wszystkich.
  */
-const APP_VERSION = 'v1.6.0';
+const APP_VERSION = 'v1.7.0';
 const CACHE = `delfinada-${APP_VERSION}`;
 
 // Pliki do wstępnego zapisania (działanie offline od pierwszej wizyty)
@@ -15,10 +15,9 @@ const PRECACHE = [
   './app-trener.html',
   './app-admin.html',
   './manifest.webmanifest',
+  './assets/logo-app.jpg',
   './assets/app-icon.svg',
   './assets/app-icon-maskable.svg',
-  './assets/favicon.png',
-  './assets/logo-delfinada.png',
   './assets/pwa.js'
 ];
 

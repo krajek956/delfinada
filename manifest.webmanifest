@@ -13,9 +13,9 @@
   "categories": ["education", "sports", "lifestyle"],
   "icons": [
     {
-      "src": "assets/app-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "assets/logo-app.jpg",
+      "sizes": "1446x1446",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
@@ -23,12 +23,6 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
-    },
-    {
-      "src": "assets/favicon.png",
-      "sizes": "443x443",
-      "type": "image/png",
-      "purpose": "any"
     }
   ],
   "shortcuts": [
