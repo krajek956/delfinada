@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — tył ulotki, Instagram (1080×1080)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
+        colors: {
+          aqua:{ base:'#3aa6c9', mid:'#3f9dc4', deep:'#2f8fb8' },
+          sunny:{ DEFAULT:'#ffd23f', dark:'#f5b800' },
+          coral:{ DEFAULT:'#ff8826', dark:'#e5720f' },
+        },
+      } },
+    };
+  </script>
+  <style>
+    html,body { margin:0; padding:0; background:#e2e8f0; }
+    /* Instagram kwadrat 1080×1080 */
+    .post {
+      width:1080px; height:1080px; position:relative; overflow:hidden; color:#fff;
+      background: linear-gradient(160deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
+      transform-origin: top left;
+    }
+    .stage{ display:flex; justify-content:center; padding:24px; }
+    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.24em .6em; border-radius:.4em; }
+    .content { position:relative; z-index:2; }
+    .photo { border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,.22); }
+    .photo img { width:100%; height:100%; object-fit:cover; display:block; }
+  </style>
+</head>
+<body class="font-sans">
+  <div class="text-center py-4 bg-white/70 text-slate-700">
+    <p class="text-sm">Podgląd — tył ulotki na Instagram 1080×1080. Zapis: DevTools → prawy klik na <code>.post</code> → „Capture node screenshot”.</p>
+  </div>
+
+  <div class="stage">
+    <div class="post" id="post">
+
+      <!-- fale dekoracyjne -->
+      <svg style="position:absolute;top:70px;left:-40px;width:360px;opacity:.5" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/>
+      </svg>
+      <svg style="position:absolute;bottom:40px;right:-50px;width:420px;opacity:.32" viewBox="0 0 200 200" fill="none" stroke="#bfe9f3" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/><path d="M0 95 Q30 80 60 95 T120 95"/>
+      </svg>
+
+      <div class="content px-16 pt-14">
+        <!-- NAGŁÓWEK -->
+        <div class="flex items-start justify-between">
+          <h1 class="font-display font-black leading-[0.9] tracking-tight">
+            <span class="block text-white text-[64px]">POZNAJ</span>
+            <span class="block text-sunny text-[64px]">INSTRUKTORKĘ</span>
+          </h1>
+          <span class="inline-block rounded-2xl bg-white px-4 py-3"><img src="assets/logo333.webp" alt="DELFINADA" class="w-[230px] h-auto" /></span>
+        </div>
+
+        <!-- ZDJĘCIE GŁÓWNE + INTRO -->
+        <div class="mt-8 flex gap-7 items-center">
+          <div class="relative shrink-0 w-[300px] h-[400px] flex items-end justify-end">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+              <div style="width:340px;height:340px;border-radius:9999px;filter:blur(30px);background:radial-gradient(circle at 35% 35%, rgba(111,210,221,.65), rgba(34,184,192,.45) 45%, rgba(255,157,64,.4) 80%, transparent 100%)"></div>
+            </div>
+            <img src="assets/ada777.webp" alt="Ada — instruktorka DELFINADA" class="relative h-full w-auto object-contain object-bottom" style="transform:scale(1.17) translate(10%, 8%); transform-origin:bottom center; -webkit-mask-image:linear-gradient(to top, transparent 0%, #000 25%); mask-image:linear-gradient(to top, transparent 0%, #000 25%);" />
+          </div>
+          <div>
+            <h2 class="font-display font-extrabold text-[30px] leading-tight"><span class="pill">Cześć! Jestem Ada</span></h2>
+            <p class="mt-4 text-[22px] font-semibold leading-snug max-w-[440px]">Instruktor i trener pływania z licencją Polskiego Związku Pływackiego. Pływanie to moja pasja od najmłodszych lat.</p>
+          </div>
+        </div>
+
+        <!-- TEKST BIO -->
+        <div class="mt-7 space-y-3 text-[20px] leading-snug font-medium text-white/95 max-w-[920px]">
+          <p>Wychowałam się na basenie, przez lata reprezentując jako zawodniczka pruszkowski klub pływacki. Dziś to doświadczenie i miłość do sportu przekazuję swoim podopiecznym podczas codziennych treningów.</p>
+          <p>Jestem absolwentką AWF-u w Warszawie, a obecnie studentką ratownictwa medycznego. Na co dzień uczę wychowania fizycznego w szkole podstawowej, dzięki czemu mam świetny kontakt z dziećmi i młodzieżą.</p>
+          <p>Na zajęciach stawiam na bezpieczną, przyjazną atmosferę, prawidłową technikę i radość z każdego przepłyniętego metra. Do zobaczenia na torze!</p>
+        </div>
+
+        <!-- GALERIA 3 ZDJĘĆ -->
+        <div class="mt-7 grid grid-cols-3 gap-5">
+          <div class="photo h-[185px]"><img src="assets/foto3.webp" alt="Ada — zawody" /></div>
+          <div class="photo h-[185px]"><img src="assets/foto4.webp" alt="Ada — trening" /></div>
+          <div class="photo h-[185px]"><img src="assets/foto5.webp" alt="Ada — start" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function fit(){ const p=document.getElementById('post'); const s=Math.min(window.innerWidth-48,1080)/1080; p.style.transform='scale('+s+')'; p.parentElement.style.height=(1080*s)+'px'; }
+    window.addEventListener('resize',fit); fit();
+  </script>
+</body>
+</html>
