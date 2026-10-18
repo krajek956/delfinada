@@ -16,13 +16,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="DELFINADA" />
 
-  <!-- Tailwind CSS (CDN) -->
-  <!-- Przyspieszenie połączeń z CDN -->
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+  <!-- Przyspieszenie połączeń -->
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
   <link rel="dns-prefetch" href="https://api.qrserver.com" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lekki CSS (zastępuje Tailwind CDN — szybciej + lepsze SEO) -->
+  <link rel="stylesheet" href="assets/app.css" />
   <!-- Lucide Icons (CDN, przypięta wersja + defer) -->
   <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 
@@ -30,98 +29,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-            display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          },
-          colors: {
-            // Paleta z logo DELFINADA — TURKUS (baza)
-            sky: {
-              50:  '#eafafc',
-              100: '#d2f2f6',
-              200: '#a6e5ec',
-              300: '#6fd2dd',
-              400: '#33b7c7',
-              500: '#189aad',
-              600: '#0e7c8b',
-              700: '#0b6270',
-            },
-            // Paleta z logo — POMARAŃCZ (delfin) — bazowy #FF8826
-            coral: { light: '#ffb26b', DEFAULT: '#ff8826', dark: '#e5720f' },
-            sunny: { light: '#ffc98a', DEFAULT: '#ff9d40', dark: '#f07f1a' },
-            // Miętowo-turkusowy akcent spójny z falą
-            mint:  { light: '#bdeef0', DEFAULT: '#22b8c0', dark: '#0e9aa2' },
-          },
-          keyframes: {
-            'float': { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-18px)' } },
-            'rise':  { '0%': { transform: 'translateY(0) scale(.6)', opacity: '0' }, '15%': { opacity: '.7' }, '100%': { transform: 'translateY(-140px) scale(1.2)', opacity: '0' } },
-            'fade-up': { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-            'wiggle': { '0%,100%': { transform: 'rotate(-5deg)' }, '50%': { transform: 'rotate(5deg)' } },
-            'pop': { '0%': { transform: 'scale(.9)' }, '60%': { transform: 'scale(1.05)' }, '100%': { transform: 'scale(1)' } },
-          },
-          animation: {
-            'float': 'float 6s ease-in-out infinite',
-            'fade-up': 'fade-up .7s ease-out both',
-            'wiggle': 'wiggle 3.5s ease-in-out infinite',
-            'pop': 'pop .4s ease-out both',
-          },
-        },
-      },
-    };
-  </script>
-
-  <style>
-    body { background-color: #eafafc; overflow-x: hidden; }
-    /* Wesołe tło z „bąbelkami" — kolory z logo (turkus + pomarańcz) */
-    .playful-bg {
-      background:
-        radial-gradient(60px 60px at 12% 20%, rgba(255,136,38,.30), transparent 70%),
-        radial-gradient(90px 90px at 85% 15%, rgba(255,136,38,.20), transparent 70%),
-        radial-gradient(70px 70px at 75% 80%, rgba(34,184,192,.28), transparent 70%),
-        linear-gradient(180deg, #d2f2f6 0%, #eafafc 60%, #ffffff 100%);
-    }
-    .wave-divider svg { display:block; width:100%; height:100%; }
-    .bubble { position:absolute; bottom:-20px; border-radius:9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(111,210,221,.55) 60%, transparent 72%); animation: rise linear infinite; pointer-events:none; }
-    .card-shadow { box-shadow: 0 18px 40px -18px rgba(14,124,139,.35); }
-    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
-
-    /* ===== Cover Flow slider ===== */
-    .cf-stage { perspective: 1400px; overflow: hidden; }
-    .cf-track { position: relative; height: 100%; transform-style: preserve-3d; }
-    .cf-item {
-      position: absolute; top: 50%; left: 50%;
-      width: 58%; max-width: 380px; aspect-ratio: 4 / 3;
-      border-radius: 1.5rem; overflow: hidden;
-      background: #cfeff3;
-      box-shadow: 0 30px 60px -20px rgba(11,98,112,.55);
-      transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .55s, filter .55s;
-      transform-origin: center center;
-      cursor: pointer; user-select: none;
-    }
-    .cf-item img, .cf-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .cf-item img { pointer-events: none; }
-    /* film kadrowany wyżej — osoba w centrum */
-    .cf-item video { object-position: center 22%; }
-    /* pozycje względem aktywnego (data-pos: -2,-1,0,1,2) */
-    /* każda pozycja zaczyna od translate(-50%,-50%) → wyśrodkowanie względem WŁASNEJ szerokości kafla */
-    .cf-item[data-pos="0"]  { transform: translate(-50%,-50%)              scale(1)    rotateY(0deg);   opacity: 1; z-index: 5; filter: none; }
-    .cf-item[data-pos="1"]  { transform: translate(-50%,-50%) translateX(85%)   scale(.82)  rotateY(-32deg); opacity: .75; z-index: 4; filter: brightness(.7); }
-    .cf-item[data-pos="-1"] { transform: translate(-50%,-50%) translateX(-85%)  scale(.82)  rotateY(32deg);  opacity: .75; z-index: 4; filter: brightness(.7); }
-    .cf-item[data-pos="2"]  { transform: translate(-50%,-50%) translateX(150%)  scale(.66)  rotateY(-42deg); opacity: .45; z-index: 3; filter: brightness(.55); }
-    .cf-item[data-pos="-2"] { transform: translate(-50%,-50%) translateX(-150%) scale(.66)  rotateY(42deg);  opacity: .45; z-index: 3; filter: brightness(.55); }
-    .cf-item[data-pos="hidden"] { transform: translate(-50%,-50%) scale(.5); opacity: 0; z-index: 1; pointer-events: none; }
-    @media (max-width: 640px) {
-      .cf-item { width: 66%; }
-      .cf-item[data-pos="1"]  { transform: translate(-50%,-50%) translateX(48%)  scale(.78)  rotateY(-26deg); }
-      .cf-item[data-pos="-1"] { transform: translate(-50%,-50%) translateX(-48%) scale(.78)  rotateY(26deg); }
-      .cf-item[data-pos="2"], .cf-item[data-pos="-2"] { opacity: 0; pointer-events: none; }
-    }
-  </style>
 </head>
 
 <body class="font-sans text-slate-700 antialiased selection:bg-sunny selection:text-slate-900">
