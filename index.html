@@ -26,10 +26,16 @@
   <!-- Lucide Icons (CDN, przypięta wersja + defer) -->
   <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 
-  <!-- Fonts -->
+  <!-- Fonts (ładowane nieblokująco — tekst widoczny od razu dzięki display=swap) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </noscript>
 
   <script>
     tailwind.config = {
@@ -182,7 +188,7 @@
   <section class="relative min-h-screen flex items-center overflow-hidden playful-bg pt-[83px] md:pt-[104px]">
     <!-- MOBILE: zdjęcie instruktorki jako tło za nagłówkiem, dosunięte do prawej (ukryte na desktopie) -->
     <div class="lg:hidden absolute inset-0 pointer-events-none" aria-hidden="true">
-      <img src="assets/ada2-trim.webp" width="1074" height="1710" alt="" loading="lazy" decoding="async"
+      <img src="assets/ada2-trim.webp" width="1074" height="1710" alt="" loading="eager" fetchpriority="high" decoding="async"
         class="absolute right-0 bottom-0 h-[92%] w-auto max-w-none object-contain object-bottom opacity-70" />
       <!-- welon: mocny z lewej (czytelność tekstu), znika po prawej (widoczna instruktorka) -->
       <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/45 to-transparent"></div>
@@ -228,7 +234,7 @@
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <div class="w-72 h-72 sm:w-96 sm:h-96 lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-br from-sky-300/60 via-mint/40 to-sunny/40 blur-3xl"></div>
         </div>
-        <img src="assets/ada2.webp" width="1365" height="2048" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="lazy" decoding="async"
+        <img src="assets/ada2.webp" width="1365" height="2048" alt="Instruktorka DELFINADA ze sprzętem do pływania" loading="eager" fetchpriority="high" decoding="async"
           class="relative w-72 sm:w-96 lg:w-full max-w-lg h-auto drop-shadow-2xl" />
       </div>
     </div>
