@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Custom style DELFINADA ===== */
+body { background-color: #eafafc; overflow-x: hidden; }
+    /* Wesołe tło z „bąbelkami" — kolory z logo (turkus + pomarańcz) */
+    .playful-bg {
+      background:
+        radial-gradient(60px 60px at 12% 20%, rgba(255,136,38,.30), transparent 70%),
+        radial-gradient(90px 90px at 85% 15%, rgba(255,136,38,.20), transparent 70%),
+        radial-gradient(70px 70px at 75% 80%, rgba(34,184,192,.28), transparent 70%),
+        linear-gradient(180deg, #d2f2f6 0%, #eafafc 60%, #ffffff 100%);
+    }
+    .wave-divider svg { display:block; width:100%; height:100%; }
+    .bubble { position:absolute; bottom:-20px; border-radius:9999px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(111,210,221,.55) 60%, transparent 72%); animation: rise linear infinite; pointer-events:none; }
+    .card-shadow { box-shadow: 0 18px 40px -18px rgba(14,124,139,.35); }
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+
+    /* ===== Cover Flow slider ===== */
+    .cf-stage { perspective: 1400px; overflow: hidden; }
+    .cf-track { position: relative; height: 100%; transform-style: preserve-3d; }
+    .cf-item {
+      position: absolute; top: 50%; left: 50%;
+      width: 58%; max-width: 380px; aspect-ratio: 4 / 3;
+      border-radius: 1.5rem; overflow: hidden;
+      background: #cfeff3;
+      box-shadow: 0 30px 60px -20px rgba(11,98,112,.55);
+      transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .55s, filter .55s;
+      transform-origin: center center;
+      cursor: pointer; user-select: none;
+    }
+    .cf-item img, .cf-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cf-item img { pointer-events: none; }
+    /* film kadrowany wyżej — osoba w centrum */
+    .cf-item video { object-position: center 22%; }
+    /* pozycje względem aktywnego (data-pos: -2,-1,0,1,2) */
+    /* każda pozycja zaczyna od translate(-50%,-50%) → wyśrodkowanie względem WŁASNEJ szerokości kafla */
+    .cf-item[data-pos="0"]  { transform: translate(-50%,-50%)              scale(1)    rotateY(0deg);   opacity: 1; z-index: 5; filter: none; }
+    .cf-item[data-pos="1"]  { transform: translate(-50%,-50%) translateX(85%)   scale(.82)  rotateY(-32deg); opacity: .75; z-index: 4; filter: brightness(.7); }
+    .cf-item[data-pos="-1"] { transform: translate(-50%,-50%) translateX(-85%)  scale(.82)  rotateY(32deg);  opacity: .75; z-index: 4; filter: brightness(.7); }
+    .cf-item[data-pos="2"]  { transform: translate(-50%,-50%) translateX(150%)  scale(.66)  rotateY(-42deg); opacity: .45; z-index: 3; filter: brightness(.55); }
+    .cf-item[data-pos="-2"] { transform: translate(-50%,-50%) translateX(-150%) scale(.66)  rotateY(42deg);  opacity: .45; z-index: 3; filter: brightness(.55); }
+    .cf-item[data-pos="hidden"] { transform: translate(-50%,-50%) scale(.5); opacity: 0; z-index: 1; pointer-events: none; }
+    @media (max-width: 640px) {
+      .cf-item { width: 66%; }
+      .cf-item[data-pos="1"]  { transform: translate(-50%,-50%) translateX(48%)  scale(.78)  rotateY(-26deg); }
+      .cf-item[data-pos="-1"] { transform: translate(-50%,-50%) translateX(-48%) scale(.78)  rotateY(26deg); }
+      .cf-item[data-pos="2"], .cf-item[data-pos="-2"] { opacity: 0; pointer-events: none; }
+    }
