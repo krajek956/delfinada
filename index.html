@@ -107,6 +107,10 @@
 
 <body class="font-sans text-slate-700 antialiased selection:bg-sunny selection:text-slate-900">
 
+  <!-- Delikatne bąbelki w tle całej strony (za treścią, nie blokują klikania) -->
+  <div id="ambient-bubbles" aria-hidden="true"></div>
+
+
   <!-- ============ NAVBAR ============ -->
   <header id="top" class="fixed top-0 inset-x-0 z-50">
     <div class="bg-white/85 backdrop-blur-md border-b border-sky-100">
@@ -727,6 +731,26 @@
         b.style.height = size + 'px';
         b.style.animationDuration = (Math.random() * 8 + 6) + 's';
         b.style.animationDelay = (Math.random() * 8) + 's';
+        box.appendChild(b);
+      }
+    })();
+
+    // Delikatne bąbelki w tle całej strony (unoszą się powoli przez wszystkie sekcje)
+    (function makeAmbientBubbles() {
+      const box = document.getElementById('ambient-bubbles');
+      if (!box) return;
+      // uszanuj preferencję ograniczenia animacji
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const ile = 14;
+      for (let i = 0; i < ile; i++) {
+        const b = document.createElement('span');
+        const size = Math.random() * 22 + 6;          // 6–28 px (drobne)
+        b.className = 'amb';
+        b.style.left = Math.random() * 100 + '%';
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.animationDuration = (Math.random() * 14 + 16) + 's'; // 16–30 s (powoli)
+        b.style.animationDelay = (Math.random() * 20) + 's';
         box.appendChild(b);
       }
     })();

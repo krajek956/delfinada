@@ -2,3 +2,26 @@
 
 /* dopełnienie: hover:card-shadow (custom klasa z wariantem hover) */
 .hover\:card-shadow:hover{box-shadow:0 18px 40px -18px rgba(14,124,139,.35)}
+
+/* ===== Delikatne bąbelki w tle całej strony ===== */
+#ambient-bubbles{
+  position:fixed; inset:0; z-index:30;       /* nad sekcjami, pod menu (z-50) i modalami; nieklikalne */
+  overflow:hidden; pointer-events:none;
+}
+#ambient-bubbles .amb{
+  position:absolute; bottom:-40px; border-radius:9999px;
+  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(111,210,221,.45) 60%, transparent 72%);
+  opacity:0;                                  /* start niewidoczny, pojawia się płynnie */
+  animation:amb-rise linear infinite;
+  will-change:transform,opacity;
+}
+@keyframes amb-rise{
+  0%   { transform:translateY(0) scale(.7);   opacity:0; }
+  15%  { opacity:.28; }
+  85%  { opacity:.28; }
+  100% { transform:translateY(-110vh) scale(1.1); opacity:0; }
+}
+/* uszanuj ustawienie „ogranicz animacje" w systemie użytkownika */
+@media (prefers-reduced-motion: reduce){
+  #ambient-bubbles{ display:none; }
+}
