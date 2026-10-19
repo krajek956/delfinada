@@ -129,7 +129,7 @@
               <button type="button" class="dropdown-btn inline-flex items-center gap-1 text-base lg:text-lg font-bold text-slate-600 hover:text-sky-600 transition-colors whitespace-nowrap" aria-haspopup="true" aria-expanded="false">
                 Oferta <i data-lucide="chevron-down" class="w-4 h-4 dropdown-arrow transition-transform"></i>
               </button>
-              <div class="dropdown-menu absolute left-0 top-full pt-3 w-60 opacity-0 invisible transition-all">
+              <div class="dropdown-menu absolute left-0 top-full pt-3 w-60">
                 <div class="rounded-2xl bg-white card-shadow border border-sky-100 p-2">
                   <a href="dla-doroslych.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 transition-colors">
                     <span class="w-9 h-9 rounded-xl bg-sunny/20 text-sunny-dark grid place-items-center"><i data-lucide="user-round" class="w-5 h-5"></i></span>
@@ -744,12 +744,20 @@
     btn?.addEventListener('click', () => menu.classList.toggle('hidden'));
     menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.add('hidden')));
 
-    // Rozwijane menu „Oferta" — klik przełącza (działa na dotyku/mobile i klawiaturze)
+    // Rozwijane menu „Oferta"
     (function(){
       const dd = document.querySelector('.dropdown');
       if(!dd) return;
       const b = dd.querySelector('.dropdown-btn');
+      // czy urządzenie ma hover (mysz/desktop)? jeśli tak — rozwijanie robi CSS :hover,
+      // a klik w „Oferta" po prostu przewija do sekcji. Jeśli nie (dotyk) — klik przełącza.
+      const hoverable = window.matchMedia('(hover: hover)').matches;
       b?.addEventListener('click', (e)=>{
+        if (hoverable) {
+          // desktop: nie przełączaj klasy (hover steruje) — przewiń do sekcji oferty
+          document.getElementById('oferta')?.scrollIntoView({ behavior:'smooth' });
+          return;
+        }
         e.preventDefault();
         const open = dd.classList.toggle('open');
         b.setAttribute('aria-expanded', open ? 'true' : 'false');
