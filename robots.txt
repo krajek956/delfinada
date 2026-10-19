@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Panel aplikacji (prywatny) — nie indeksuj
+Disallow: /app-login.html
+Disallow: /app-admin.html
+Disallow: /app-postepy.html
+Disallow: /app-trener.html
+
+Sitemap: https://www.delfinada.pl/sitemap.xml
