@@ -98,3 +98,5 @@
 .group:hover .group-hover\:text-coral-dark{color:#e5720f}
 
 @media(min-width:1024px){ .lg\:inline-flex{display:inline-flex} }
+
+.-right-24{right:-6rem}
