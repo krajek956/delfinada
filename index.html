@@ -124,7 +124,32 @@
           </a>
 
           <div class="hidden lg:flex items-center gap-3 lg:gap-5">
-            <a href="#oferta" class="text-base lg:text-lg font-bold text-slate-600 hover:text-sky-600 transition-colors whitespace-nowrap">Oferta</a>
+            <!-- Oferta z rozwijanym menu -->
+            <div class="dropdown relative">
+              <button type="button" class="dropdown-btn inline-flex items-center gap-1 text-base lg:text-lg font-bold text-slate-600 hover:text-sky-600 transition-colors whitespace-nowrap" aria-haspopup="true" aria-expanded="false">
+                Oferta <i data-lucide="chevron-down" class="w-4 h-4 dropdown-arrow transition-transform"></i>
+              </button>
+              <div class="dropdown-menu absolute left-0 top-full pt-3 w-60 opacity-0 invisible transition-all">
+                <div class="rounded-2xl bg-white card-shadow border border-sky-100 p-2">
+                  <a href="dla-doroslych.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 transition-colors">
+                    <span class="w-9 h-9 rounded-xl bg-sunny/20 text-sunny-dark grid place-items-center"><i data-lucide="user-round" class="w-5 h-5"></i></span>
+                    <span class="font-bold text-sky-700">Dla dorosłych</span>
+                  </a>
+                  <a href="#oferta" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 transition-colors">
+                    <span class="w-9 h-9 rounded-xl bg-sky-100 text-sky-600 grid place-items-center"><i data-lucide="smile" class="w-5 h-5"></i></span>
+                    <span class="font-bold text-sky-700">Dla dzieci</span>
+                  </a>
+                  <a href="#oferta" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 transition-colors">
+                    <span class="w-9 h-9 rounded-xl bg-mint/20 text-mint-dark grid place-items-center"><i data-lucide="baby" class="w-5 h-5"></i></span>
+                    <span class="font-bold text-sky-700">Niemowlęta</span>
+                  </a>
+                  <a href="#oferta" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 transition-colors">
+                    <span class="w-9 h-9 rounded-xl bg-coral/10 text-coral grid place-items-center"><i data-lucide="trophy" class="w-5 h-5"></i></span>
+                    <span class="font-bold text-sky-700">Doskonalenie</span>
+                  </a>
+                </div>
+              </div>
+            </div>
             <a href="#dlaczego" class="text-base lg:text-lg font-bold text-slate-600 hover:text-sky-600 transition-colors whitespace-nowrap">O mnie</a>
             <a href="#jak" class="text-base lg:text-lg font-bold text-slate-600 hover:text-sky-600 transition-colors whitespace-nowrap">Jak to działa</a>
             <a href="#cennik" class="text-base lg:text-lg font-bold text-slate-600 hover:text-sky-600 transition-colors whitespace-nowrap">Cennik</a>
@@ -148,6 +173,7 @@
     <div id="mobile-menu" class="hidden lg:hidden bg-white/95 backdrop-blur-md border-b border-sky-100">
       <div class="px-4 py-4 space-y-1">
         <a href="#oferta" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Oferta</a>
+        <a href="dla-doroslych.html" class="flex items-center gap-2 px-3 py-2 ml-3 rounded-xl text-lg font-bold text-coral hover:bg-coral/10"><i data-lucide="user-round" class="w-5 h-5"></i> Nauka pływania dla dorosłych</a>
         <a href="#dlaczego" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">O mnie</a>
         <a href="#jak" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Jak to działa</a>
         <a href="#cennik" class="block px-3 py-2 rounded-xl text-xl font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600">Cennik</a>
@@ -717,6 +743,24 @@
     const menu = document.getElementById('mobile-menu');
     btn?.addEventListener('click', () => menu.classList.toggle('hidden'));
     menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.classList.add('hidden')));
+
+    // Rozwijane menu „Oferta" — klik przełącza (działa na dotyku/mobile i klawiaturze)
+    (function(){
+      const dd = document.querySelector('.dropdown');
+      if(!dd) return;
+      const b = dd.querySelector('.dropdown-btn');
+      b?.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const open = dd.classList.toggle('open');
+        b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      // zamknij po kliknięciu poza menu
+      document.addEventListener('click', (e)=>{ if(!dd.contains(e.target)) dd.classList.remove('open'); });
+      // zamknij po wybraniu pozycji
+      dd.querySelectorAll('.dropdown-menu a').forEach(a=> a.addEventListener('click', ()=> dd.classList.remove('open')));
+      // Esc zamyka
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') dd.classList.remove('open'); });
+    })();
 
     document.getElementById('year').textContent = new Date().getFullYear();
 

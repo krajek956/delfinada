@@ -59,3 +59,29 @@
   .lg\:text-6xl{font-size:3.75rem;line-height:1}
 }
 .-inset-6{top:-1.5rem;right:-1.5rem;bottom:-1.5rem;left:-1.5rem}
+
+/* ===== Rozwijane menu „Oferta" ===== */
+.dropdown-menu{ z-index:50; }
+/* desktop: rozwijanie po najechaniu */
+@media (min-width:1024px){
+  .dropdown:hover .dropdown-menu,
+  .dropdown:focus-within .dropdown-menu{ opacity:1; visibility:visible; }
+  .dropdown:hover .dropdown-arrow,
+  .dropdown:focus-within .dropdown-arrow{ transform:rotate(180deg); }
+}
+/* klik (mobile/tablet oraz wymuszenie): klasa .open na .dropdown */
+.dropdown.open .dropdown-menu{ opacity:1; visibility:visible; }
+.dropdown.open .dropdown-arrow{ transform:rotate(180deg); }
+
+/* ===== Dopełnienie dla rozwijanego menu „Oferta" ===== */
+.invisible{visibility:hidden}
+.opacity-0{opacity:0}
+.top-full{top:100%}
+.left-0{left:0}
+.w-60{width:15rem}
+.p-2{padding:.5rem}
+.pt-3{padding-top:.75rem}
+.ml-3{margin-left:.75rem}
+.gap-1{gap:.25rem}
+.bg-sunny\/20{background-color:rgba(255,157,64,.2)}
+.hover\:bg-coral\/10:hover{background-color:rgba(255,136,38,.1)}
