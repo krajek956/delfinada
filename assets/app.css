@@ -85,3 +85,14 @@
 .gap-1{gap:.25rem}
 .bg-sunny\/20{background-color:rgba(255,157,64,.2)}
 .hover\:bg-coral\/10:hover{background-color:rgba(255,136,38,.1)}
+
+/* Welon na mobile w hero — czytelny tekst z lewej, wyraźna instruktorka z prawej */
+.welon-mobile{
+  background:linear-gradient(to right,
+    rgba(255,255,255,.96) 0%,
+    rgba(255,255,255,.90) 22%,
+    rgba(255,255,255,.35) 52%,
+    rgba(255,255,255,0) 78%);
+}
+
+.group:hover .group-hover\:text-coral-dark{color:#e5720f}
