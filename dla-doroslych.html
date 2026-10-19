@@ -153,7 +153,12 @@
       <h2 class="text-center font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Zostaw kontakt — oddzwonimy</h2>
       <p class="text-center text-slate-600 mt-3">Wolisz, żebyśmy to my zadzwonili? Zostaw numer, a umówimy zajęcia próbne.</p>
 
-      <form id="lead-form" class="mt-8 bg-white rounded-3xl card-shadow p-6 sm:p-8 space-y-4" novalidate>
+      <form id="lead-form" class="mt-8 bg-white rounded-3xl card-shadow p-6 sm:p-8 space-y-4" action="https://api.web3forms.com/submit" method="POST" novalidate>
+        <!-- Web3Forms -->
+        <input type="hidden" name="access_key" value="1e051fcc-9f4b-4183-af05-249a509afe12" />
+        <input type="hidden" name="subject" value="Nowe zgłoszenie — DOROŚLI (DELFINADA) 🐬" />
+        <input type="hidden" name="from_name" value="Formularz DELFINADA — dorośli" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
         <div>
           <label class="text-sm font-bold text-sky-700">Imię *</label>
           <input name="imie" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="Jak masz na imię?" />
@@ -229,14 +234,23 @@
         telefon:v=>/^[+]?[\d\s()-]{9,}$/.test(v.trim())||'Podaj poprawny numer telefonu.',
         zgoda:(v,el)=>el.checked||'Zgoda jest wymagana, abyśmy mogli oddzwonić.',
       };
-      f.addEventListener('submit',(e)=>{
+      f.addEventListener('submit', async (e)=>{
         e.preventDefault(); let bledy=0;
         for(const n in walid){ const el=f.querySelector('[name="'+n+'"]'); const r=walid[n](el.value,el); if(r!==true){pokazBlad(n,r);bledy++;} else pokazBlad(n,''); }
         if(bledy) return;
-        // TODO: tu podepniemy wysyłkę (e-mail/Formspree) + konwersję Google Ads
-        f.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
-        ok.classList.remove('hidden');
-        console.log('Lead DELFINADA (dorośli):', Object.fromEntries(new FormData(f)));
+        const btn=f.querySelector('button[type="submit"]'); const orig=btn?btn.innerHTML:'';
+        if(btn){ btn.disabled=true; btn.innerHTML='Wysyłanie…'; }
+        try{
+          const res=await fetch('https://api.web3forms.com/submit',{ method:'POST', headers:{'Accept':'application/json'}, body:new FormData(f) });
+          const json=await res.json();
+          if(res.ok && json.success){
+            f.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
+            ok.classList.remove('hidden');
+          } else { throw new Error(json.message||'Błąd wysyłki'); }
+        }catch(err){
+          if(btn){ btn.disabled=false; btn.innerHTML=orig; }
+          alert('Nie udało się wysłać. Spróbuj ponownie lub zadzwoń: 666 515 178.');
+        }
       });
     })();
   </script>
