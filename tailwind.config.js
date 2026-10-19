@@ -1,7 +1,7 @@
 /** Tailwind config dla DELFINADA — używany TYLKO do zbudowania pliku CSS. */
 module.exports = {
   // Pliki, w których Tailwind szuka użytych klas (żeby wygenerować tylko potrzebne):
-  content: ['./index.html'],
+  content: ['./index.html', './dla-doroslych.html'],
   theme: {
     extend: {
       fontFamily: {

@@ -25,3 +25,37 @@
 @media (prefers-reduced-motion: reduce){
   #ambient-bubbles{ display:none; }
 }
+
+/* ===== Dopełnienie dla strony dla-doroslych.html ===== */
+.max-w-5xl{max-width:64rem}
+.text-3xl{font-size:1.875rem;line-height:2.25rem}
+.py-10{padding-top:2.5rem;padding-bottom:2.5rem}
+.py-12{padding-top:3rem;padding-bottom:3rem}
+.py-14{padding-top:3.5rem;padding-bottom:3.5rem}
+.gap-x-6{-moz-column-gap:1.5rem;column-gap:1.5rem}
+.gap-y-2{row-gap:.5rem}
+.leading-\[1\.08\]{line-height:1.08}
+.sticky{position:sticky}
+.z-40{z-index:40}
+.underline{text-decoration-line:underline}
+.bg-coral\/10{background-color:rgba(255,136,38,.1)}
+.bg-mint\/20{background-color:rgba(34,184,192,.2)}
+.from-sky-300\/50{--tw-from:rgba(111,210,221,.5)}
+.focus\:border-coral:focus{border-color:#ff8826}
+.hover\:text-coral-dark:hover{color:#e5720f}
+@media(min-width:640px){
+  .sm\:inline{display:inline}
+  .sm\:p-10{padding:2.5rem}
+  .sm\:py-20{padding-top:5rem;padding-bottom:5rem}
+  .sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}
+  .sm\:text-right{text-align:right}
+  .sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:768px){
+  .md\:hidden{display:none}
+}
+@media(min-width:1024px){
+  .lg\:block{display:block}
+  .lg\:text-6xl{font-size:3.75rem;line-height:1}
+}
+.-inset-6{top:-1.5rem;right:-1.5rem;bottom:-1.5rem;left:-1.5rem}
