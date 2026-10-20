@@ -8,24 +8,46 @@
   <!-- Logo to element LCP na mobile — pobierz od razu z wysokim priorytetem -->
   <link rel="preload" as="image" href="assets/logo333.webp" fetchpriority="high" />
 
-  <!-- ===== Google Analytics 4 (pomiar ruchu + konwersji) ===== -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4LN8ERE2V4"></script>
+  <!-- ===== Google Analytics 4 (ładowany po interakcji — nie obciąża startu strony) ===== -->
   <script>
+    // gtag działa od razu i buforuje zdarzenia; właściwy skrypt GA dociąga się
+    // dopiero przy pierwszej interakcji (scroll/klik/dotyk) lub po 3,5 s — co pierwsze.
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-4LN8ERE2V4');
-    // Śledzenie kliknięć „Zadzwoń" i wysłania formularza jako zdarzeń (telefon = główny cel)
-    window.addEventListener('DOMContentLoaded', function () {
-      document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
-        a.addEventListener('click', function () {
-          gtag('event', 'klik_telefon', {
-            miejsce: a.getAttribute('data-cta') || 'nieznane',
-            strona: location.pathname
+
+    (function () {
+      var zaladowano = false;
+      function zaladujGA() {
+        if (zaladowano) return; zaladowano = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-4LN8ERE2V4';
+        document.head.appendChild(s);
+        czyscNasluch();
+      }
+      var zdarzenia = ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'];
+      function czyscNasluch() {
+        zdarzenia.forEach(function (e) { window.removeEventListener(e, zaladujGA, { passive: true }); });
+      }
+      zdarzenia.forEach(function (e) { window.addEventListener(e, zaladujGA, { passive: true }); });
+      setTimeout(zaladujGA, 3500); // awaryjnie — gdyby ktoś nic nie kliknął
+
+      // Śledzenie kliknięć „Zadzwoń" (telefon = główny cel). Zdarzenie trafia do dataLayer
+      // i zostanie wysłane, gdy tylko GA się doładuje — nic nie ginie.
+      window.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+          a.addEventListener('click', function () {
+            zaladujGA(); // klik w telefon na pewno doładuje GA
+            gtag('event', 'klik_telefon', {
+              miejsce: a.getAttribute('data-cta') || 'nieznane',
+              strona: location.pathname
+            });
           });
         });
       });
-    });
+    })();
   </script>
 
   <!-- Weryfikacja Google Search Console -->
