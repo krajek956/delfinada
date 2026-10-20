@@ -7,6 +7,27 @@
   <link rel="preload" as="style" href="assets/app.css" />
   <!-- Logo to element LCP na mobile — pobierz od razu z wysokim priorytetem -->
   <link rel="preload" as="image" href="assets/logo333.webp" fetchpriority="high" />
+
+  <!-- ===== Google Analytics 4 (pomiar ruchu + konwersji) ===== -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4LN8ERE2V4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-4LN8ERE2V4');
+    // Śledzenie kliknięć „Zadzwoń" i wysłania formularza jako zdarzeń (telefon = główny cel)
+    window.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          gtag('event', 'klik_telefon', {
+            miejsce: a.getAttribute('data-cta') || 'nieznane',
+            strona: location.pathname
+          });
+        });
+      });
+    });
+  </script>
+
   <!-- Weryfikacja Google Search Console -->
   <meta name="google-site-verification" content="o7PDIljER7LEmVDN9Ww8DW4cnHeKHHtiClq_agpmaEE" />
   <meta name="google-site-verification" content="-ohG_6kOG_pa-lgnc_9G4sEHmAOeLRddgyveAzwGTII" />
@@ -880,6 +901,7 @@
             form.querySelectorAll('input, select, textarea, button').forEach((el) => el.setAttribute('disabled', 'true'));
             success.classList.remove('hidden');
             success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if(typeof gtag==='function'){ gtag('event','wyslanie_formularza',{strona:location.pathname,grupa:'glowna'}); }
           } else {
             throw new Error(json.message || 'Błąd wysyłki');
           }

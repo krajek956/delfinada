@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preload" as="style" href="assets/app.css" />
   <link rel="preload" as="image" href="assets/logo333.webp" fetchpriority="high" />
+
+  <!-- ===== Google Analytics 4 (pomiar ruchu + konwersji) ===== -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4LN8ERE2V4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-4LN8ERE2V4');
+    window.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          gtag('event', 'klik_telefon', {
+            miejsce: a.getAttribute('data-cta') || 'nieznane',
+            strona: location.pathname
+          });
+        });
+      });
+    });
+  </script>
+
   <title>Nauka pływania dla dzieci Warszawa — zajęcia przez zabawę | DELFINADA 🐬</title>
   <meta name="description" content="Nauka pływania dla dzieci w Warszawie (Praga-Północ) — zajęcia przez zabawę, małe grupy i lekcje indywidualne. Budujemy pewność siebie i bezpieczeństwo w wodzie. Zapisz dziecko na zajęcia próbne!" />
   <link rel="canonical" href="https://www.delfinada.pl/dla-dzieci.html" />
@@ -266,6 +286,7 @@
           if(res.ok && json.success){
             f.querySelectorAll('input,button').forEach(x=>x.disabled=true);
             ok.classList.remove('hidden');
+            if(typeof gtag==='function'){ gtag('event','wyslanie_formularza',{strona:location.pathname,grupa:'dzieci'}); }
           } else { throw new Error(json.message||'Błąd wysyłki'); }
         }catch(err){
           if(btn){ btn.disabled=false; btn.innerHTML=orig; }
