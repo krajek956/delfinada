@@ -39,11 +39,11 @@ node optymalizuj-zdjecia.mjs
 
 Zobaczysz listę typu (ze strzałką pokazującą nowe wymiary):
 ```
-✓ foto3.webp: 56 KiB → 24 KiB   |   1200x800 → 700x467
-✓ foto4.webp: 76 KiB → 30 KiB   |   1200x800 → 700x467
-✓ logo333.webp: 37 KiB → 18 KiB |   600x136 → 400x91
+✓ foto1.webp: 42 KiB → ~18 KiB  |   750x1000 → 375x500
+✓ foto3.webp: 27 KiB → ~15 KiB  |   700x467  → 560x373
+✓ logo333.webp: 18 KiB → ~11 KiB|   400x91   → 400x91 (mocniejsza kompresja)
 ...
-Łączna oszczędność: ~180 KiB 🎉
+Łączna oszczędność: ~80–110 KiB 🎉
 ```
 
 **Skopiuj tę listę** — przyda się w kroku 5 (gdybym musiał dopasować wymiary w kodzie).
@@ -70,8 +70,8 @@ odpalisz PageSpeed jeszcze raz — punkt „Ulepsz dostarczanie obrazów" powini
 zniknąć lub mocno zmaleć.
 
 > Uwaga: wymiary w kodzie (width/height przy zdjęciach) już ustawiłem na
-> docelowe (foto3/4/5 → 700×467, logo → 400×91, instruktorka → 377×600).
-> Jeśli skrypt pokaże inne liczby, daj znać — poprawię.
+> docelowe (foto1 → 375×500, foto3/4/5 → 560×373, logo → 400×91 z mocniejszą
+> kompresją). Jeśli skrypt pokaże inne liczby, daj znać — poprawię.
 
 ---
 

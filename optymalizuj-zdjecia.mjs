@@ -12,19 +12,23 @@ const DIR = 'assets';
 //  • ada2-trim — instruktorka w hero (NIE powiększa się) → 600 px
 //  • logo333   — logo (NIE powiększa się) → 400 px
 //  • foto1     — pionowe 750x1000, już małe → zostaje 1000
+// Dopasowane do REALNEGO rozmiaru wyświetlania (slider Cover Flow: max kontener ~380 px,
+// więc na ekranach Retina ×2 potrzeba ~560 px — nie ma lightboxa/powiększania na pełny ekran).
 const LIMITY = {
-  'foto1.webp': 1000,
-  'foto3.webp': 700,
-  'foto4.webp': 700,
-  'foto5.webp': 700,
-  'ada2.webp': 700,
-  'ada2-trim.webp': 600,
+  'foto1.webp': 500,   // pionowe, w sliderze pokazuje ~251x334 → 500 px starcza na Retinę
+  'foto3.webp': 560,
+  'foto4.webp': 560,
+  'foto5.webp': 560,
+  'ada2.webp': 560,
+  'ada2-trim.webp': 600, // instruktorka w hero — tu zostawiamy więcej (duży obszar)
   'basen001.webp': 900,
   'basen002.webp': 900,
   'basen003.webp': 900,
   'logo333.webp': 400,
 };
-const JAKOSC = 80; // jakość WebP (0-100) — 80 to bardzo dobry kompromis
+// jakość WebP (0-100). Logo dociskamy mocniej (jednolite tło, nie widać różnicy).
+const JAKOSC = 78;
+const JAKOSC_PLIK = { 'logo333.webp': 72 };
 
 let zysk = 0;
 for (const [plik, maxBok] of Object.entries(LIMITY)) {
@@ -35,11 +39,12 @@ for (const [plik, maxBok] of Object.entries(LIMITY)) {
     const meta = await img.metadata();
     const dłuższy = Math.max(meta.width, meta.height);
     // tylko zmniejszamy (nigdy nie powiększamy)
+    const q = JAKOSC_PLIK[plik] ?? JAKOSC;
     const buf = await img
       .resize({ width: meta.width >= meta.height ? Math.min(meta.width, maxBok) : null,
                 height: meta.height > meta.width ? Math.min(meta.height, maxBok) : null,
                 withoutEnlargement: true })
-      .webp({ quality: JAKOSC })
+      .webp({ quality: q })
       .toBuffer();
     // zapisz tylko jeśli faktycznie mniejsze
     const { writeFile } = await import('node:fs/promises');
