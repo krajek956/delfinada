@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Pobierz główny CSS jak najwcześniej (skraca łańcuch krytyczny HTML→CSS) -->
   <link rel="preload" as="style" href="assets/app.css" />
+  <!-- Logo to element LCP na mobile — pobierz od razu z wysokim priorytetem -->
+  <link rel="preload" as="image" href="assets/logo333.webp" fetchpriority="high" />
   <!-- Weryfikacja Google Search Console -->
   <meta name="google-site-verification" content="o7PDIljER7LEmVDN9Ww8DW4cnHeKHHtiClq_agpmaEE" />
   <meta name="google-site-verification" content="-ohG_6kOG_pa-lgnc_9G4sEHmAOeLRddgyveAzwGTII" />
@@ -120,8 +122,9 @@
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-[83px] md:h-[104px]">
           <a href="#top" class="group inline-flex items-center" aria-label="DELFINADA — strona główna">
-            <!-- Logo DELFINADA -->
+            <!-- Logo DELFINADA (element LCP na mobile — ładowany od razu z wysokim priorytetem) -->
             <img src="assets/logo333.webp" width="400" height="91" alt="DELFINADA — Nauka pływania i obozy sportowe, Warszawa"
+              loading="eager" fetchpriority="high" decoding="async"
               class="h-[68px] md:h-[82px] w-auto group-hover:scale-105 transition-transform" />
           </a>
 
