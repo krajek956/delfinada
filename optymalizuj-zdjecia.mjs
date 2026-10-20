@@ -6,18 +6,23 @@ import { readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 const DIR = 'assets';
-// maksymalny dłuższy bok dla danego pliku (px). Dobrane do tego, jak duże wyświetlają się na stronie.
+// Maksymalny dłuższy bok dla danego pliku (px). Dobrane do tego, jak duże wyświetlają się
+// na stronie — z zapasem dla zdjęć powiększanych w sliderze/lightboxie (żeby nie rozmywały się).
+//  • foto3/4/5 — slider + lightbox (powiększają się) → bezpieczne 700 px
+//  • ada2-trim — instruktorka w hero (NIE powiększa się) → 600 px
+//  • logo333   — logo (NIE powiększa się) → 400 px
+//  • foto1     — pionowe 750x1000, już małe → zostaje 1000
 const LIMITY = {
   'foto1.webp': 1000,
-  'foto3.webp': 1200,
-  'foto4.webp': 1200,
-  'foto5.webp': 1200,
-  'ada2.webp': 1100,
-  'ada2-trim.webp': 1100,
-  'basen001.webp': 1000,
-  'basen002.webp': 1000,
-  'basen003.webp': 1000,
-  'logo333.webp': 600,
+  'foto3.webp': 700,
+  'foto4.webp': 700,
+  'foto5.webp': 700,
+  'ada2.webp': 700,
+  'ada2-trim.webp': 600,
+  'basen001.webp': 900,
+  'basen002.webp': 900,
+  'basen003.webp': 900,
+  'logo333.webp': 400,
 };
 const JAKOSC = 80; // jakość WebP (0-100) — 80 to bardzo dobry kompromis
 
@@ -41,13 +46,16 @@ for (const [plik, maxBok] of Object.entries(LIMITY)) {
     if (buf.length < przed) {
       await writeFile(p, buf);
       const po = buf.length;
+      const metaPo = await sharp(buf).metadata();
       zysk += (przed - po);
-      console.log(`✓ ${plik}: ${(przed/1024|0)} KiB → ${(po/1024|0)} KiB  (${meta.width}x${meta.height}, max bok ${maxBok})`);
+      console.log(`✓ ${plik}: ${(przed/1024|0)} KiB → ${(po/1024|0)} KiB   |   ${meta.width}x${meta.height} → ${metaPo.width}x${metaPo.height}`);
     } else {
-      console.log(`– ${plik}: bez zmian (już optymalny)`);
+      console.log(`– ${plik}: bez zmian (już optymalny: ${meta.width}x${meta.height})`);
     }
   } catch (e) {
     console.log(`! ${plik}: pominięto (${e.message})`);
   }
 }
 console.log(`\nŁączna oszczędność: ${(zysk/1024|0)} KiB 🎉`);
+console.log('\nPAMIĘTAJ: jeśli zmieniły się wymiary (strzałka → powyżej),');
+console.log('zaktualizuj width/height przy <img> w HTML — albo wklej mi powyższe wyniki, a zrobię to za Ciebie.');

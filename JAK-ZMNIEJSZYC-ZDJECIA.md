@@ -1,8 +1,9 @@
 # Jak zmniejszyć zdjęcia (szybsza strona) — kilka komend 📸
 
-Google wykrył, że niektóre zdjęcia są wielokrotnie za duże (np. foto1 to 3024×4032,
-a wyświetla się jako maleńki kafelek). Zmniejszymy je — oszczędność ~500 KiB,
-a jakość na ekranie zostaje taka sama.
+PageSpeed wskazał ostatnie kilka zdjęć, które wciąż są większe niż potrzeba
+(foto3/foto4/foto5 w galerii, logo oraz zdjęcie instruktorki). Zmniejszymy je —
+ale **z zapasem**, żeby w galerii/powiększeniu nie wyszły rozmyte. Spodziewana
+oszczędność ~150–250 KiB, jakość na ekranie zostaje bardzo dobra.
 
 Masz już Node na komputerze, więc to pójdzie szybko.
 
@@ -36,13 +37,16 @@ Poczeka chwilę (pobiera bibliotekę). Pojawi się kilka linijek — to normalne
 node optymalizuj-zdjecia.mjs
 ```
 
-Zobaczysz listę typu:
+Zobaczysz listę typu (ze strzałką pokazującą nowe wymiary):
 ```
-✓ foto1.webp: 240 KiB → 60 KiB  ...
-✓ foto3.webp: 94 KiB → 45 KiB  ...
+✓ foto3.webp: 56 KiB → 24 KiB   |   1200x800 → 700x467
+✓ foto4.webp: 76 KiB → 30 KiB   |   1200x800 → 700x467
+✓ logo333.webp: 37 KiB → 18 KiB |   600x136 → 400x91
 ...
-Łączna oszczędność: ~500 KiB 🎉
+Łączna oszczędność: ~180 KiB 🎉
 ```
+
+**Skopiuj tę listę** — przyda się w kroku 5 (gdybym musiał dopasować wymiary w kodzie).
 
 ---
 
@@ -58,10 +62,16 @@ git push
 
 ---
 
-## Krok 5 — napisz mi „zdjęcia zmniejszone"
+## Krok 5 — wklej mi wynik + napisz „zdjęcia zmniejszone"
 
-Sprawdzę, że wszystko się wgrało, zweryfikuję i wdrożę. Potem odpalisz PageSpeed
-jeszcze raz — punkt „Ulepsz dostarczanie obrazów" powinien zniknąć lub mocno zmaleć.
+Wklej mi listę ze strzałkami z kroku 3. Sprawdzę, że wszystko się wgrało,
+w razie potrzeby dopasuję wymiary `width`/`height` w kodzie i wdrożę. Potem
+odpalisz PageSpeed jeszcze raz — punkt „Ulepsz dostarczanie obrazów" powinien
+zniknąć lub mocno zmaleć.
+
+> Uwaga: wymiary w kodzie (width/height przy zdjęciach) już ustawiłem na
+> docelowe (foto3/4/5 → 700×467, logo → 400×91, instruktorka → 377×600).
+> Jeśli skrypt pokaże inne liczby, daj znać — poprawię.
 
 ---
 
