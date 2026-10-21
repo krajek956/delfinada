@@ -85,6 +85,31 @@
       background-size:auto 100%;
     }
     @media (min-width:480px){ .ada-hero-mob-bg { background-position:right -4rem bottom; } }
+    /* mobile: czytelność tekstu na zdjęciu — mocniejszy welon + zanikanie pionowe + poświata pod literami */
+    .welon-dorosli { display:none; }
+    @media (max-width:1023px){
+      .welon-dorosli {
+        display:block;
+        background:
+          linear-gradient(to right,
+            rgba(255,255,255,.55) 0%,
+            rgba(255,255,255,.45) 40%,
+            rgba(255,255,255,.15) 70%,
+            rgba(255,255,255,0) 100%),
+          linear-gradient(to bottom,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0) 28%,
+            rgba(255,255,255,.6) 42%,
+            rgba(255,255,255,.74) 62%,
+            rgba(255,255,255,.84) 100%);
+      }
+      .hero-tekst h1, .hero-tekst p, .hero-tekst li {
+        text-shadow: 0 0 10px rgba(255,255,255,.95), 0 0 22px rgba(255,255,255,.8);
+      }
+    }
+    /* numer w nagłówku nie łamie się na wąskich telefonach */
+    [data-cta="telefon-top"] { white-space:nowrap; flex-shrink:0; }
+    @media (max-width:380px){ [data-cta="telefon-top"] { padding-left:.9rem; padding-right:.9rem; font-size:.95rem; } }
     /* zapas na dole pod falę (żeby nie nachodziła na przyciski) */
     .hero-dorosli { padding-bottom:5rem; }
     /* mobile: twarz instruktorki nad nagłówkiem (jak na stronie głównej), nie pod tekstem */
@@ -113,10 +138,12 @@
     <div class="lg:hidden ada-hero-mob-bg pointer-events-none" aria-hidden="true">
       <!-- welon: mocny z lewej (czytelność tekstu), szybciej znika po prawej — instruktorka wyraźnie widoczna -->
       <div class="absolute inset-0 welon-mobile"></div>
+      <!-- dodatkowe zanikanie od góry do dołu: twarz wyraźna, pod nią zdjęcie bieleje i tekst jest czytelny -->
+      <div class="absolute inset-0 welon-dorosli"></div>
     </div>
 
     <div class="relative max-w-5xl mx-auto px-4 py-14 sm:py-20 hero-dorosli grid lg:grid-cols-2 gap-10 items-center">
-      <div class="relative z-10">
+      <div class="relative z-10 hero-tekst">
         <span class="hidden lg:inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-sky-600 card-shadow">
           <i data-lucide="sparkles" class="w-4 h-4 text-sunny-dark"></i> Nauka pływania dla dorosłych • Warszawa
         </span>
