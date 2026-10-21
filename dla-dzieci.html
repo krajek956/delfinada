@@ -297,7 +297,7 @@
         <p class="font-display font-extrabold text-xl text-white">DELFINADA</p>
         <p class="mt-2 text-sm">Nauka pływania dla dzieci i dorosłych • Warszawa, ul. Kawęczyńska 36</p>
         <p class="mt-1 text-sm"><a href="index.html" class="underline hover:text-white">Zobacz pełną ofertę →</a> · <a href="dla-doroslych.html" class="underline hover:text-white">Dla dorosłych →</a></p>
-        <p class="mt-1 text-sm"><a href="polityka-prywatnosci.html" class="underline hover:text-white">Polityka prywatności</a></p>
+        <p class="mt-1 text-sm"><a href="polityka-prywatnosci.html" class="underline hover:text-white">Polityka prywatności</a> · <button type="button" data-cookie-ustawienia class="underline hover:text-white" style="background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0">Ustawienia cookies</button></p>
       </div>
       <div class="sm:text-right">
         <a href="tel:+48666515178" data-cta="telefon-stopka" class="inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors"><i data-lucide="phone" class="w-5 h-5"></i> 666 515 178</a>
@@ -382,6 +382,10 @@
     if (!wybor) baner.style.display = 'block';
     document.getElementById('cookie-akceptuj').addEventListener('click', akceptuj);
     document.getElementById('cookie-odrzuc').addEventListener('click', odrzuc);
+    // Link „Ustawienia cookies" (RODO — ponowne otwarcie banera, możliwość zmiany/wycofania zgody)
+    document.querySelectorAll('[data-cookie-ustawienia]').forEach(function (el) {
+      el.addEventListener('click', function (e) { e.preventDefault(); baner.style.display = 'block'; });
+    });
   })();
   </script>
 </body>

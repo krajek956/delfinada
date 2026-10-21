@@ -802,7 +802,7 @@
       </div>
 
       <div class="mt-12 pt-8 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-sky-200">
-        <p>&copy; <span id="year"></span> DELFINADA. Wszelkie prawa zastrzeżone. · <a href="polityka-prywatnosci.html" class="underline hover:text-white transition-colors">Polityka prywatności</a></p>
+        <p>&copy; <span id="year"></span> DELFINADA. Wszelkie prawa zastrzeżone. · <a href="polityka-prywatnosci.html" class="underline hover:text-white transition-colors">Polityka prywatności</a> · <button type="button" data-cookie-ustawienia class="underline hover:text-white transition-colors" style="background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0">Ustawienia cookies</button></p>
         <p class="flex items-center gap-1.5">Zbudowane z <i data-lucide="heart" class="w-4 h-4 text-coral-light fill-current"></i> nad wodą 🐬</p>
       </div>
     </div>
@@ -1144,6 +1144,10 @@
     if (!wybor) baner.style.display = 'block';
     document.getElementById('cookie-akceptuj').addEventListener('click', akceptuj);
     document.getElementById('cookie-odrzuc').addEventListener('click', odrzuc);
+    // Link „Ustawienia cookies" (RODO — ponowne otwarcie banera, możliwość zmiany/wycofania zgody)
+    document.querySelectorAll('[data-cookie-ustawienia]').forEach(function (el) {
+      el.addEventListener('click', function (e) { e.preventDefault(); baner.style.display = 'block'; });
+    });
   })();
   </script>
 </body>
