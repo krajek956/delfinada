@@ -118,25 +118,20 @@
       position:absolute; left:0; right:0; top:0; height:36rem;
       background-image:url('assets/ada777.webp');
       background-repeat:no-repeat;
-      background-position:right -8rem top 1rem;
+      background-position:right -8rem top -1.5rem;
       background-size:auto 34rem;
     }
-    @media (min-width:480px){ .trener-mob-bg { background-position:right -4rem top 1rem; } }
+    @media (min-width:480px){ .trener-mob-bg { background-position:right -4rem top -1.5rem; } }
     .welon-trener {
       background:
         linear-gradient(to right, rgba(255,255,255,.55) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.15) 70%, rgba(255,255,255,0) 100%),
-        linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 36%, rgba(255,255,255,.6) 50%, rgba(255,255,255,.8) 72%, #fff 100%);
+        linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,.6) 46%, rgba(255,255,255,.82) 66%, #fff 88%);
     }
     @media (max-width:1023px){
-      .trener-tekst { padding-top:14rem; }
+      .trener-tekst { padding-top:11.5rem; }
       .trener-tekst h2, .trener-tekst p, .trener-tekst li {
         text-shadow: 0 0 10px rgba(255,255,255,.95), 0 0 22px rgba(255,255,255,.8);
       }
-    }
-    /* desktop: Ada osadzona na dolnej krawędzi sekcji (bez pustego pasa pod zdjęciem) */
-    @media (min-width:1024px){
-      .trener-foto { align-self:end; margin-bottom:-3.5rem; }
-      .trener-foto img { max-width:23rem; }
     }
     /* galeria: równe kadry */
     .galeria-img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
@@ -302,7 +297,7 @@
       <div class="absolute inset-0 welon-trener"></div>
     </div>
     <div class="relative max-w-5xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-10 items-center">
-      <div class="relative hidden lg:block trener-foto">
+      <div class="relative hidden lg:block">
         <div class="absolute -inset-6 bg-gradient-to-br from-sky-300/50 via-mint/40 to-sunny/40 blur-3xl rounded-full"></div>
         <img src="assets/ada777.webp" width="1400" height="1786" loading="lazy" decoding="async"
           alt="Ada — trenerka i instruktor pływania DELFINADA z licencją Polskiego Związku Pływackiego"
