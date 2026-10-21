@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DELFINADA — post Facebook: Lekcja próbna (1200×1200)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans:['Nunito','sans-serif'], display:['Montserrat','sans-serif'] },
+        colors: {
+          aqua:{ base:'#3aa6c9', mid:'#3f9dc4', deep:'#2f8fb8' },
+          sunny:{ DEFAULT:'#ffd23f', dark:'#f5b800' },
+          coral:{ DEFAULT:'#ff8826', dark:'#e5720f' },
+        },
+      } },
+    };
+  </script>
+  <style>
+    html,body { margin:0; padding:0; background:#e2e8f0; }
+    /* Post Facebook — kwadrat 1200×1200 */
+    .post {
+      width:1200px; height:1200px; position:relative; overflow:hidden; color:#fff;
+      background: linear-gradient(160deg,#43a7cb 0%, #3897bf 55%, #2f8bb6 100%);
+      transform-origin: top left;
+    }
+    .stage{ display:flex; justify-content:center; padding:24px; }
+    /* instruktorka — jak w ulotce: wysunięta w prawy-dolny róg */
+    .instr {
+      position:absolute; right:-150px; bottom:-120px; height:1240px; width:auto; z-index:1;
+      object-fit:cover; object-position:top;
+      filter:drop-shadow(0 20px 40px rgba(0,0,0,.28));
+    }
+    .content{ position:relative; z-index:2; }
+    /* żółta plakietka — spójna z .pill z ulotki */
+    .pill { background:#ffd23f; color:#0b5563; display:inline-block; padding:.24em .6em; border-radius:.4em; }
+    .cta {
+      background:#ffd23f; color:#0b5563;
+      box-shadow:0 14px 30px rgba(0,0,0,.25);
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <div class="text-center py-4 bg-white/70 text-slate-700">
+    <p class="text-sm">Podgląd posta Facebook 1200×1200. Zapis: DevTools → prawy klik na <code>.post</code> (lub <code>#post</code>) → „Capture node screenshot”.</p>
+  </div>
+
+  <div class="stage">
+    <div class="post" id="post">
+
+      <!-- fale dekoracyjne (jak w ulotce) -->
+      <svg style="position:absolute;top:110px;left:-40px;width:400px;opacity:.5" viewBox="0 0 200 200" fill="none" stroke="#7fd3e8" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/>
+      </svg>
+      <svg style="position:absolute;bottom:60px;left:-60px;width:460px;opacity:.32" viewBox="0 0 200 200" fill="none" stroke="#bfe9f3" stroke-width="7" stroke-linecap="round">
+        <path d="M0 20 Q30 5 60 20 T120 20"/><path d="M0 45 Q30 30 60 45 T120 45"/><path d="M0 70 Q30 55 60 70 T120 70"/><path d="M0 95 Q30 80 60 95 T120 95"/>
+      </svg>
+
+      <!-- ZDJĘCIE INSTRUKTORKI (jak w ulotce) -->
+      <img src="assets/ada2.webp" alt="Instruktorka DELFINADA" class="instr" />
+
+      <div class="content px-20 pt-16 h-full flex flex-col">
+
+        <!-- NAGŁÓWEK: logo -->
+        <div class="flex items-start justify-between">
+          <span class="inline-block rounded-3xl bg-white px-7 py-5">
+            <img src="assets/logo333.webp" alt="DELFINADA" class="w-[360px] h-auto" />
+          </span>
+        </div>
+
+        <!-- GŁÓWNY PRZEKAZ -->
+        <div class="mt-16 max-w-[720px]">
+          <p class="font-display font-extrabold tracking-widest text-sunny text-[30px]">NAUKA PŁYWANIA · WARSZAWA</p>
+
+          <h1 class="mt-5 font-display font-black leading-[0.95] tracking-tight drop-shadow-[0_4px_14px_rgba(0,0,0,.25)]">
+            <span class="block text-white text-[96px]">ZAPISZ SIĘ</span>
+            <span class="block text-white text-[96px]">NA LEKCJĘ</span>
+            <span class="block text-sunny text-[112px]">PRÓBNĄ</span>
+          </h1>
+
+          <p class="mt-8 text-[34px] font-extrabold leading-snug max-w-[640px]">
+            Sprawdź, zanim zdecydujesz!
+          </p>
+        </div>
+
+        <!-- CTA + KONTAKT -->
+        <div class="mt-auto pb-14">
+          <div class="cta inline-block rounded-2xl px-10 py-5">
+            <p class="font-display font-black text-[46px]">ZADZWOŃ: 666 515 178</p>
+          </div>
+          <div class="mt-6 text-[30px] font-extrabold leading-snug">
+            <p>www.delfinada.pl</p>
+            <p class="text-white/90 font-semibold text-[26px]">delfinada.info@gmail.com</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function fit(){ const p=document.getElementById('post'); const s=Math.min(window.innerWidth-48,1200)/1200; p.style.transform='scale('+s+')'; p.parentElement.style.height=(1200*s)+'px'; }
+    window.addEventListener('resize',fit); fit();
+  </script>
+</body>
+</html>
