@@ -120,12 +120,21 @@ Praga-Północ, Warszawa
 ```
 
 ### Linki do podstron (Sitelinks)
+Każdy sitelink prowadzi prosto do sekcji na stronie dla dorosłych — klient od razu
+trafia na to, czego szuka (to też podnosi jakość strony docelowej w Ads).
+
 ```
-Zajęcia dla dorosłych → https://www.delfinada.pl/dla-doroslych.html
-Oferta i cennik       → https://www.delfinada.pl/#oferta
-Kontakt / Zadzwoń     → https://www.delfinada.pl/dla-doroslych.html#formularz
-O szkole DELFINADA    → https://www.delfinada.pl/#dlaczego
+Cennik zajęć próbnych → https://www.delfinada.pl/dla-doroslych.html#cennik
+Jak dojechać          → https://www.delfinada.pl/dla-doroslych.html#dojazd
+Najczęstsze pytania   → https://www.delfinada.pl/dla-doroslych.html#faq
+Zapisz się / Zadzwoń  → https://www.delfinada.pl/dla-doroslych.html#formularz
 ```
+
+> 💡 W Google Ads do każdego sitelinka dodaj jeszcze 2 linie opisu (po ~35 znaków), np.:
+> - Cennik: „Grupowe 75 zł, indywidualne 160 zł" / „Zajęcia próbne — 45 minut"
+> - Jak dojechać: „Kryta pływalnia na Pradze" / „ul. Kawęczyńska 36, Warszawa"
+> - FAQ: „Boisz się wody? Zaczniesz od zera" / „Odpowiadamy na częste pytania"
+> - Zapisz się: „Zostaw numer — oddzwonimy" / „Albo zadzwoń: 666 515 178"
 
 ### Rozszerzenie lokalizacji
 → Połącz z **wizytówką Google** (Profil Firmy) — reklama pokaże adres i mapę.
