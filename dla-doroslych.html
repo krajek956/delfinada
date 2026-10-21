@@ -133,6 +133,11 @@
         text-shadow: 0 0 10px rgba(255,255,255,.95), 0 0 22px rgba(255,255,255,.8);
       }
     }
+    /* desktop: Ada osadzona na dolnej krawędzi sekcji (bez pustego pasa pod zdjęciem) */
+    @media (min-width:1024px){
+      .trener-foto { align-self:end; margin-bottom:-3.5rem; }
+      .trener-foto img { max-width:23rem; }
+    }
     /* galeria: równe kadry */
     .galeria-img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
     /* opinie */
@@ -297,7 +302,7 @@
       <div class="absolute inset-0 welon-trener"></div>
     </div>
     <div class="relative max-w-5xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-10 items-center">
-      <div class="relative hidden lg:block">
+      <div class="relative hidden lg:block trener-foto">
         <div class="absolute -inset-6 bg-gradient-to-br from-sky-300/50 via-mint/40 to-sunny/40 blur-3xl rounded-full"></div>
         <img src="assets/ada777.webp" width="1400" height="1786" loading="lazy" decoding="async"
           alt="Ada — trenerka i instruktor pływania DELFINADA z licencją Polskiego Związku Pływackiego"
