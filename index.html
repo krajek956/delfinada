@@ -16,6 +16,7 @@
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-4LN8ERE2V4');
+    gtag('config', 'AW-18524500941');
 
     (function () {
       var zaladowano = false;
@@ -44,6 +45,7 @@
               miejsce: a.getAttribute('data-cta') || 'nieznane',
               strona: location.pathname
             });
+            gtag('event', 'conversion', {'send_to': 'AW-18524500941/MeCiCJTjvaQdEM3nlYFF'});
           });
         });
       });
@@ -923,7 +925,7 @@
             form.querySelectorAll('input, select, textarea, button').forEach((el) => el.setAttribute('disabled', 'true'));
             success.classList.remove('hidden');
             success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            if(typeof gtag==='function'){ gtag('event','wyslanie_formularza',{strona:location.pathname,grupa:'glowna'}); }
+            if(typeof gtag==='function'){ gtag('event','wyslanie_formularza',{strona:location.pathname,grupa:'glowna'}); gtag('event', 'conversion', {'send_to': 'AW-18524500941/0WgpCJfjvaQdEM3nlYFF'}); }
           } else {
             throw new Error(json.message || 'Błąd wysyłki');
           }

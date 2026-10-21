@@ -12,6 +12,7 @@
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-4LN8ERE2V4');
+    gtag('config', 'AW-18524500941');
     (function () {
       var zaladowano = false;
       function zaladujGA() {
@@ -36,6 +37,7 @@
               miejsce: a.getAttribute('data-cta') || 'nieznane',
               strona: location.pathname
             });
+            gtag('event', 'conversion', {'send_to': 'AW-18524500941/MeCiCJTjvaQdEM3nlYFF'});
           });
         });
       });
@@ -315,7 +317,7 @@
           if(res.ok && json.success){
             f.querySelectorAll('input,button').forEach(x=>x.disabled=true);
             ok.classList.remove('hidden');
-            if(typeof gtag==='function'){ gtag('event','wyslanie_formularza',{strona:location.pathname,grupa:'dzieci'}); }
+            if(typeof gtag==='function'){ gtag('event','wyslanie_formularza',{strona:location.pathname,grupa:'dzieci'}); gtag('event', 'conversion', {'send_to': 'AW-18524500941/0WgpCJfjvaQdEM3nlYFF'}); }
           } else { throw new Error(json.message||'Błąd wysyłki'); }
         }catch(err){
           if(btn){ btn.disabled=false; btn.innerHTML=orig; }
