@@ -14,6 +14,27 @@
     // dopiero przy pierwszej interakcji (scroll/klik/dotyk) lub po 3,5 s — co pierwsze.
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
+    // ===== Consent Mode v2 — domyślnie BRAK zgody (wymagane w UE) =====
+    // Dopóki użytkownik nie kliknie „Akceptuję", Google nie zapisuje ciasteczek
+    // reklamowych/analitycznych, ale zbiera anonimowe sygnały (consent mode).
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      wait_for_update: 500
+    });
+    // Jeśli użytkownik już wcześniej wyraził zgodę — przywróć ją od razu.
+    try {
+      if (localStorage.getItem('delfinada_cookie') === 'accepted') {
+        gtag('consent', 'update', {
+          ad_storage: 'granted',
+          ad_user_data: 'granted',
+          ad_personalization: 'granted',
+          analytics_storage: 'granted'
+        });
+      }
+    } catch (e) {}
     gtag('js', new Date());
     gtag('config', 'G-4LN8ERE2V4');
     gtag('config', 'AW-18524500941');
@@ -1086,6 +1107,43 @@
     };
 
     if(hint && isiOS) hint.textContent = 'Na iPhone: kliknij, a pokażemy, jak dodać aplikację do ekranu początkowego.';
+  })();
+  </script>
+
+  <!-- ===== Baner zgody na pliki cookie (Consent Mode v2) ===== -->
+  <div id="cookie-baner" role="dialog" aria-live="polite" aria-label="Zgoda na pliki cookie" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0b6270;color:#fff;box-shadow:0 -8px 30px rgba(0,0,0,.18)">
+    <div style="max-width:72rem;margin:0 auto;padding:1rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.25rem">
+      <p style="flex:1 1 20rem;margin:0;font-size:.92rem;line-height:1.55">
+        Używamy plików cookie, aby analizować ruch na stronie i mierzyć skuteczność reklam. Możesz je zaakceptować lub korzystać tylko z niezbędnych.
+        <a href="polityka-prywatnosci.html" style="color:#ffd79a;text-decoration:underline;white-space:nowrap">Polityka prywatności</a>
+      </p>
+      <div style="display:flex;gap:.6rem;flex:0 0 auto">
+        <button type="button" id="cookie-odrzuc" style="cursor:pointer;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-weight:700;border-radius:9999px;padding:.6rem 1.2rem;font-size:.9rem">Tylko niezbędne</button>
+        <button type="button" id="cookie-akceptuj" style="cursor:pointer;border:0;background:#f5720f;color:#fff;font-weight:700;border-radius:9999px;padding:.6rem 1.4rem;font-size:.9rem">Akceptuję</button>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    var KLUCZ = 'delfinada_cookie';
+    var baner = document.getElementById('cookie-baner');
+    function zapisz(v) { try { localStorage.setItem(KLUCZ, v); } catch (e) {} }
+    function schowaj() { baner.style.display = 'none'; }
+    function akceptuj() {
+      if (typeof gtag === 'function') {
+        gtag('consent', 'update', {
+          ad_storage: 'granted', ad_user_data: 'granted',
+          ad_personalization: 'granted', analytics_storage: 'granted'
+        });
+      }
+      zapisz('accepted'); schowaj();
+    }
+    function odrzuc() { zapisz('rejected'); schowaj(); }
+    var wybor = null;
+    try { wybor = localStorage.getItem(KLUCZ); } catch (e) {}
+    if (!wybor) baner.style.display = 'block';
+    document.getElementById('cookie-akceptuj').addEventListener('click', akceptuj);
+    document.getElementById('cookie-odrzuc').addEventListener('click', odrzuc);
   })();
   </script>
 </body>
