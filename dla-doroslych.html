@@ -513,18 +513,18 @@
         <input type="hidden" name="from_name" value="Formularz DELFINADA — dorośli" />
         <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
         <div>
-          <label class="text-sm font-bold text-sky-700">Imię *</label>
-          <input name="imie" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="Jak masz na imię?" />
+          <label for="pole-imie" class="text-sm font-bold text-sky-700">Imię *</label>
+          <input id="pole-imie" name="imie" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="Jak masz na imię?" />
           <p class="err hidden text-sm text-coral-dark mt-1" data-for="imie"></p>
         </div>
         <div>
-          <label class="text-sm font-bold text-sky-700">Telefon *</label>
-          <input name="telefon" type="tel" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="np. 600 000 000" />
+          <label for="pole-telefon" class="text-sm font-bold text-sky-700">Telefon *</label>
+          <input id="pole-telefon" name="telefon" type="tel" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="np. 600 000 000" />
           <p class="err hidden text-sm text-coral-dark mt-1" data-for="telefon"></p>
         </div>
         <div>
-          <label class="text-sm font-bold text-sky-700">Poziom (opcjonalnie)</label>
-          <select name="poziom" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3 bg-white">
+          <label for="pole-poziom" class="text-sm font-bold text-sky-700">Poziom (opcjonalnie)</label>
+          <select id="pole-poziom" name="poziom" aria-label="Poziom (opcjonalnie)" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3 bg-white">
             <option value="">— wybierz —</option>
             <option>Zaczynam od zera / boję się wody</option>
             <option>Trochę pływam, chcę poprawić technikę</option>
