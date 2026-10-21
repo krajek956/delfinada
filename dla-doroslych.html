@@ -113,6 +113,29 @@
       .logo-top { height:4rem; }           /* 64px zamiast 40px */
       .powrot-top { display:inline-flex; }
     }
+    /* galeria: równe kadry */
+    .galeria-img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
+    /* opinie */
+    .opinia-gwiazdki { color:#f5a623; display:flex; gap:.15rem; }
+    /* cena zajęć próbnych */
+    .cena-wiersz { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1rem; border-radius:1rem; background:#f0fafc; }
+    .cena-kwota { font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.6rem; color:#ff8826; white-space:nowrap; }
+    /* mapa ładowana po kliknięciu */
+    .mapa-box { min-height:320px; position:relative; background:#e6f6f9; }
+    @media (min-width:1024px){ .mapa-box { min-height:420px; } }
+    .mapa-box iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .mapa-fasada { position:absolute; inset:0; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.9rem; cursor:pointer; border:0; padding:1.5rem; text-align:center;
+      background:radial-gradient(circle at 30% 30%, rgba(34,184,192,.18), transparent 55%), radial-gradient(circle at 75% 70%, rgba(255,136,38,.15), transparent 55%), repeating-linear-gradient(0deg, transparent 0 38px, rgba(14,124,139,.08) 38px 40px), repeating-linear-gradient(90deg, transparent 0 38px, rgba(14,124,139,.08) 38px 40px), #eef9fb; }
+    .mapa-pin { display:inline-flex; width:4rem; height:4rem; border-radius:1.5rem; align-items:center; justify-content:center; background:#ff8826; color:#fff; box-shadow:0 10px 25px rgba(255,136,38,.4); }
+    .mapa-przycisk { display:inline-flex; align-items:center; gap:.5rem; background:#fff; color:#0e7c8b; font-weight:800; padding:.75rem 1.5rem; border-radius:9999px; box-shadow:0 8px 20px rgba(14,124,139,.15); }
+    .mapa-fasada:hover .mapa-przycisk { color:#ff8826; }
+    /* FAQ */
+    .faq-item { background:#fff; border-radius:1.5rem; box-shadow:0 10px 30px rgba(14,124,139,.08); overflow:hidden; }
+    .faq-item summary { list-style:none; cursor:pointer; padding:1.15rem 3.25rem 1.15rem 1.5rem; font-weight:800; color:#0b6270; position:relative; font-size:1.05rem; }
+    .faq-item summary::-webkit-details-marker { display:none; }
+    .faq-item summary::after { content:'+'; position:absolute; right:1.4rem; top:50%; transform:translateY(-50%); font-size:1.6rem; font-weight:700; color:#ff8826; line-height:1; }
+    .faq-item[open] summary::after { content:'−'; }
+    .faq-item p { padding:0 1.5rem 1.25rem; color:#475569; line-height:1.65; }
     /* numer w nagłówku nie łamie się na wąskich telefonach */
     [data-cta="telefon-top"] { white-space:nowrap; flex-shrink:0; }
     @media (max-width:380px){ [data-cta="telefon-top"] { padding-left:.9rem; padding-right:.9rem; font-size:.95rem; } }
@@ -210,9 +233,10 @@
         <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-bold"><i data-lucide="gift" class="w-4 h-4"></i> Oferta na start</span>
         <h2 class="mt-4 font-display text-3xl sm:text-4xl font-extrabold">Zapisz się na zajęcia próbne</h2>
         <p class="mt-3 text-white/90 max-w-2xl mx-auto text-lg">
-          Sprawdź, jak wygląda nauka u nas — poznaj instruktora, oswój się z wodą i zobacz, jak szybko robisz postępy.
+          Sprawdź, jak wygląda nauka u nas — poznaj trenerkę, oswój się z wodą i zobacz, jak szybko robisz postępy.
           Bez zobowiązań, w komfortowej atmosferze.
         </p>
+        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · 45 minut</p>
         <a href="tel:+48666515178" data-cta="telefon-wabik"
           class="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
           <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
@@ -245,43 +269,208 @@
     </div>
   </section>
 
-  <!-- ===== ZDJĘCIE Z ZAJĘĆ (realne, buduje zaufanie) ===== -->
-  <section class="bg-white">
+  <!-- ===== POZNAJ TRENERKĘ ===== -->
+  <section id="trenerka" class="bg-white">
     <div class="max-w-5xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-10 items-center">
       <div class="relative">
-        <div class="absolute -inset-5 bg-gradient-to-br from-sky-300/50 via-mint/40 to-sunny/40 blur-3xl rounded-full"></div>
-        <img src="assets/f44.webp" width="338" height="600" loading="lazy" decoding="async"
-          alt="Grupa dorosłych na zajęciach nauki pływania DELFINADA w Warszawie z instruktorką"
-          class="relative mx-auto rounded-[2rem] w-full max-w-xs h-auto object-cover drop-shadow-2xl" />
+        <div class="absolute -inset-6 bg-gradient-to-br from-sky-300/50 via-mint/40 to-sunny/40 blur-3xl rounded-full"></div>
+        <img src="assets/ada777.webp" width="1400" height="1786" loading="lazy" decoding="async"
+          alt="Ada — trenerka i instruktor pływania DELFINADA z licencją Polskiego Związku Pływackiego"
+          class="relative mx-auto w-full max-w-xs h-auto drop-shadow-2xl" />
       </div>
       <div>
         <span class="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-sm font-bold text-sky-600">
-          <i data-lucide="users" class="w-4 h-4"></i> Prawdziwe zajęcia, prawdziwi ludzie
+          <i data-lucide="award" class="w-4 h-4"></i> Twoja trenerka
         </span>
-        <h2 class="mt-4 font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Zobacz, jak wyglądają nasze zajęcia</h2>
+        <h2 class="mt-4 font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Poznaj Adę</h2>
         <p class="mt-4 text-lg text-slate-600">
-          U nas uczą się dorośli w każdym wieku — jedni od zera, inni szlifują technikę.
-          Mała grupa, przyjazna atmosfera i instruktorka, która naprawdę tłumaczy krok po kroku.
+          Jestem trenerką i instruktorem pływania z licencją Polskiego Związku Pływackiego. Wychowałam się na basenie —
+          przez lata startowałam jako zawodniczka pruszkowskiego klubu pływackiego.
         </p>
         <p class="mt-3 text-lg text-slate-600">
-          Nie musisz nic umieć ani niczego się wstydzić — wystarczy, że przyjdziesz. Resztą zajmiemy się razem. 🐬
+          Wiem, że dorosłym często trudniej jest zacząć niż dzieciom. Dlatego tłumaczę każdy element spokojnie i krok po kroku,
+          a tempo zawsze dopasowuję do Ciebie.
         </p>
-        <a href="#formularz"
+        <ul class="mt-6 space-y-3 text-slate-700">
+          <li class="flex items-start gap-3"><i data-lucide="badge-check" class="w-5 h-5 text-mint-dark mt-0.5"></i> Licencja Polskiego Związku Pływackiego</li>
+          <li class="flex items-start gap-3"><i data-lucide="graduation-cap" class="w-5 h-5 text-mint-dark mt-0.5"></i> Absolwentka AWF w Warszawie</li>
+          <li class="flex items-start gap-3"><i data-lucide="heart-pulse" class="w-5 h-5 text-mint-dark mt-0.5"></i> Studentka ratownictwa medycznego — bezpieczeństwo na pierwszym miejscu</li>
+          <li class="flex items-start gap-3"><i data-lucide="medal" class="w-5 h-5 text-mint-dark mt-0.5"></i> Lata doświadczenia jako zawodniczka</li>
+        </ul>
+        <a href="tel:+48666515178" data-cta="telefon-trenerka"
           class="mt-6 inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-7 py-3.5 shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
-          <i data-lucide="pencil" class="w-5 h-5"></i> Chcę spróbować
+          <i data-lucide="phone" class="w-5 h-5"></i> Umów się z Adą
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ===== JAK TO WYGLĄDA ===== -->
-  <section class="playful-bg">
+  <!-- ===== GALERIA Z ZAJĘĆ ===== -->
+  <section id="galeria" class="playful-bg">
     <div class="max-w-5xl mx-auto px-4 py-14">
-      <h2 class="text-center font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Jak zaczynasz</h2>
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-sky-600 card-shadow">
+          <i data-lucide="users" class="w-4 h-4"></i> Prawdziwe zajęcia, prawdziwi ludzie
+        </span>
+        <h2 class="mt-4 font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Zobacz, jak wyglądają nasze zajęcia</h2>
+        <p class="mt-4 text-lg text-slate-600">
+          U nas uczą się dorośli w każdym wieku — jedni od zera, inni szlifują technikę.
+          Nie musisz nic umieć ani niczego się wstydzić — wystarczy, że przyjdziesz. 🐬
+        </p>
+      </div>
+      <div class="mt-10 grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <img src="assets/f11.webp" width="450" height="600" loading="lazy" decoding="async"
+          alt="Grupa dorosłych na zajęciach nauki pływania DELFINADA w Warszawie z trenerką"
+          class="galeria-img rounded-[2rem] card-shadow" />
+        <img src="assets/f44.webp" width="338" height="600" loading="lazy" decoding="async"
+          alt="Dorośli kursanci DELFINADA na basenie razem z trenerką"
+          class="galeria-img rounded-[2rem] card-shadow" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OPINIE ===== -->
+  <section id="opinie" class="bg-white">
+    <div class="max-w-5xl mx-auto px-4 py-14">
+      <div class="text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-sm font-bold text-sky-600">
+          <i data-lucide="star" class="w-4 h-4"></i> Opinie z Google
+        </span>
+        <h2 class="mt-4 font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Co mówią nasi kursanci</h2>
+      </div>
+      <div class="mt-10 grid md:grid-cols-2 gap-6">
+        <figure class="bg-white rounded-3xl p-6 sm:p-8 card-shadow">
+          <div class="opinia-gwiazdki" role="img" aria-label="Ocena 5 na 5"><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg></div>
+          <blockquote class="mt-3 text-lg text-slate-700">
+            „Bardzo polecam szkołę, panuje bardzo przyjemna atmosfera a do tego wysoki poziom nauki pływania!”
+          </blockquote>
+          <figcaption class="mt-4 font-bold text-sky-700">Karolina Szpakowska <span class="font-normal text-sm text-slate-500">· opinia z Google</span></figcaption>
+        </figure>
+        <figure class="bg-white rounded-3xl p-6 sm:p-8 card-shadow">
+          <div class="opinia-gwiazdki" role="img" aria-label="Ocena 5 na 5"><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg></div>
+          <blockquote class="mt-3 text-lg text-slate-700">
+            „Polecam!!!! Rewelacja wsparcie!!! Szczególnie po latach bez treningów wsparcie i motywacja na 5. Dziękuję i do zobaczenia.”
+          </blockquote>
+          <figcaption class="mt-4 font-bold text-sky-700">Piotr Skowron <span class="font-normal text-sm text-slate-500">· opinia z Google</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TWOJA PIERWSZA LEKCJA ===== -->
+  <section id="pierwsza-lekcja" class="playful-bg">
+    <div class="max-w-5xl mx-auto px-4 py-14">
+      <h2 class="text-center font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Twoja pierwsza lekcja</h2>
+      <p class="text-center text-lg text-slate-600 mt-3 max-w-2xl mx-auto">Wszystko, co warto wiedzieć, zanim przyjdziesz — bez niespodzianek.</p>
+
       <div class="mt-10 grid sm:grid-cols-3 gap-6 text-center">
-        <div><div class="w-12 h-12 mx-auto rounded-full bg-coral text-white grid place-items-center font-extrabold text-lg">1</div><p class="mt-3 font-bold text-sky-700">Dzwonisz lub piszesz</p><p class="text-sm text-slate-500 mt-1">Umawiamy dogodny termin pierwszych zajęć.</p></div>
-        <div><div class="w-12 h-12 mx-auto rounded-full bg-coral text-white grid place-items-center font-extrabold text-lg">2</div><p class="mt-3 font-bold text-sky-700">Pierwsze zajęcia</p><p class="text-sm text-slate-500 mt-1">Poznajesz instruktora i oswajasz się z wodą — spokojnie.</p></div>
+        <div><div class="w-12 h-12 mx-auto rounded-full bg-coral text-white grid place-items-center font-extrabold text-lg">1</div><p class="mt-3 font-bold text-sky-700">Dzwonisz lub piszesz</p><p class="text-sm text-slate-500 mt-1">Wybierasz zajęcia indywidualne albo grupowe i umawiamy termin.</p></div>
+        <div><div class="w-12 h-12 mx-auto rounded-full bg-coral text-white grid place-items-center font-extrabold text-lg">2</div><p class="mt-3 font-bold text-sky-700">Zajęcia próbne — 45 minut</p><p class="text-sm text-slate-500 mt-1">Poznajesz trenerkę, oswajasz się z wodą i sprawdzamy, od czego zacząć.</p></div>
         <div><div class="w-12 h-12 mx-auto rounded-full bg-coral text-white grid place-items-center font-extrabold text-lg">3</div><p class="mt-3 font-bold text-sky-700">Pływasz!</p><p class="text-sm text-slate-500 mt-1">Krok po kroku — od lęku do swobody w wodzie.</p></div>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-2 gap-6">
+        <!-- cena zajęć próbnych -->
+        <div id="cennik" class="bg-white rounded-3xl p-6 sm:p-8 card-shadow">
+          <h3 class="font-display font-bold text-xl text-sky-700 flex items-center gap-2"><i data-lucide="tag" class="w-5 h-5 text-coral"></i> Cena zajęć próbnych</h3>
+          <div class="mt-5 space-y-3">
+            <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">· małe grupy do 8 osób</span></span><span class="cena-kwota">75 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">· pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+          </div>
+          <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut. O karnety zapytaj przez telefon.</p>
+        </div>
+        <!-- co zabrać -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow">
+          <h3 class="font-display font-bold text-xl text-sky-700 flex items-center gap-2"><i data-lucide="backpack" class="w-5 h-5 text-coral"></i> Co zabrać?</h3>
+          <ul class="mt-5 space-y-2 text-slate-700">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-mint-dark"></i> Strój kąpielowy</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-mint-dark"></i> Czepek</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-mint-dark"></i> Okularki pływackie</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-mint-dark"></i> Klapki i ręcznik</li>
+          </ul>
+          <p class="mt-4 text-sm text-slate-500">Deski, makarony i resztę sprzętu do nauki mamy na miejscu.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <a href="tel:+48666515178" data-cta="telefon-lekcja"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
+          <i data-lucide="phone" class="w-6 h-6"></i> Umów zajęcia próbne
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GDZIE PŁYWAMY / DOJAZD ===== -->
+  <section id="dojazd" class="bg-white">
+    <div class="max-w-5xl mx-auto px-4 py-14">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Gdzie pływamy</h2>
+        <p class="mt-3 text-lg text-slate-600">Kryta pływalnia na warszawskiej Pradze — zajęcia przez cały rok.</p>
+      </div>
+
+      <div class="mt-10 grid gap-5 sm:grid-cols-3">
+        <img src="assets/basen001.webp" loading="lazy" decoding="async" alt="Kryta pływalnia przy ul. Kawęczyńskiej 36 w Warszawie — widok ogólny" class="w-full aspect-[3/2] object-cover rounded-[2rem] card-shadow" />
+        <img src="assets/basen002.webp" loading="lazy" decoding="async" alt="Tory pływackie na pływalni, gdzie odbywają się zajęcia DELFINADA dla dorosłych" class="w-full aspect-[3/2] object-cover rounded-[2rem] card-shadow" />
+        <img src="assets/basen003.webp" loading="lazy" decoding="async" alt="Wnętrze pływalni — strefa nauki pływania dla dorosłych" class="w-full aspect-[3/2] object-cover rounded-[2rem] card-shadow" />
+      </div>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-5 items-stretch">
+        <div class="lg:col-span-2 rounded-[2rem] bg-sky-50 p-8 flex flex-col">
+          <h3 class="font-display text-2xl font-extrabold text-sky-700 flex items-center gap-2"><i data-lucide="map-pin" class="w-6 h-6 text-coral"></i> Adres pływalni</h3>
+          <address class="mt-3 not-italic text-lg text-slate-600 leading-relaxed">
+            ul. Kawęczyńska 36<br />
+            03-772 Warszawa (Praga-Północ)
+          </address>
+          <ul class="mt-5 space-y-3 text-slate-600">
+            <li class="flex items-start gap-3"><i data-lucide="train-front" class="w-5 h-5 text-mint-dark mt-0.5"></i> Dogodny dojazd komunikacją miejską</li>
+            <li class="flex items-start gap-3"><i data-lucide="car" class="w-5 h-5 text-mint-dark mt-0.5"></i> Możliwość parkowania w okolicy</li>
+          </ul>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=ul.+Kaw%C4%99czy%C5%84ska+36,+03-772+Warszawa"
+             target="_blank" rel="noopener" data-cta="trasa"
+             class="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-7 py-3.5 shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
+            <i data-lucide="navigation" class="w-5 h-5"></i> Wyznacz trasę
+          </a>
+        </div>
+
+        <!-- Mapa ładowana dopiero po kliknięciu (nie spowalnia strony) -->
+        <div class="lg:col-span-3 rounded-[2rem] overflow-hidden card-shadow mapa-box" id="mapa-box">
+          <button type="button" id="mapa-pokaz" class="mapa-fasada" aria-label="Pokaż mapę dojazdu do pływalni przy ul. Kawęczyńskiej 36">
+            <span class="mapa-pin"><i data-lucide="map-pin" class="w-8 h-8"></i></span>
+            <span class="font-display text-xl font-extrabold text-sky-700">ul. Kawęczyńska 36, Warszawa</span>
+            <span class="mapa-przycisk"><i data-lucide="map" class="w-5 h-5"></i> Pokaż mapę</span>
+          </button>
+          <noscript><a href="https://www.google.com/maps?q=ul.+Kaw%C4%99czy%C5%84ska+36,+03-772+Warszawa" target="_blank" rel="noopener">Otwórz mapę w Google Maps</a></noscript>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="playful-bg">
+    <div class="max-w-3xl mx-auto px-4 py-14">
+      <h2 class="text-center font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Najczęstsze pytania</h2>
+      <div class="mt-10 space-y-4">
+        <details class="faq-item">
+          <summary>Nie umiem pływać i boję się wody — czy to zajęcia dla mnie?</summary>
+          <p>Tak! To bardzo częsta sytuacja i nie musisz się jej wstydzić. Zaczynamy od oswojenia z wodą: oddychanie, unoszenie się, poczucie bezpieczeństwa. Do kolejnych kroków przechodzimy dopiero wtedy, gdy czujesz się pewnie. Na naukę nigdy nie jest za późno.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Ile kosztują zajęcia próbne?</summary>
+          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, a indywidualne (1:1) — <strong>160 zł</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Zajęcia indywidualne czy grupowe — co wybrać?</summary>
+          <p><strong>Indywidualne</strong> to pełna uwaga trenerki i program dopasowany w 100% — najszybsze postępy, dobre też przy silnym lęku przed wodą. <strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu, motywacja innych i niższa cena. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Ile trwają zajęcia i jak często warto przychodzić?</summary>
+          <p>Jedne zajęcia trwają 45 minut. Najlepsze efekty daje regularność — razem ustalimy rytm, który pasuje do Twojego grafiku.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Jak się zapisać?</summary>
+          <p>Najszybciej telefonicznie: <a href="tel:+48666515178" data-cta="telefon-faq" class="text-coral font-bold">666 515 178</a>. Możesz też zostawić numer w formularzu poniżej — oddzwonimy i ustalimy dogodny termin.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -362,6 +551,20 @@
 
   <script>
     window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
+
+    // mapa Google wczytywana dopiero po kliknięciu — nie spowalnia strony
+    (function(){
+      const btn = document.getElementById('mapa-pokaz'); if(!btn) return;
+      btn.addEventListener('click', () => {
+        const f = document.createElement('iframe');
+        f.title = 'Mapa dojazdu do pływalni — ul. Kawęczyńska 36, Warszawa';
+        f.src = 'https://www.google.com/maps?q=ul.+Kaw%C4%99czy%C5%84ska+36,+03-772+Warszawa&output=embed';
+        f.setAttribute('allowfullscreen', '');
+        f.referrerPolicy = 'no-referrer-when-downgrade';
+        btn.replaceWith(f);
+        if (typeof gtag === 'function') { gtag('event', 'pokaz_mape', { strona: location.pathname }); }
+      });
+    })();
 
     // walidacja + obsługa formularza (bez backendu — hak do podpięcia e-mail/Ads)
     (function(){
