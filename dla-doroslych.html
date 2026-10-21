@@ -71,11 +71,23 @@
     .sticky-call { position:fixed; left:0; right:0; bottom:0; z-index:50; }
     @media (min-width:768px){ .sticky-call{ display:none; } }
     /* instruktorka w hero (desktop) — wysokość dopasowana do kolumny z tekstem */
-    .ada-hero-desk { height:min(78vh, 600px); width:auto; max-width:none; }
+    .ada-hero-wrap { position:relative; display:flex; justify-content:center; align-items:flex-end; min-height:600px; }
+    .ada-hero-desk { position:relative; z-index:2; height:600px; width:262px; background-image:url('assets/ada95-trim.webp'); background-repeat:no-repeat; background-position:center bottom; background-size:contain; filter:drop-shadow(0 20px 35px rgba(11,98,112,.25)); }
+    .ada-hero-blob { position:absolute; z-index:1; left:50%; top:50%; transform:translate(-50%,-50%); width:30rem; height:30rem; border-radius:9999px; background:linear-gradient(135deg, rgba(125,211,252,.55), rgba(94,234,212,.4) 50%, rgba(255,200,120,.4)); filter:blur(60px); pointer-events:none; }
+
+    /* mobile: zdjęcie instruktorki jako tło sekcji (pewniejsze niż <img>+object-fit) */
+    .ada-hero-mob-bg {
+      position:absolute; inset:0;
+      background-image:url('assets/ada95-trim.webp');
+      background-repeat:no-repeat;
+      background-position:right -3rem top 2.5rem;
+      background-size:auto 66%;
+    }
+    @media (min-width:480px){ .ada-hero-mob-bg { background-size:auto 74%; background-position:right -1rem top 2rem; } }
     /* zapas na dole pod falę (żeby nie nachodziła na przyciski) */
     .hero-dorosli { padding-bottom:5rem; }
     /* mobile: twarz instruktorki nad nagłówkiem (jak na stronie głównej), nie pod tekstem */
-    @media (max-width:1023px){ .hero-dorosli { padding-top:10.5rem; } }
+    @media (max-width:1023px){ .hero-dorosli { padding-top:13rem; } }
     @media (min-width:1024px){ .hero-dorosli { padding-bottom:7rem; } }
   </style>
 </head>
@@ -97,9 +109,7 @@
   <!-- ===== HERO ===== -->
   <section class="relative overflow-hidden playful-bg">
     <!-- MOBILE: zdjęcie instruktorki jako tło za nagłówkiem, dosunięte do prawej (ukryte na desktopie) — jak na stronie głównej -->
-    <div class="lg:hidden absolute inset-0 pointer-events-none" aria-hidden="true">
-      <img src="assets/ada95-trim.webp" width="349" height="800" alt="" loading="eager" fetchpriority="high" decoding="async"
-        class="absolute -right-24 bottom-0 h-full w-auto max-w-none object-contain object-bottom" />
+    <div class="lg:hidden ada-hero-mob-bg pointer-events-none" aria-hidden="true">
       <!-- welon: mocny z lewej (czytelność tekstu), szybciej znika po prawej — instruktorka wyraźnie widoczna -->
       <div class="absolute inset-0 welon-mobile"></div>
     </div>
@@ -140,13 +150,10 @@
       </div>
 
       <!-- Zdjęcie instruktorki (desktop) — na mobile jest tłem sekcji (patrz wyżej) -->
-      <div class="relative hidden lg:flex justify-center">
+      <div class="relative hidden lg:block ada-hero-wrap">
         <!-- delikatna kolorowa plama osadzająca postać -->
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
-          <div class="w-72 h-72 sm:w-96 sm:h-96 lg:w-[30rem] lg:h-[30rem] rounded-full bg-gradient-to-br from-sky-300/60 via-mint/40 to-sunny/40 blur-3xl"></div>
-        </div>
-        <img src="assets/ada95-trim.webp" width="349" height="800" alt="Instruktorka pływania DELFINADA z deską i ósemką do nauki pływania" loading="eager" fetchpriority="high" decoding="async"
-          class="relative ada-hero-desk drop-shadow-2xl" />
+        <div class="ada-hero-blob" aria-hidden="true"></div>
+        <div class="ada-hero-desk" role="img" aria-label="Instruktorka pływania DELFINADA z deską i ósemką do nauki pływania"></div>
       </div>
     </div>
 
