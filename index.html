@@ -154,18 +154,8 @@
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
         "opens": "06:00", "closes": "21:00"
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": "Saturday",
-        "opens": "08:00", "closes": "18:00"
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": "Sunday",
-        "opens": "09:00", "closes": "15:00"
       }
     ],
     "sameAs": [
@@ -793,9 +783,7 @@
         <div>
           <h3 class="text-white font-display font-bold text-lg">Godziny otwarcia</h3>
           <ul class="mt-4 space-y-3">
-            <li class="flex items-center justify-between max-w-xs"><span>Poniedziałek – Piątek</span><span class="text-sunny font-semibold">6:00 – 21:00</span></li>
-            <li class="flex items-center justify-between max-w-xs"><span>Sobota</span><span class="text-sunny font-semibold">8:00 – 18:00</span></li>
-            <li class="flex items-center justify-between max-w-xs"><span>Niedziela</span><span class="text-sunny font-semibold">9:00 – 15:00</span></li>
+            <li class="flex items-center justify-between max-w-xs"><span>Poniedziałek – Niedziela</span><span class="text-sunny font-semibold">6:00 – 21:00</span></li>
           </ul>
           <a href="#zapisy" class="mt-6 inline-flex items-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors"><i data-lucide="waves" class="w-4 h-4"></i> Zapisz się</a>
         </div>
