@@ -492,50 +492,23 @@
         <p class="mt-4 text-lg text-slate-500">Bez ukrytych kosztów.</p>
       </div>
 
-      <div class="mt-16 grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
-        <!-- cennik: dorośli -->
-        <div class="rounded-[2rem] bg-white p-6 sm:p-8 card-shadow flex flex-col">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sunny text-slate-800"><i data-lucide="user-round" class="w-7 h-7"></i></span>
-            <h3 class="text-2xl font-display font-bold text-sky-700">Dorośli</h3>
-          </div>
-          <div class="mt-6 space-y-3">
-            <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">·&nbsp;małe grupy do&nbsp;8&nbsp;osób</span></span><span class="cena-kwota">75 zł</span></div>
-            <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">·&nbsp;pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
-            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;osoby</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ os.</span></span></div>
-            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;osoby</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ os.</span></span></div>
-          </div>
-          <div class="razem-box mt-4">
-            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
-            <p class="mt-1 text-sm text-slate-600">Przyjdź z partnerem, przyjacielem albo kimś z rodziny. Trenerka zajmuje się tylko Wami, tempo dopasowuje do Was i każdy płaci mniej niż za lekcję 1:1.</p>
-          </div>
-          <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut.</p>
-          <div class="cennik-cta flex flex-col sm:flex-row gap-3">
-            <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Zapisz się</a>
-            <a href="dla-doroslych.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Więcej o zajęciach</a>
-          </div>
+      <!-- jeden cennik — te same ceny dla dorosłych i dzieci -->
+      <div class="mt-16 max-w-2xl mx-auto rounded-[2rem] bg-white p-6 sm:p-8 card-shadow">
+        <div class="space-y-3">
+          <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">·&nbsp;małe grupy do&nbsp;8&nbsp;osób</span></span><span class="cena-kwota">75 zł</span></div>
+          <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">·&nbsp;pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+          <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;osoby</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ os.</span></span></div>
+          <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;osoby</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ os.</span></span></div>
         </div>
-        <!-- cennik: dzieci -->
-        <div class="rounded-[2rem] bg-white p-6 sm:p-8 card-shadow flex flex-col">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-mint text-white"><i data-lucide="smile" class="w-7 h-7"></i></span>
-            <h3 class="text-2xl font-display font-bold text-sky-700">Dzieci</h3>
-          </div>
-          <div class="mt-6 space-y-3">
-            <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">·&nbsp;małe grupy do&nbsp;8&nbsp;osób</span></span><span class="cena-kwota">75 zł</span></div>
-            <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">·&nbsp;pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
-            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;dzieci</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ dziecko</span></span></div>
-            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;dzieci</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ dziecko</span></span></div>
-          </div>
-          <div class="razem-box mt-4">
-            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
-            <p class="mt-1 text-sm text-slate-600">Rodzeństwo, kuzyni albo przyjaciele z podwórka? Zapiszcie ich razem. Trenerka zajmuje się tylko nimi, w towarzystwie łatwiej się oswoić z wodą, a za każde dziecko płacicie mniej niż za lekcję 1:1.</p>
-          </div>
-          <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut.</p>
-          <div class="cennik-cta flex flex-col sm:flex-row gap-3">
-            <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Zapisz się</a>
-            <a href="dla-dzieci.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Więcej o zajęciach</a>
-          </div>
+        <div class="razem-box mt-4">
+          <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
+          <p class="mt-1 text-sm text-slate-600">Przyjdź z partnerem, przyjacielem albo kimś z rodziny, zapisz razem rodzeństwo czy kolegów z podwórka. Trenerka zajmuje się tylko Wami, a każdy płaci mniej niż za lekcję 1:1.</p>
+        </div>
+        <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut. Ceny są takie same dla dorosłych i dzieci.</p>
+        <div class="cennik-cta flex flex-col sm:flex-row gap-3">
+          <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Zapisz się</a>
+          <a href="dla-doroslych.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Dla dorosłych</a>
+          <a href="dla-dzieci.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Dla dzieci</a>
         </div>
       </div>
       <p class="mt-8 text-center text-xl font-bold text-slate-700">Karnety i pakiety rodzinne — zapytaj o indywidualną wycenę.</p>
