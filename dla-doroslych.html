@@ -21,6 +21,7 @@
       analytics_storage: 'denied',
       wait_for_update: 500
     });
+    gtag('set', 'url_passthrough', true);
     // Jeśli użytkownik już wcześniej wyraził zgodę — przywróć ją od razu.
     try {
       if (localStorage.getItem('delfinada_cookie') === 'accepted') {
@@ -62,7 +63,55 @@
             gtag('event', 'conversion', {'send_to': 'AW-18524500941/MeCiCJTjvaQdEM3nlYFF'});
           });
         });
+        document.querySelectorAll('a[href^="sms:"]').forEach(function (a) {
+          a.addEventListener('click', function () {
+            zaladujGA();
+            gtag('event', 'klik_sms', {
+              miejsce: a.getAttribute('data-cta') || 'nieznane',
+              strona: location.pathname
+            });
+            gtag('event', 'conversion', {'send_to': 'AW-18524500941/MeCiCJTjvaQdEM3nlYFF'});
+          });
+        });
       });
+    })();
+  </script>
+
+  <!-- ===== Źródło zgłoszenia (trafia do maila z Web3Forms) — liczone na PIERWSZEJ stronie wizyty ===== -->
+  <script>
+    (function () {
+      var KLUCZ = 'delfinada_zrodlo';
+      function wylicz() {
+        var q = new URLSearchParams(location.search);
+        var gclid = q.get('gclid') || '';
+        var zrodlo;
+        if (gclid || q.get('gbraid') || q.get('wbraid')) {
+          zrodlo = 'Reklama Google Ads';
+        } else if (q.get('utm_source')) {
+          zrodlo = 'utm: ' + q.get('utm_source') + ' / ' + (q.get('utm_medium') || '-') + ' / ' + (q.get('utm_campaign') || '-');
+        } else {
+          var host = '';
+          try { host = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) {}
+          if (!host) zrodlo = 'Wejście bezpośrednie';
+          else if (/(^|\.)google\.[a-z.]+$/.test(host) || host.indexOf('com.google.') === 0) zrodlo = 'Google (wyszukiwarka/Mapy, bez reklamy)';
+          else if (/(^|\.)(facebook\.com|fb\.com|fb\.me|instagram\.com)$/.test(host)) zrodlo = 'Facebook/Instagram';
+          else zrodlo = host;
+        }
+        return { zrodlo: zrodlo, gclid: gclid, strona_wejscia: location.pathname };
+      }
+      var dane = null;
+      try { dane = JSON.parse(sessionStorage.getItem(KLUCZ) || 'null'); } catch (e) { dane = null; }
+      if (!dane || typeof dane !== 'object') {
+        dane = wylicz();
+        try { sessionStorage.setItem(KLUCZ, JSON.stringify(dane)); } catch (e) {}
+      }
+      // wywoływane tuż przed wysyłką formularza
+      window.delfinadaUzupelnijZrodlo = function (form) {
+        ['zrodlo', 'gclid', 'strona_wejscia'].forEach(function (n) {
+          var el = form.querySelector('[name="' + n + '"]');
+          if (el) el.value = dane[n] || '';
+        });
+      };
     })();
   </script>
 
@@ -91,8 +140,19 @@
 
   <style>
     /* pasek telefonu „przyklejony" na mobile — zawsze pod ręką */
-    .sticky-call { position:fixed; left:0; right:0; bottom:0; z-index:50; }
+    .sticky-call { position:fixed; left:0; right:0; bottom:0; z-index:50; display:grid; grid-template-columns:1fr 1fr; height:3.5rem; box-shadow:0 -10px 30px rgba(0,0,0,.18); }
     @media (min-width:768px){ .sticky-call{ display:none; } }
+    /* baner cookies na telefonie: niski (≤ ~20% ekranu) i NAD paskiem „Zadzwoń / SMS”, nie na nim */
+    .cookie-tekst-krotki { display:none; }
+    @media (max-width:767px){
+      #cookie-baner { bottom:3.5rem !important; }
+      #cookie-baner > div { padding:.7rem 1rem !important; gap:.55rem !important; }
+      #cookie-baner p { flex:1 1 100% !important; font-size:.85rem !important; line-height:1.4 !important; }
+      #cookie-baner .cookie-tekst-dlugi { display:none; }
+      #cookie-baner .cookie-tekst-krotki { display:inline; }
+      #cookie-baner p + div { flex:1 1 100% !important; }
+      #cookie-baner button { flex:1 1 0; padding:.5rem .75rem !important; }
+    }
     /* instruktorka w hero (desktop) — wysokość dopasowana do kolumny z tekstem */
     .ada-hero-wrap { position:relative; justify-content:center; align-items:flex-end; min-height:600px; }
     @media (min-width:1024px){ .ada-hero-wrap { display:flex; } }
@@ -104,10 +164,10 @@
       position:absolute; inset:0;
       background-image:url('assets/ada95-trim.webp');
       background-repeat:no-repeat;
-      background-position:right -6rem bottom;
-      background-size:auto 100%;
+      background-position:right -1.5rem top .5rem;
+      background-size:auto 22rem;
     }
-    @media (min-width:480px){ .ada-hero-mob-bg { background-position:right -4rem bottom; } }
+    @media (min-width:480px){ .ada-hero-mob-bg { background-position:right 1rem top .5rem; } }
     /* mobile: czytelność tekstu na zdjęciu — mocniejszy welon + zanikanie pionowe + poświata pod literami */
     .welon-dorosli { display:none; }
     @media (max-width:1023px){
@@ -120,10 +180,11 @@
             rgba(255,255,255,.15) 70%,
             rgba(255,255,255,0) 100%),
           linear-gradient(to bottom,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0) 28%,
-            rgba(255,255,255,.6) 42%,
-            rgba(255,255,255,.74) 62%,
+            rgba(255,255,255,0) 0,
+            rgba(255,255,255,0) 6rem,
+            rgba(255,255,255,.6) 11rem,
+            rgba(255,255,255,.74) 17rem,
+            rgba(255,255,255,.84) 23rem,
             rgba(255,255,255,.84) 100%);
       }
       .hero-tekst h1, .hero-tekst p, .hero-tekst li {
@@ -163,6 +224,9 @@
     /* cena zajęć próbnych */
     .cena-wiersz { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1rem; border-radius:1rem; background:#f0fafc; }
     .cena-kwota { font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.6rem; color:#ff8826; white-space:nowrap; }
+    .cena-os { font-size:.95rem; font-weight:700; color:#64748b; }
+    /* zajęcia w parach / we trójkę — krótki opis pod cennikiem */
+    .razem-box { padding:.9rem 1rem; border-radius:1rem; background:linear-gradient(120deg, rgba(34,184,192,.12), rgba(255,136,38,.10)); }
     /* mapa ładowana po kliknięciu */
     .mapa-box { min-height:320px; position:relative; background:#e6f6f9; }
     @media (min-width:1024px){ .mapa-box { min-height:420px; } }
@@ -184,9 +248,43 @@
     @media (max-width:380px){ [data-cta="telefon-top"] { padding-left:.9rem; padding-right:.9rem; font-size:.95rem; } }
     /* zapas na dole pod falę (żeby nie nachodziła na przyciski) */
     .hero-dorosli { padding-bottom:5rem; }
-    /* mobile: twarz instruktorki nad nagłówkiem (jak na stronie głównej), nie pod tekstem */
-    @media (max-width:1023px){ .hero-dorosli { padding-top:13rem; } }
+    /* mobile: mniejsza Ada nad/obok nagłówka — H1, oferta i przyciski mieszczą się na pierwszym ekranie */
+    @media (max-width:1023px){ .hero-dorosli { padding-top:6.5rem; } }
     @media (min-width:1024px){ .hero-dorosli { padding-bottom:7rem; } }
+
+    /* HERO — kolejność elementów: na mobile przyciski zaraz pod ofertą, na desktopie jak wcześniej (pod listą zalet) */
+    .hero-tekst { display:flex; flex-direction:column; }
+    .hero-tekst > span:first-child { align-self:flex-start; }
+    .hero-podtytul { margin-top:.5rem; font-size:1.25rem; line-height:1.2; }
+    .oferta-linia { align-self:flex-start; margin-top:.75rem; padding:.45rem .85rem; border-radius:1rem; background:rgba(255,255,255,.88); color:#0b6270; font-weight:800; font-size:1rem; line-height:1.35; box-shadow:0 6px 18px -10px rgba(14,124,139,.45); }
+    @media (max-width:1023px){
+      .hero-h1 { margin-top:0; font-size:2.125rem; }
+      .hero-cta { margin-top:1rem; }
+    }
+    /* oferta na start: Zadzwoń + Napisz SMS obok siebie (na wąskich ekranach jeden pod drugim) */
+    .oferta-cta { display:flex; flex-wrap:wrap; justify-content:center; gap:.75rem; }
+    .oferta-cta a { white-space:nowrap; }
+    .btn-sms-oferta { background:#fff; color:#0b6270; box-shadow:0 20px 25px -5px rgba(0,0,0,.2); }
+    .btn-sms-oferta:hover { background:#eafafc; }
+    @media (max-width:639px){ .oferta-cta a { flex:1 1 100%; } }
+    /* telefony: dwa przyciski obok siebie; gdy się nie mieszczą (bardzo wąskie ekrany) — jeden pod drugim */
+    @media (max-width:639px){
+      .hero-cta { flex-direction:row; flex-wrap:wrap; gap:.6rem; }
+      .hero-cta { gap:.5rem; }
+      .hero-cta a { flex:1 1 auto; white-space:nowrap; padding:.85rem .55rem; font-size:.9rem; gap:.3rem; }
+      .hero-cta a svg { width:1.1rem; height:1.1rem; flex-shrink:0; }
+      .hero-cta a[href="#formularz"] svg { display:none; }
+    }
+    @media (min-width:1024px){
+      .hero-tekst > span:first-child { order:0; }
+      .hero-h1 { order:1; }
+      .hero-podtytul { order:2; margin-top:1rem; font-size:1.875rem; }
+      .oferta-linia { order:3; margin-top:1.25rem; font-size:1.125rem; }
+      .hero-opis { order:4; }
+      .hero-zalety { order:5; }
+      .hero-cta { order:6; }
+      .hero-nota { order:7; }
+    }
   </style>
 </head>
 <body class="font-sans text-slate-700 antialiased">
@@ -224,34 +322,38 @@
         <span class="hidden lg:inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-sky-600 card-shadow">
           <i data-lucide="sparkles" class="w-4 h-4 text-sunny-dark"></i> Nauka pływania dla dorosłych • Warszawa
         </span>
-        <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-sky-700">
-          Naucz się pływać — <span class="text-coral">nigdy nie jest za późno</span>
+        <h1 class="hero-h1 mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-sky-700">
+          Nauka pływania dla dorosłych w Warszawie
         </h1>
-        <p class="mt-5 text-lg sm:text-xl text-slate-600 max-w-xl">
+        <p class="hero-podtytul font-display font-extrabold text-coral">Naucz się pływać — nigdy nie jest za późno</p>
+        <p class="oferta-linia">Lekcja próbna od 75 zł · kryty basen na Pradze (ul.&nbsp;Kawęczyńska&nbsp;36)</p>
+
+        <!-- GŁÓWNE CTA (na mobile zaraz pod ofertą, na desktopie — jak wcześniej — pod listą zalet) -->
+        <div class="hero-cta mt-8 flex flex-col sm:flex-row gap-4">
+          <a href="tel:+48666515178" data-cta="telefon-hero"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
+            <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
+          </a>
+          <a href="#formularz"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-white hover:bg-sky-50 text-sky-700 font-bold px-8 py-4 text-lg card-shadow transition-colors">
+            <i data-lucide="pencil" class="w-5 h-5"></i> Zapisz się online
+          </a>
+        </div>
+
+        <p class="hero-opis mt-5 text-lg sm:text-xl text-slate-600 max-w-xl">
           Uczymy dorosłych <strong class="font-semibold">od zera</strong> — spokojnie, we własnym tempie i <strong class="font-semibold">bez oceniania</strong>.
           Pokonaj lęk przed wodą z instruktorem z licencją Polskiego Związku Pływackiego. 🐬
         </p>
 
         <!-- zalety szybkie -->
-        <ul class="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-slate-700">
+        <ul class="hero-zalety mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-slate-700">
           <li class="flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-mint-dark"></i> Bez stresu i presji</li>
           <li class="flex items-center gap-2"><i data-lucide="user-round" class="w-5 h-5 text-mint-dark"></i> Zajęcia 1:1 lub małe grupy</li>
           <li class="flex items-center gap-2"><i data-lucide="waves" class="w-5 h-5 text-mint-dark"></i> Od lęku do swobody w wodzie</li>
           <li class="flex items-center gap-2"><i data-lucide="clock" class="w-5 h-5 text-mint-dark"></i> Elastyczne godziny</li>
         </ul>
 
-        <!-- GŁÓWNE CTA -->
-        <div class="mt-8 flex flex-col sm:flex-row gap-4">
-          <a href="tel:+48666515178" data-cta="telefon-hero"
-            class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
-            <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń i umów zajęcia
-          </a>
-          <a href="#formularz"
-            class="inline-flex items-center justify-center gap-2 rounded-full bg-white hover:bg-sky-50 text-sky-700 font-bold px-8 py-4 text-lg card-shadow transition-colors">
-            <i data-lucide="pencil" class="w-5 h-5"></i> Napisz do nas
-          </a>
-        </div>
-        <p class="mt-3 text-sm text-slate-500">☎️ Zadzwoń bez zobowiązań — chętnie odpowiemy na pytania.</p>
+        <p class="hero-nota mt-3 text-sm text-slate-500">☎️ Zadzwoń bez zobowiązań — chętnie odpowiemy na pytania.</p>
       </div>
 
       <!-- Zdjęcie instruktorki (desktop) — na mobile jest tłem sekcji (patrz wyżej) -->
@@ -279,12 +381,72 @@
           Sprawdź, jak wygląda nauka u nas — poznaj trenerkę, oswój się z wodą i zobacz, jak szybko robisz postępy.
           Bez zobowiązań, w komfortowej atmosferze.
         </p>
-        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · 45 minut</p>
-        <a href="tel:+48666515178" data-cta="telefon-wabik"
-          class="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
-          <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
-        </a>
+        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · W parze 110 zł/os. · We trójkę 90 zł/os. · 45 minut</p>
+        <div class="oferta-cta mt-6">
+          <a href="tel:+48666515178" data-cta="telefon-wabik"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
+            <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
+          </a>
+          <a href="sms:+48666515178?body=Dzie%C5%84%20dobry%2C%20chc%C4%99%20zapisa%C4%87%20si%C4%99%20na%20lekcj%C4%99%20pr%C3%B3bn%C4%85%20p%C5%82ywania%20dla%20doros%C5%82ych." data-cta="sms-oferta"
+            class="btn-sms-oferta inline-flex items-center justify-center gap-2 rounded-full font-bold px-8 py-4 text-lg transition-all hover:-translate-y-0.5">
+            <i data-lucide="message-square-text" class="w-6 h-6"></i> Napisz SMS
+          </a>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== FORMULARZ ===== -->
+  <section id="formularz" class="playful-bg">
+    <div class="max-w-xl mx-auto px-4 py-14">
+      <h2 class="text-center font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Zostaw kontakt — oddzwonimy</h2>
+      <p class="text-center text-slate-600 mt-3">Wolisz, żebyśmy to my zadzwonili? Zostaw numer, a umówimy zajęcia próbne.</p>
+
+      <form id="lead-form" class="mt-8 bg-white rounded-3xl card-shadow p-6 sm:p-8 space-y-4" action="https://api.web3forms.com/submit" method="POST" novalidate>
+        <!-- Web3Forms -->
+        <input type="hidden" name="access_key" value="1e051fcc-9f4b-4183-af05-249a509afe12" />
+        <input type="hidden" name="subject" value="Zapis DELFINADA - zajecia dla doroslych" />
+        <input type="hidden" name="from_name" value="Formularz DELFINADA — dorośli" />
+        <!-- skąd przyszła osoba (wypełniane w JS tuż przed wysyłką) -->
+        <input type="hidden" name="zrodlo" value="" />
+        <input type="hidden" name="gclid" value="" />
+        <input type="hidden" name="strona_wejscia" value="" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+        <div>
+          <label for="pole-imie" class="text-sm font-bold text-sky-700">Imię *</label>
+          <input id="pole-imie" name="imie" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="Jak masz na imię?" />
+          <p class="err hidden text-sm text-coral-dark mt-1" data-for="imie"></p>
+        </div>
+        <div>
+          <label for="pole-telefon" class="text-sm font-bold text-sky-700">Telefon *</label>
+          <input id="pole-telefon" name="telefon" type="tel" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="np. 600 000 000" />
+          <p class="err hidden text-sm text-coral-dark mt-1" data-for="telefon"></p>
+        </div>
+        <div>
+          <label for="pole-poziom" class="text-sm font-bold text-sky-700">Poziom (opcjonalnie)</label>
+          <select id="pole-poziom" name="poziom" aria-label="Poziom (opcjonalnie)" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3 bg-white">
+            <option value="">— wybierz —</option>
+            <option>Zaczynam od zera / boję się wody</option>
+            <option>Trochę pływam, chcę poprawić technikę</option>
+            <option>Chcę pływać kondycyjnie</option>
+          </select>
+        </div>
+        <label class="flex items-start gap-2 text-sm text-slate-600">
+          <input type="checkbox" name="zgoda" required class="mt-1" />
+          <span>Zgadzam się na kontakt telefoniczny w sprawie zapytania. *</span>
+        </label>
+        <p class="err hidden text-sm text-coral-dark" data-for="zgoda"></p>
+
+        <button type="submit" class="w-full rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-4 text-lg shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
+          Zapisz się na zajęcia próbne 🐬
+        </button>
+        <p id="form-ok" class="hidden text-center text-mint-dark font-bold">Dziękujemy! Oddzwonimy najszybciej, jak to możliwe. 🐬</p>
+      </form>
+
+      <p class="text-center text-slate-500 mt-6">
+        Wolisz od razu porozmawiać?
+        <a href="tel:+48666515178" data-cta="telefon-formularz" class="text-coral font-bold hover:text-coral-dark">Zadzwoń: 666 515 178</a>
+      </p>
     </div>
   </section>
 
@@ -424,6 +586,12 @@
           <div class="mt-5 space-y-3">
             <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">· małe grupy do 8 osób</span></span><span class="cena-kwota">75 zł</span></div>
             <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">· pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;osoby</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ os.</span></span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;osoby</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ os.</span></span></div>
+          </div>
+          <div class="razem-box mt-4">
+            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
+            <p class="mt-1 text-sm text-slate-600">Przyjdź z partnerem, przyjacielem albo kimś z rodziny. Trenerka zajmuje się tylko Wami, tempo dopasowuje do Was i każdy płaci mniej niż za lekcję 1:1.</p>
           </div>
           <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut. O karnety zapytaj przez telefon.</p>
         </div>
@@ -505,11 +673,11 @@
         </details>
         <details class="faq-item">
           <summary>Ile kosztują zajęcia próbne?</summary>
-          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, a indywidualne (1:1) — <strong>160 zł</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
+          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, indywidualne (1:1) — <strong>160 zł</strong>, w parze — <strong>110 zł od osoby</strong>, a we trójkę — <strong>90 zł od osoby</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
         </details>
         <details class="faq-item">
           <summary>Zajęcia indywidualne czy grupowe — co wybrać?</summary>
-          <p><strong>Indywidualne</strong> to pełna uwaga trenerki i program dopasowany w 100% — najszybsze postępy, dobre też przy silnym lęku przed wodą. <strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu, motywacja innych i niższa cena. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
+          <p><strong>Indywidualne</strong> to pełna uwaga trenerki i program dopasowany w 100% — najszybsze postępy, dobre też przy silnym lęku przed wodą. <strong>W parze lub we trójkę</strong> to wciąż zajęcia tylko dla Was, z bliską osobą u boku i w niższej cenie od osoby. <strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu, motywacja innych i niższa cena. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
         </details>
         <details class="faq-item">
           <summary>Ile trwają zajęcia i jak często warto przychodzić?</summary>
@@ -517,59 +685,26 @@
         </details>
         <details class="faq-item">
           <summary>Jak się zapisać?</summary>
-          <p>Najszybciej telefonicznie: <a href="tel:+48666515178" data-cta="telefon-faq" class="text-coral font-bold">666 515 178</a>. Możesz też zostawić numer w formularzu poniżej — oddzwonimy i ustalimy dogodny termin.</p>
+          <p>Najszybciej telefonicznie: <a href="tel:+48666515178" data-cta="telefon-faq" class="text-coral font-bold">666 515 178</a>. Możesz też zostawić numer <a href="#formularz" class="text-coral font-bold">w formularzu powyżej</a> — oddzwonimy i ustalimy dogodny termin.</p>
         </details>
       </div>
     </div>
   </section>
 
-  <!-- ===== FORMULARZ ===== -->
-  <section id="formularz" class="playful-bg">
-    <div class="max-w-xl mx-auto px-4 py-14">
-      <h2 class="text-center font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Zostaw kontakt — oddzwonimy</h2>
-      <p class="text-center text-slate-600 mt-3">Wolisz, żebyśmy to my zadzwonili? Zostaw numer, a umówimy zajęcia próbne.</p>
-
-      <form id="lead-form" class="mt-8 bg-white rounded-3xl card-shadow p-6 sm:p-8 space-y-4" action="https://api.web3forms.com/submit" method="POST" novalidate>
-        <!-- Web3Forms -->
-        <input type="hidden" name="access_key" value="1e051fcc-9f4b-4183-af05-249a509afe12" />
-        <input type="hidden" name="subject" value="Zapis DELFINADA - zajecia dla doroslych" />
-        <input type="hidden" name="from_name" value="Formularz DELFINADA — dorośli" />
-        <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
-        <div>
-          <label for="pole-imie" class="text-sm font-bold text-sky-700">Imię *</label>
-          <input id="pole-imie" name="imie" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="Jak masz na imię?" />
-          <p class="err hidden text-sm text-coral-dark mt-1" data-for="imie"></p>
-        </div>
-        <div>
-          <label for="pole-telefon" class="text-sm font-bold text-sky-700">Telefon *</label>
-          <input id="pole-telefon" name="telefon" type="tel" required class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3" placeholder="np. 600 000 000" />
-          <p class="err hidden text-sm text-coral-dark mt-1" data-for="telefon"></p>
-        </div>
-        <div>
-          <label for="pole-poziom" class="text-sm font-bold text-sky-700">Poziom (opcjonalnie)</label>
-          <select id="pole-poziom" name="poziom" aria-label="Poziom (opcjonalnie)" class="mt-1 w-full rounded-2xl border-2 border-sky-100 focus:border-coral focus:outline-none p-3 bg-white">
-            <option value="">— wybierz —</option>
-            <option>Zaczynam od zera / boję się wody</option>
-            <option>Trochę pływam, chcę poprawić technikę</option>
-            <option>Chcę pływać kondycyjnie</option>
-          </select>
-        </div>
-        <label class="flex items-start gap-2 text-sm text-slate-600">
-          <input type="checkbox" name="zgoda" required class="mt-1" />
-          <span>Zgadzam się na kontakt telefoniczny w sprawie zapytania. *</span>
-        </label>
-        <p class="err hidden text-sm text-coral-dark" data-for="zgoda"></p>
-
-        <button type="submit" class="w-full rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-4 text-lg shadow-lg shadow-coral/40 transition-all hover:-translate-y-0.5">
-          Zapisz się na zajęcia próbne 🐬
-        </button>
-        <p id="form-ok" class="hidden text-center text-mint-dark font-bold">Dziękujemy! Oddzwonimy najszybciej, jak to możliwe. 🐬</p>
-      </form>
-
-      <p class="text-center text-slate-500 mt-6">
-        Wolisz od razu porozmawiać?
-        <a href="tel:+48666515178" data-cta="telefon-formularz" class="text-coral font-bold hover:text-coral-dark">Zadzwoń: 666 515 178</a>
-      </p>
+  <!-- ===== NA KOŃCU STRONY: krótkie wezwanie do zapisu (formularz jest wyżej) ===== -->
+  <section id="na-koniec" class="bg-white">
+    <div class="max-w-xl mx-auto px-4 py-14 text-center">
+      <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-sky-700">Gotowy na pierwszą lekcję?</h2>
+      <div class="oferta-cta mt-6">
+        <a href="#formularz"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-coral/40 transition-all hover:-translate-y-0.5">
+          <i data-lucide="pencil" class="w-5 h-5"></i> Zapisz się online
+        </a>
+        <a href="tel:+48666515178" data-cta="telefon-koniec"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-white hover:bg-sky-50 text-sky-700 font-bold px-8 py-4 text-lg card-shadow transition-colors">
+          <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
+        </a>
+      </div>
     </div>
   </section>
 
@@ -592,8 +727,13 @@
   <!-- ===== STICKY telefon (tylko mobile) ===== -->
   <div class="sticky-call">
     <a href="tel:+48666515178" data-cta="telefon-sticky"
-      class="flex items-center justify-center gap-2 bg-coral text-white font-bold py-4 text-lg shadow-2xl">
-      <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
+      class="flex items-center justify-center gap-2 bg-coral text-white font-bold text-lg">
+      <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń
+    </a>
+    <!-- treść SMS: „Dzień dobry, chcę zapisać się na lekcję próbną pływania dla dorosłych.” (zakodowana w adresie) -->
+    <a href="sms:+48666515178?body=Dzie%C5%84%20dobry%2C%20chc%C4%99%20zapisa%C4%87%20si%C4%99%20na%20lekcj%C4%99%20pr%C3%B3bn%C4%85%20p%C5%82ywania%20dla%20doros%C5%82ych." data-cta="sms-sticky"
+      class="flex items-center justify-center gap-2 bg-sky-700 text-white font-bold text-lg">
+      <i data-lucide="message-square-text" class="w-6 h-6"></i> SMS
     </a>
   </div>
   <div class="md:hidden h-16" aria-hidden="true"></div><!-- miejsce pod sticky -->
@@ -632,6 +772,7 @@
         const btn=f.querySelector('button[type="submit"]'); const orig=btn?btn.innerHTML:'';
         if(btn){ btn.disabled=true; btn.innerHTML='Wysyłanie…'; }
         try{
+          try { if (window.delfinadaUzupelnijZrodlo) window.delfinadaUzupelnijZrodlo(f); } catch (e) {}
           const res=await fetch('https://api.web3forms.com/submit',{ method:'POST', headers:{'Accept':'application/json'}, body:new FormData(f) });
           const json=await res.json();
           if(res.ok && json.success){
@@ -651,7 +792,8 @@
   <div id="cookie-baner" role="dialog" aria-live="polite" aria-label="Zgoda na pliki cookie" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#0b6270;color:#fff;box-shadow:0 -8px 30px rgba(0,0,0,.18)">
     <div style="max-width:72rem;margin:0 auto;padding:1rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.25rem">
       <p style="flex:1 1 20rem;margin:0;font-size:.92rem;line-height:1.55">
-        Używamy plików cookie, aby analizować ruch na stronie i mierzyć skuteczność reklam. Możesz je zaakceptować lub korzystać tylko z niezbędnych.
+        <span class="cookie-tekst-dlugi">Używamy plików cookie, aby analizować ruch na stronie i mierzyć skuteczność reklam. Możesz je zaakceptować lub korzystać tylko z niezbędnych.</span>
+        <span class="cookie-tekst-krotki">Używamy cookies do statystyk i mierzenia reklam.</span>
         <a href="polityka-prywatnosci.html" style="color:#ffd79a;text-decoration:underline;white-space:nowrap">Polityka prywatności</a>
       </p>
       <div style="display:flex;gap:.6rem;flex:0 0 auto">

@@ -21,6 +21,7 @@
       analytics_storage: 'denied',
       wait_for_update: 500
     });
+    gtag('set', 'url_passthrough', true);
     // Jeśli użytkownik już wcześniej wyraził zgodę — przywróć ją od razu.
     try {
       if (localStorage.getItem('delfinada_cookie') === 'accepted') {
@@ -63,6 +64,44 @@
           });
         });
       });
+    })();
+  </script>
+
+  <!-- ===== Źródło zgłoszenia (trafia do maila z Web3Forms) — liczone na PIERWSZEJ stronie wizyty ===== -->
+  <script>
+    (function () {
+      var KLUCZ = 'delfinada_zrodlo';
+      function wylicz() {
+        var q = new URLSearchParams(location.search);
+        var gclid = q.get('gclid') || '';
+        var zrodlo;
+        if (gclid || q.get('gbraid') || q.get('wbraid')) {
+          zrodlo = 'Reklama Google Ads';
+        } else if (q.get('utm_source')) {
+          zrodlo = 'utm: ' + q.get('utm_source') + ' / ' + (q.get('utm_medium') || '-') + ' / ' + (q.get('utm_campaign') || '-');
+        } else {
+          var host = '';
+          try { host = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) {}
+          if (!host) zrodlo = 'Wejście bezpośrednie';
+          else if (/(^|\.)google\.[a-z.]+$/.test(host) || host.indexOf('com.google.') === 0) zrodlo = 'Google (wyszukiwarka/Mapy, bez reklamy)';
+          else if (/(^|\.)(facebook\.com|fb\.com|fb\.me|instagram\.com)$/.test(host)) zrodlo = 'Facebook/Instagram';
+          else zrodlo = host;
+        }
+        return { zrodlo: zrodlo, gclid: gclid, strona_wejscia: location.pathname };
+      }
+      var dane = null;
+      try { dane = JSON.parse(sessionStorage.getItem(KLUCZ) || 'null'); } catch (e) { dane = null; }
+      if (!dane || typeof dane !== 'object') {
+        dane = wylicz();
+        try { sessionStorage.setItem(KLUCZ, JSON.stringify(dane)); } catch (e) {}
+      }
+      // wywoływane tuż przed wysyłką formularza
+      window.delfinadaUzupelnijZrodlo = function (form) {
+        ['zrodlo', 'gclid', 'strona_wejscia'].forEach(function (n) {
+          var el = form.querySelector('[name="' + n + '"]');
+          if (el) el.value = dane[n] || '';
+        });
+      };
     })();
   </script>
 
@@ -161,6 +200,9 @@
     /* cena zajęć próbnych */
     .cena-wiersz { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1rem; border-radius:1rem; background:#f0fafc; }
     .cena-kwota { font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.6rem; color:#ff8826; white-space:nowrap; }
+    .cena-os { font-size:.95rem; font-weight:700; color:#64748b; }
+    /* zajęcia w parach / we trójkę — krótki opis pod cennikiem */
+    .razem-box { padding:.9rem 1rem; border-radius:1rem; background:linear-gradient(120deg, rgba(34,184,192,.12), rgba(255,136,38,.10)); }
     /* mapa ładowana po kliknięciu */
     .mapa-box { min-height:320px; position:relative; background:#e6f6f9; }
     @media (min-width:1024px){ .mapa-box { min-height:420px; } }
@@ -263,7 +305,7 @@
         <p class="mt-3 text-white/90 max-w-2xl mx-auto text-lg">
           Zobacz, jak Twoje dziecko odnajdzie się w wodzie — poznaj trenerkę i atmosferę zajęć. Bez zobowiązań.
         </p>
-        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · 45 minut</p>
+        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · W parze 110 zł/dziecko · We trójkę 90 zł/dziecko · 45 minut</p>
         <a href="tel:+48666515178" data-cta="telefon-wabik"
           class="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
           <i data-lucide="phone" class="w-6 h-6"></i> Zadzwoń: 666 515 178
@@ -408,6 +450,12 @@
           <div class="mt-5 space-y-3">
             <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">· małe grupy do 8 osób</span></span><span class="cena-kwota">75 zł</span></div>
             <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">· pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;dzieci</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ dziecko</span></span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;dzieci</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ dziecko</span></span></div>
+          </div>
+          <div class="razem-box mt-4">
+            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
+            <p class="mt-1 text-sm text-slate-600">Rodzeństwo, kuzyni albo przyjaciele z podwórka? Zapiszcie ich razem. Trenerka zajmuje się tylko nimi, w towarzystwie łatwiej się oswoić z wodą, a za każde dziecko płacicie mniej niż za lekcję 1:1.</p>
           </div>
           <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut. O karnety zapytaj przez telefon.</p>
         </div>
@@ -493,11 +541,11 @@
         </details>
         <details class="faq-item">
           <summary>Ile kosztują zajęcia próbne?</summary>
-          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, a indywidualne (1:1) — <strong>160 zł</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
+          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, indywidualne (1:1) — <strong>160 zł</strong>, w parze — <strong>110 zł za dziecko</strong>, a we trójkę — <strong>90 zł za dziecko</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
         </details>
         <details class="faq-item">
           <summary>Zajęcia grupowe czy indywidualne — co wybrać?</summary>
-          <p><strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu — dzieci motywują się nawzajem i świetnie się bawią. <strong>Indywidualne</strong> to pełna uwaga trenerki i najszybsze postępy, dobre też przy silnym lęku przed wodą. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
+          <p><strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu — dzieci motywują się nawzajem i świetnie się bawią. <strong>Indywidualne</strong> to pełna uwaga trenerki i najszybsze postępy, dobre też przy silnym lęku przed wodą. <strong>W parze lub we trójkę</strong> to zajęcia tylko dla Waszych dzieci, np. rodzeństwa, w raźniejszym towarzystwie i w niższej cenie za dziecko. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
         </details>
         <details class="faq-item">
           <summary>Jak zapisać dziecko?</summary>
@@ -518,6 +566,10 @@
         <input type="hidden" name="access_key" value="1e051fcc-9f4b-4183-af05-249a509afe12" />
         <input type="hidden" name="subject" value="Zapis DELFINADA - zajecia dla dzieci" />
         <input type="hidden" name="from_name" value="Formularz DELFINADA — dzieci" />
+        <!-- skąd przyszła osoba (wypełniane w JS tuż przed wysyłką) -->
+        <input type="hidden" name="zrodlo" value="" />
+        <input type="hidden" name="gclid" value="" />
+        <input type="hidden" name="strona_wejscia" value="" />
         <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
         <div>
           <label for="pole-imie" class="text-sm font-bold text-sky-700">Imię rodzica *</label>
@@ -610,6 +662,7 @@
         const btn=f.querySelector('button[type="submit"]'); const orig=btn?btn.innerHTML:'';
         if(btn){ btn.disabled=true; btn.innerHTML='Wysyłanie…'; }
         try{
+          try { if (window.delfinadaUzupelnijZrodlo) window.delfinadaUzupelnijZrodlo(f); } catch (e) {}
           const res=await fetch('https://api.web3forms.com/submit',{ method:'POST', headers:{'Accept':'application/json'}, body:new FormData(f) });
           const json=await res.json();
           if(res.ok && json.success){

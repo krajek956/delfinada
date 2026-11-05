@@ -24,6 +24,7 @@
       analytics_storage: 'denied',
       wait_for_update: 500
     });
+    gtag('set', 'url_passthrough', true);
     // Jeśli użytkownik już wcześniej wyraził zgodę — przywróć ją od razu.
     try {
       if (localStorage.getItem('delfinada_cookie') === 'accepted') {
@@ -70,6 +71,44 @@
           });
         });
       });
+    })();
+  </script>
+
+  <!-- ===== Źródło zgłoszenia (trafia do maila z Web3Forms) — liczone na PIERWSZEJ stronie wizyty ===== -->
+  <script>
+    (function () {
+      var KLUCZ = 'delfinada_zrodlo';
+      function wylicz() {
+        var q = new URLSearchParams(location.search);
+        var gclid = q.get('gclid') || '';
+        var zrodlo;
+        if (gclid || q.get('gbraid') || q.get('wbraid')) {
+          zrodlo = 'Reklama Google Ads';
+        } else if (q.get('utm_source')) {
+          zrodlo = 'utm: ' + q.get('utm_source') + ' / ' + (q.get('utm_medium') || '-') + ' / ' + (q.get('utm_campaign') || '-');
+        } else {
+          var host = '';
+          try { host = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) {}
+          if (!host) zrodlo = 'Wejście bezpośrednie';
+          else if (/(^|\.)google\.[a-z.]+$/.test(host) || host.indexOf('com.google.') === 0) zrodlo = 'Google (wyszukiwarka/Mapy, bez reklamy)';
+          else if (/(^|\.)(facebook\.com|fb\.com|fb\.me|instagram\.com)$/.test(host)) zrodlo = 'Facebook/Instagram';
+          else zrodlo = host;
+        }
+        return { zrodlo: zrodlo, gclid: gclid, strona_wejscia: location.pathname };
+      }
+      var dane = null;
+      try { dane = JSON.parse(sessionStorage.getItem(KLUCZ) || 'null'); } catch (e) { dane = null; }
+      if (!dane || typeof dane !== 'object') {
+        dane = wylicz();
+        try { sessionStorage.setItem(KLUCZ, JSON.stringify(dane)); } catch (e) {}
+      }
+      // wywoływane tuż przed wysyłką formularza
+      window.delfinadaUzupelnijZrodlo = function (form) {
+        ['zrodlo', 'gclid', 'strona_wejscia'].forEach(function (n) {
+          var el = form.querySelector('[name="' + n + '"]');
+          if (el) el.value = dane[n] || '';
+        });
+      };
     })();
   </script>
 
@@ -673,6 +712,10 @@
             <input type="hidden" name="access_key" value="1e051fcc-9f4b-4183-af05-249a509afe12" />
             <input type="hidden" name="subject" value="Zapis DELFINADA - strona glowna" />
             <input type="hidden" name="from_name" value="Formularz DELFINADA" />
+            <!-- skąd przyszła osoba (wypełniane w JS tuż przed wysyłką) -->
+            <input type="hidden" name="zrodlo" value="" />
+            <input type="hidden" name="gclid" value="" />
+            <input type="hidden" name="strona_wejscia" value="" />
             <!-- honeypot anty-spam (ukryte pole; boty je wypełniają) -->
             <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
             <div>
@@ -924,6 +967,7 @@
         if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Wysyłanie…'; }
 
         try {
+          try { if (window.delfinadaUzupelnijZrodlo) window.delfinadaUzupelnijZrodlo(form); } catch (e) {}
           const res = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
             headers: { 'Accept': 'application/json' },
