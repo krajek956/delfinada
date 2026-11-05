@@ -155,6 +155,15 @@
 
   <!-- Lekki, gotowy CSS (Tailwind zbudowany oficjalnym narzędziem — szybko, bez blokowania) -->
   <link rel="stylesheet" href="assets/app.css" />
+  <style>
+    /* cennik (jak na stronach dla dorosłych i dzieci) */
+    .cena-wiersz { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1rem; border-radius:1rem; background:#f0fafc; }
+    .cena-kwota { font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.6rem; color:#ff8826; white-space:nowrap; }
+    .cena-os { font-size:.95rem; font-weight:700; color:#64748b; }
+    .cennik-cta { margin-top:auto; padding-top:1.5rem; }
+    .cennik-cta a { flex:1 1 0; white-space:nowrap; }
+    .razem-box { padding:.9rem 1rem; border-radius:1rem; background:linear-gradient(120deg, rgba(34,184,192,.12), rgba(255,136,38,.10)); }
+  </style>
   <!-- Lucide Icons (CDN, przypięta wersja + defer) -->
   <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 
@@ -483,42 +492,50 @@
         <p class="mt-4 text-lg text-slate-500">Bez ukrytych kosztów.</p>
       </div>
 
-      <div class="mt-16 grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-        <div class="rounded-[2rem] bg-white p-8 card-shadow">
+      <div class="mt-16 grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
+        <!-- cennik: dorośli -->
+        <div class="rounded-[2rem] bg-white p-6 sm:p-8 card-shadow flex flex-col">
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sky-100 text-sky-600"><i data-lucide="users" class="w-7 h-7"></i></span>
-            <h3 class="text-xl font-display font-bold text-sky-700">Zajęcia grupowe</h3>
+            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sunny text-slate-800"><i data-lucide="user-round" class="w-7 h-7"></i></span>
+            <h3 class="text-2xl font-display font-bold text-sky-700">Dorośli</h3>
           </div>
-          <p class="mt-6 flex items-baseline gap-2">
-            <span class="text-sm text-slate-400">od</span>
-            <span class="text-5xl font-display font-extrabold text-sky-700">75</span>
-            <span class="text-slate-400 font-semibold">PLN / h</span>
-          </p>
-          <ul class="mt-6 space-y-3 text-slate-600">
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint-dark mt-0.5"></i> Małe grupy do 8 osób</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint-dark mt-0.5"></i> Podział wg poziomu</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-mint-dark mt-0.5"></i> Świetna zabawa w grupie</li>
-          </ul>
-          <a href="#zapisy" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Wybieram</a>
+          <div class="mt-6 space-y-3">
+            <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">·&nbsp;małe grupy do&nbsp;8&nbsp;osób</span></span><span class="cena-kwota">75 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">·&nbsp;pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;osoby</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ os.</span></span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;osoby</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ os.</span></span></div>
+          </div>
+          <div class="razem-box mt-4">
+            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
+            <p class="mt-1 text-sm text-slate-600">Przyjdź z partnerem, przyjacielem albo kimś z rodziny. Trenerka zajmuje się tylko Wami, tempo dopasowuje do Was i każdy płaci mniej niż za lekcję 1:1.</p>
+          </div>
+          <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut.</p>
+          <div class="cennik-cta flex flex-col sm:flex-row gap-3">
+            <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Zapisz się</a>
+            <a href="dla-doroslych.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Więcej o zajęciach</a>
+          </div>
         </div>
-
-        <div class="relative rounded-[2rem] bg-gradient-to-br from-sky-500 to-sky-700 p-8 shadow-2xl shadow-sky-600/40 text-white overflow-hidden">
-          <span class="absolute top-5 right-5 rounded-full bg-sunny px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-slate-900">Najszybsze postępy</span>
+        <!-- cennik: dzieci -->
+        <div class="rounded-[2rem] bg-white p-6 sm:p-8 card-shadow flex flex-col">
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 text-white"><i data-lucide="user-round" class="w-7 h-7"></i></span>
-            <h3 class="text-xl font-display font-bold">Zajęcia indywidualne</h3>
+            <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-mint text-white"><i data-lucide="smile" class="w-7 h-7"></i></span>
+            <h3 class="text-2xl font-display font-bold text-sky-700">Dzieci</h3>
           </div>
-          <p class="mt-6 flex items-baseline gap-2">
-            <span class="text-sm text-sky-100">od</span>
-            <span class="text-5xl font-display font-extrabold">160</span>
-            <span class="text-sky-100 font-semibold">PLN / h</span>
-          </p>
-          <ul class="mt-6 space-y-3 text-sky-50">
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny mt-0.5"></i> Pełna uwaga 1:1</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny mt-0.5"></i> Elastyczne godziny</li>
-            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-sunny mt-0.5"></i> Program dopasowany w 100%</li>
-          </ul>
-          <a href="#zapisy" class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Wybieram</a>
+          <div class="mt-6 space-y-3">
+            <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">·&nbsp;małe grupy do&nbsp;8&nbsp;osób</span></span><span class="cena-kwota">75 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">·&nbsp;pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;dzieci</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ dziecko</span></span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;dzieci</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ dziecko</span></span></div>
+          </div>
+          <div class="razem-box mt-4">
+            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
+            <p class="mt-1 text-sm text-slate-600">Rodzeństwo, kuzyni albo przyjaciele z podwórka? Zapiszcie ich razem. Trenerka zajmuje się tylko nimi, w towarzystwie łatwiej się oswoić z wodą, a za każde dziecko płacicie mniej niż za lekcję 1:1.</p>
+          </div>
+          <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut.</p>
+          <div class="cennik-cta flex flex-col sm:flex-row gap-3">
+            <a href="#zapisy" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-6 py-3 transition-colors">Zapisz się</a>
+            <a href="dla-dzieci.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold px-6 py-3 transition-colors">Więcej o zajęciach</a>
+          </div>
         </div>
       </div>
       <p class="mt-8 text-center text-xl font-bold text-slate-700">Karnety i pakiety rodzinne — zapytaj o indywidualną wycenę.</p>
