@@ -224,6 +224,9 @@
     /* cena zajęć próbnych */
     .cena-wiersz { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1rem; border-radius:1rem; background:#f0fafc; }
     .cena-kwota { font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.6rem; color:#ff8826; white-space:nowrap; }
+    .cena-os { font-size:.95rem; font-weight:700; color:#64748b; }
+    /* zajęcia w parach / we trójkę — krótki opis pod cennikiem */
+    .razem-box { padding:.9rem 1rem; border-radius:1rem; background:linear-gradient(120deg, rgba(34,184,192,.12), rgba(255,136,38,.10)); }
     /* mapa ładowana po kliknięciu */
     .mapa-box { min-height:320px; position:relative; background:#e6f6f9; }
     @media (min-width:1024px){ .mapa-box { min-height:420px; } }
@@ -380,7 +383,7 @@
           Sprawdź, jak wygląda nauka u nas — poznaj trenerkę, oswój się z wodą i zobacz, jak szybko robisz postępy.
           Bez zobowiązań, w komfortowej atmosferze.
         </p>
-        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · 45 minut</p>
+        <p class="mt-4 font-bold text-white">Grupowe 75 zł · Indywidualne 160 zł · W parze 110 zł/os. · We trójkę 90 zł/os. · 45 minut</p>
         <div class="oferta-cta mt-6">
           <a href="tel:+48666515178" data-cta="telefon-wabik"
             class="inline-flex items-center justify-center gap-2 rounded-full bg-coral hover:bg-coral-dark text-white font-bold px-8 py-4 text-lg shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
@@ -465,7 +468,7 @@
           <p class="mt-4 text-sm text-slate-500">Małe grupy do 8 osób, podzielone według poziomu.</p>
         </div>
         <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow">
-          <h3 class="font-display font-bold text-xl text-sky-700 flex items-center gap-2"><i data-lucide="user-round" class="w-5 h-5 text-coral"></i> Zajęcia indywidualne 1:1</h3>
+          <h3 class="font-display font-bold text-xl text-sky-700 flex items-center gap-2"><i data-lucide="user-round" class="w-5 h-5 text-coral"></i> Zajęcia indywidualne (1:1, w parze, we trójkę)</h3>
           <div class="mt-5 space-y-3">
             <div class="cena-wiersz"><span class="font-bold text-slate-700">[np. „pon–pt 7:00–21:00, termin ustalamy telefonicznie”]</span></div>
           </div>
@@ -618,6 +621,12 @@
           <div class="mt-5 space-y-3">
             <div class="cena-wiersz"><span><strong class="text-sky-700">Grupowe</strong> <span class="text-sm text-slate-500">· małe grupy do 8 osób</span></span><span class="cena-kwota">75 zł</span></div>
             <div class="cena-wiersz"><span><strong class="text-sky-700">Indywidualne 1:1</strong> <span class="text-sm text-slate-500">· pełna uwaga trenerki</span></span><span class="cena-kwota">160 zł</span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">W parze</strong> <span class="text-sm text-slate-500">·&nbsp;2&nbsp;osoby</span></span><span class="cena-kwota">110 zł <span class="cena-os">/ os.</span></span></div>
+            <div class="cena-wiersz"><span><strong class="text-sky-700">We trójkę</strong> <span class="text-sm text-slate-500">·&nbsp;3&nbsp;osoby</span></span><span class="cena-kwota">90 zł <span class="cena-os">/ os.</span></span></div>
+          </div>
+          <div class="razem-box mt-4">
+            <p class="font-bold text-sky-700 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-coral"></i> Razem raźniej — i taniej</p>
+            <p class="mt-1 text-sm text-slate-600">Przyjdź z partnerem, przyjacielem albo kimś z rodziny. Trenerka zajmuje się tylko Wami, tempo dopasowuje do Was i każdy płaci mniej niż za lekcję 1:1.</p>
           </div>
           <p class="mt-4 text-sm text-slate-500">Zajęcia trwają 45 minut. O karnety zapytaj przez telefon.</p>
         </div>
@@ -699,11 +708,11 @@
         </details>
         <details class="faq-item">
           <summary>Ile kosztują zajęcia próbne?</summary>
-          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, a indywidualne (1:1) — <strong>160 zł</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
+          <p>Zajęcia próbne grupowe kosztują <strong>75 zł</strong>, indywidualne (1:1) — <strong>160 zł</strong>, w parze — <strong>110 zł od osoby</strong>, a we trójkę — <strong>90 zł od osoby</strong>. Trwają 45 minut. O karnety na kolejne zajęcia zapytaj przez telefon.</p>
         </details>
         <details class="faq-item">
           <summary>Zajęcia indywidualne czy grupowe — co wybrać?</summary>
-          <p><strong>Indywidualne</strong> to pełna uwaga trenerki i program dopasowany w 100% — najszybsze postępy, dobre też przy silnym lęku przed wodą. <strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu, motywacja innych i niższa cena. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
+          <p><strong>Indywidualne</strong> to pełna uwaga trenerki i program dopasowany w 100% — najszybsze postępy, dobre też przy silnym lęku przed wodą. <strong>W parze lub we trójkę</strong> to wciąż zajęcia tylko dla Was, z bliską osobą u boku i w niższej cenie od osoby. <strong>Grupowe</strong> to małe grupy do 8 osób podzielone według poziomu, motywacja innych i niższa cena. Nie wiesz, co wybrać? Zadzwoń — doradzimy.</p>
         </details>
         <details class="faq-item">
           <summary>Ile trwają zajęcia i jak często warto przychodzić?</summary>
