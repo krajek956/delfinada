@@ -70,3 +70,9 @@ npm install lucide-react
 Następnie przenieś markup do `app/page.tsx`, zamień `<i data-lucide="...">` na komponenty
 z `lucide-react`, a paletę kolorów (`abyss`, `aqua`, `coral`, `sunny`, `mint`) i czcionki
 przenieś do `tailwind.config.ts`. Logikę formularza łatwo przepisać na React (stan + `onSubmit`).
+
+## 🧑‍🏫 Panel trenera
+
+Osobna aplikacja dla trenera pod `/trener/` (logowanie przez Supabase): lekcje, kalendarz, kursanci,
+płatności, notatki z zajęć i **automatyczne przypomnienia SMS** (SMSAPI.pl).
+Instrukcja uruchomienia: [`trener/README.md`](trener/README.md), baza: [`supabase/setup.sql`](supabase/setup.sql).
