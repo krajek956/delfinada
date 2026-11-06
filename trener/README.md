@@ -23,6 +23,11 @@ Nie ma do niej linków ze strony głównej i jest wyłączona z wyszukiwarek (`n
 - **Ustawienia**: treść SMS-a z podglądem i licznikiem znaków, czasy wysyłki,
   testowy SMS, historia SMS-ów ze statusem z bramki.
 
+## Wersja demo
+
+`trener/?demo` otwiera panel z przykładowymi danymi (bez logowania i bez Supabase).
+Zmiany są trzymane tylko w przeglądarce i znikają po odświeżeniu strony.
+
 ## Jak to działa
 
 ```

@@ -17,6 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
   <script src="config.js"></script>
+  <script src="demo.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -181,7 +182,10 @@
   // =====================================================================
   const cfg = window.DELFINADA_CONFIG || {};
   const configured = cfg.supabaseUrl && cfg.supabaseAnonKey && !/TWOJ/.test(cfg.supabaseUrl + cfg.supabaseAnonKey);
-  const sb = (configured && window.supabase) ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
+  // Tryb demo (adres z ?demo): przykładowe dane w pamięci, bez Supabase.
+  const demo = new URLSearchParams(location.search).has('demo') && !!window.DELFINADA_DEMO;
+  const sb = demo ? window.DELFINADA_DEMO.createClient()
+    : (configured && window.supabase) ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
 
   async function q(promise) {
     const { data, error } = await promise;
@@ -231,7 +235,11 @@
   //  Start i logowanie
   // =====================================================================
   async function boot() {
-    if (!configured) return renderNoConfig();
+    if (demo) {
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div class="sticky top-0 z-20 bg-sky-700 text-white text-center text-xs sm:text-sm font-bold py-1.5 px-3">🐬 Wersja demo: przykładowe dane, zmiany znikną po odświeżeniu strony</div>');
+    }
+    if (!configured && !demo) return renderNoConfig();
     if (!sb) return renderFatal('Nie udało się załadować biblioteki Supabase. Sprawdź połączenie z internetem i odśwież stronę.');
 
     const { data: { session } } = await sb.auth.getSession();
@@ -286,6 +294,7 @@
         <div class="bg-white rounded-3xl card-shadow p-6">
           <h1 class="font-display text-2xl font-bold text-sky-700">Brak konfiguracji</h1>
           <p class="mt-2">Uzupełnij plik <code class="bg-sky-50 px-1.5 rounded">trener/config.js</code> adresem projektu Supabase i kluczem publicznym (Publishable / anon key). Instrukcja jest w <code class="bg-sky-50 px-1.5 rounded">trener/README.md</code>.</p>
+          <a href="?demo" class="btn btn-primary mt-4">${icon('play', 'w-5 h-5')} Zobacz wersję demo</a>
         </div>
       </div>`;
     refreshIcons();
