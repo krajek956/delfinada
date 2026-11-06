@@ -74,5 +74,5 @@ przenieś do `tailwind.config.ts`. Logikę formularza łatwo przepisać na React
 ## 🧑‍🏫 Panel trenera
 
 Osobna aplikacja dla trenera pod `/trener/` (logowanie przez Supabase): lekcje, kalendarz, kursanci,
-płatności, notatki z zajęć i **automatyczne przypomnienia SMS** (SMSAPI.pl).
-Instrukcja uruchomienia: [`trener/README.md`](trener/README.md), baza: [`supabase/setup.sql`](supabase/setup.sql).
+płatności, notatki z zajęć i **powiadomienia na telefonie przed każdym treningiem** (Web Push).
+Demo: `/trener/?demo`. Instrukcja uruchomienia: [`trener/README.md`](trener/README.md).

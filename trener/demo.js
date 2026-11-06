@@ -17,20 +17,20 @@
 
   function sampleData() {
     const kursanci = [
-      { id: 'k-marta', imie: 'Marta', nazwisko: 'Wiśniewska', telefon: '601 234 567', email: 'marta@example.com', zgoda_sms: true, cena: 160,
+      { id: 'k-marta', imie: 'Marta', nazwisko: 'Wiśniewska', telefon: '601 234 567', email: 'marta@example.com', cena: 160,
         poziom: 'Początkujący', cel: 'Przestać bać się głębokiej wody, przepłynąć 25 m kraulem', notatki: 'Stres przy zanurzaniu twarzy. Lubi wtorki po pracy.', aktywny: true },
-      { id: 'k-tomek', imie: 'Tomasz', nazwisko: 'Zieliński', telefon: '512 987 654', email: null, zgoda_sms: true, cena: 160,
+      { id: 'k-tomek', imie: 'Tomasz', nazwisko: 'Zieliński', telefon: '512 987 654', email: null, cena: 160,
         poziom: 'Średniozaawansowany', cel: 'Triathlon sprint w czerwcu', notatki: 'Kontuzja lewego barku w przeszłości, uważać na zakres ruchu.', aktywny: true },
-      { id: 'k-kasia', imie: 'Katarzyna', nazwisko: 'Lewandowska', telefon: '698 111 222', email: null, zgoda_sms: false, cena: 140,
+      { id: 'k-kasia', imie: 'Katarzyna', nazwisko: 'Lewandowska', telefon: '698 111 222', email: null, cena: 140,
         poziom: 'Zaawansowany', cel: 'Poprawa techniki motylkowego', notatki: null, aktywny: true },
-      { id: 'k-piotr', imie: 'Piotr', nazwisko: 'Kamiński', telefon: '500 600 700', email: null, zgoda_sms: true, cena: 160,
+      { id: 'k-piotr', imie: 'Piotr', nazwisko: 'Kamiński', telefon: '500 600 700', email: null, cena: 160,
         poziom: 'Początkujący', cel: 'Nauka pływania od zera', notatki: 'Skończył kurs w zeszłym miesiącu.', aktywny: false },
     ].map((k) => ({ trener_id: UID, created_at: at(-60, 12), ...k }));
 
     const L = (kursant_id, start, extra = {}) => ({
       id: id(), trener_id: UID, kursant_id, start, czas_min: 60, miejsce: null,
       cena: kursanci.find((k) => k.id === kursant_id).cena, oplacona: false, status: 'zaplanowana',
-      notatka: null, seria_id: null, sms_klient_wyslany_at: null, sms_trener_wyslany_at: null, created_at: at(-30, 12), ...extra,
+      notatka: null, seria_id: null, push_wyslany_at: null, created_at: at(-30, 12), ...extra,
     });
 
     const seriaMarta = 'seria-marta';
@@ -39,7 +39,7 @@
       L('k-marta', at(-21, 18), { status: 'odbyta', oplacona: true, seria_id: seriaMarta, notatka: 'Pierwsze zajęcia. Oswajanie z wodą, wydechy do wody, leżenie na plecach z makaronem.' }),
       L('k-marta', at(-14, 18), { status: 'odbyta', oplacona: true, seria_id: seriaMarta, notatka: 'Szybowanie na piersiach 5 m bez pomocy! Nogi do kraula przy desce.' }),
       L('k-marta', at(-7, 18), { status: 'odbyta', oplacona: false, seria_id: seriaMarta, notatka: 'Kraul z deską 2 × 25 m. Następnym razem: oddech na bok.' }),
-      L('k-marta', at(0, 18), { seria_id: seriaMarta }),
+      L('k-marta', at(0, 18), { seria_id: seriaMarta, push_wyslany_at: now.getHours() >= 17 ? at(0, 17) : null }),
       L('k-marta', at(7, 18), { seria_id: seriaMarta }),
       L('k-marta', at(14, 18), { seria_id: seriaMarta }),
       // Tomek
@@ -58,14 +58,11 @@
     ];
 
     const ustawienia = [{
-      trener_id: UID, imie: 'Ada', telefon: '+48 666 515 178', nadawca: null,
-      domyslne_miejsce: 'Basen Kapry, Pruszków', domyslna_cena: 160, domyslny_czas_min: 60,
-      sms_klient_wlaczone: true, sms_klient_godzin_przed: 24,
-      sms_klient_szablon: 'Cześć {imie}! Przypominam o zajęciach pływania: {data} o {godzina}, {miejsce}. Jeśli nie możesz przyjść, daj znać: 666 515 178. Ada, DELFINADA',
-      sms_trener_wlaczone: true, sms_trener_minut_przed: 60, updated_at: at(-1, 12),
+      trener_id: UID, imie: 'Ada', domyslne_miejsce: 'Basen Kapry, Pruszków', domyslna_cena: 160, domyslny_czas_min: 60,
+      push_wlaczone: true, push_minut_przed: 60, updated_at: at(-1, 12),
     }];
 
-    return { ustawienia, kursanci, lekcje, sms_log: [] };
+    return { ustawienia, kursanci, lekcje, push_subskrypcje: [] };
   }
 
   const db = sampleData();
@@ -87,6 +84,7 @@
       select(s = '*') { st.sel = s; return b; },
       insert(p) { st.op = 'insert'; st.payload = p; return b; },
       update(p) { st.op = 'update'; st.payload = p; return b; },
+      upsert(p, o = {}) { st.op = 'upsert'; st.payload = p; st.conflict = o.onConflict || 'id'; return b; },
       delete() { st.op = 'delete'; return b; },
       eq(c, v) { st.filters.push((r) => r[c] === v); return b; },
       gte(c, v) { st.filters.push((r) => r[c] >= v); return b; },
@@ -108,18 +106,21 @@
         const rows = (Array.isArray(st.payload) ? st.payload : [st.payload]).map((p) => ({
           id: id(), trener_id: UID, created_at: new Date().toISOString(),
           ...(table === 'kursanci' ? { aktywny: true } : {}),
-          ...(table === 'lekcje' ? { status: 'zaplanowana', sms_klient_wyslany_at: null, sms_trener_wyslany_at: null } : {}),
+          ...(table === 'lekcje' ? { status: 'zaplanowana', push_wyslany_at: null } : {}),
           ...p,
         }));
         db[table].push(...rows);
         out = rows;
+      } else if (st.op === 'upsert') {
+        const c = st.conflict;
+        const row = db[table].find((r) => r[c] === st.payload[c]);
+        if (row) Object.assign(row, st.payload);
+        else db[table].push({ id: id(), trener_id: UID, created_at: new Date().toISOString(), ...st.payload });
+        out = [db[table].find((r) => r[c] === st.payload[c])];
       } else if (st.op === 'update') {
         out = match();
         out.forEach((r) => {
-          if (table === 'lekcje' && st.payload.start && st.payload.start !== r.start) {
-            r.sms_klient_wyslany_at = null;
-            r.sms_trener_wyslany_at = null;
-          }
+          if (table === 'lekcje' && st.payload.start && st.payload.start !== r.start) r.push_wyslany_at = null;
           Object.assign(r, st.payload);
         });
       } else if (st.op === 'delete') {
@@ -156,10 +157,8 @@
           signOut: async () => { session = null; notify('SIGNED_OUT', null); return { error: null }; },
         },
         from: (t) => query(t),
-        rpc: async (name) => {
-          if (name === 'odswiez_statusy_sms') return { data: null, error: null };
-          return { data: null, error: { message: 'W wersji demo SMS-y nie są wysyłane.' } };
-        },
+        rpc: async () => ({ data: null, error: { message: 'Niedostępne w wersji demo.' } }),
+        functions: { invoke: async () => ({ data: null, error: { message: 'Niedostępne w wersji demo.' } }) },
       };
     },
   };

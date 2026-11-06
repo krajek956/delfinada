@@ -159,13 +159,8 @@
     odwolana:    { label: 'Odwołana',    cls: 'bg-slate-200 text-slate-600', dot: 'bg-slate-400' },
   };
   const POZIOMY = ['Początkujący', 'Średniozaawansowany', 'Zaawansowany'];
-  const SMS_TYP = { klient: 'Przypomnienie', trener: 'Dla Ciebie', reczny: 'Wysłane ręcznie', test: 'Test' };
-  const SMS_STATUS = {
-    wysylany: { label: 'W drodze', cls: 'bg-sky-100 text-sky-700' },
-    wyslany:  { label: 'Wysłany', cls: 'bg-emerald-100 text-emerald-700' },
-    blad:     { label: 'Błąd', cls: 'bg-red-100 text-red-700' },
-    nieznany: { label: 'Nieznany', cls: 'bg-slate-200 text-slate-600' },
-  };
+  const PUSH_MINUTY = [15, 30, 45, 60, 90, 120, 180, 1440];
+  const minutyTekst = (m) => m >= 1440 ? 'dzień wcześniej' : m >= 60 ? `${m / 60} h przed` : `${m} min przed`;
 
   function toast(msg, type = 'ok') {
     const el = document.createElement('div');
@@ -202,7 +197,7 @@
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
     : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
 
-  const LEKCJA_SELECT = '*, kursant:kursanci(id,imie,nazwisko,telefon,zgoda_sms,cena)';
+  const LEKCJA_SELECT = '*, kursant:kursanci(id,imie,nazwisko,telefon,cena)';
   const cache = new Map();
   const remember = (rows) => { (rows || []).forEach((l) => cache.set(l.id, l)); return rows || []; };
 
@@ -259,6 +254,13 @@
       if (!state.ust) return renderNotTrainer();
       state.kursanci = await db.kursanci();
       render();
+      // Telefon może po cichu zmienić adres powiadomień; zapisujemy aktualny.
+      if (!demo) push.stan().then((s) => {
+        if (!s.sub) return;
+        const j = s.sub.toJSON();
+        return sb.from('push_subskrypcje').upsert(
+          { endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, urzadzenie: nazwaUrzadzenia() }, { onConflict: 'endpoint' });
+      }).catch(() => {});
     } catch (e) {
       renderFatal('Nie udało się wczytać danych. Odśwież stronę.');
     }
@@ -378,13 +380,14 @@
     return `<span class="chip ${s.cls}">${s.label}</span>`;
   }
 
-  function smsChip(l) {
-    const k = l.kursant || {};
-    if (l.sms_klient_wyslany_at) return `<span class="chip bg-emerald-50 text-emerald-700">${icon('check-check', 'w-3 h-3')} SMS wysłany</span>`;
+  // Znaczek przypomnienia: kiedy przyjdzie powiadomienie o tej lekcji.
+  function pushChip(l) {
     if (l.status !== 'zaplanowana' || new Date(l.start) < new Date()) return '';
-    if (!k.zgoda_sms || !k.telefon) return `<span class="chip bg-slate-100 text-slate-500">${icon('message-circle-off', 'w-3 h-3')} bez SMS</span>`;
-    if (!state.ust.sms_klient_wlaczone) return `<span class="chip bg-slate-100 text-slate-500">${icon('message-circle-off', 'w-3 h-3')} SMS wyłączone</span>`;
-    return `<span class="chip bg-sky-50 text-sky-600">${icon('clock', 'w-3 h-3')} SMS zaplanowany</span>`;
+    if (l.push_wyslany_at) return `<span class="chip bg-emerald-50 text-emerald-700">${icon('bell-ring', 'w-3 h-3')} przypomniano</span>`;
+    if (!state.ust.push_wlaczone) return '';
+    const kiedy = new Date(new Date(l.start).getTime() - state.ust.push_minut_przed * 60000);
+    const tekst = sameDay(kiedy, l.start) ? fmt.time(kiedy) : `${fmt.dayShort(kiedy)} ${fmt.time(kiedy)}`;
+    return `<span class="chip bg-sky-50 text-sky-600">${icon('bell', 'w-3 h-3')} ${esc(tekst)}</span>`;
   }
 
   function paidChip(l) {
@@ -410,7 +413,7 @@
             ${showDate ? `<div class="text-xs font-extrabold uppercase text-coral">${esc(fmt.dayShort(l.start))}</div>` : ''}
             <button data-action="edit-lesson" data-id="${l.id}" class="block w-full text-left font-display text-lg font-bold text-slate-800 truncate hover:text-sky-600">${esc(fullName(k))}</button>
             <div class="text-sm text-slate-500 truncate flex items-center gap-1">${icon('map-pin', 'w-3.5 h-3.5 shrink-0')} ${esc(miejsceLekcji(l))}</div>
-            <div class="mt-2 flex flex-wrap gap-1.5">${statusChip(l)}${paidChip(l)}${smsChip(l)}</div>
+            <div class="mt-2 flex flex-wrap gap-1.5">${statusChip(l)}${paidChip(l)}${pushChip(l)}</div>
           </div>
           ${k.telefon ? `<a href="tel:${esc(k.telefon)}" aria-label="Zadzwoń" class="shrink-0 w-11 h-11 rounded-full bg-mint/15 text-mint-dark flex items-center justify-center">${icon('phone', 'w-5 h-5')}</a>` : ''}
         </div>
@@ -447,11 +450,12 @@
   async function viewDzis() {
     const now = new Date();
     const today = startOfDay(now);
-    const [dwaDni, zaleglosci, nieoplacone, miesiac] = await Promise.all([
+    const [dwaDni, zaleglosci, nieoplacone, miesiac, pushTu] = await Promise.all([
       db.lekcjeMiedzy(today, addDays(today, 2)),
       q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'zaplanowana').lt('start', today.toISOString()).order('start')).then(remember),
       q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'odbyta').eq('oplacona', false).order('start')).then(remember),
       q(sb.from('lekcje').select('cena,status').eq('status', 'odbyta').gte('start', startOfMonth(now).toISOString()).lt('start', startOfMonth(addDays(startOfMonth(now), 32)).toISOString())),
+      push.stan().catch(() => null),
     ]);
     const dzis = dwaDni.filter((l) => sameDay(l.start, now));
     const jutro = dwaDni.filter((l) => !sameDay(l.start, now));
@@ -477,6 +481,14 @@
           <p class="font-bold text-slate-500">${esc(capital(fmt.dayLong(now)))}</p>
         </div>
       </header>
+
+      ${pushTu && pushTu.kod !== 'wlaczone' && state.ust.push_wlaczone ? `
+        <button data-action="tab" data-tab="ustawienia" class="mt-5 w-full text-left flex items-center gap-3 rounded-3xl bg-white p-4 card-shadow ring-4 ring-coral/30">
+          <span class="w-12 h-12 rounded-2xl bg-coral text-white flex items-center justify-center shrink-0">${icon('bell-plus', 'w-6 h-6')}</span>
+          <span class="flex-1"><span class="block font-display text-lg font-bold text-slate-800">Włącz przypomnienia o treningach</span>
+          <span class="block text-sm font-semibold text-slate-500">Na tym urządzeniu powiadomienia są wyłączone. Kliknij, żeby je włączyć.</span></span>
+          ${icon('chevron-right', 'w-5 h-5 text-slate-300')}
+        </button>` : ''}
 
       <div class="mt-5 grid grid-cols-2 gap-3">
         <div class="rounded-3xl bg-gradient-to-br from-mint to-sky-600 text-white p-4 card-shadow">
@@ -548,7 +560,6 @@
           <span class="block font-display text-lg font-bold text-slate-800 truncate">${esc(fullName(k))}</span>
           <span class="block text-sm text-slate-500 truncate">${esc(k.telefon || 'brak telefonu')}${k.poziom ? ' · ' + esc(k.poziom) : ''}</span>
         </span>
-        ${k.zgoda_sms && k.telefon ? `<span class="text-mint-dark" title="Przypomnienia SMS włączone">${icon('message-circle', 'w-5 h-5')}</span>` : ''}
         ${icon('chevron-right', 'w-5 h-5 text-slate-300')}
       </button>`;
   }
@@ -597,7 +608,6 @@
             <h1 class="font-display text-2xl font-extrabold text-slate-800 leading-tight">${esc(fullName(k))}</h1>
             <div class="mt-1 flex flex-wrap gap-1.5">
               ${k.poziom ? `<span class="chip bg-sky-100 text-sky-700">${esc(k.poziom)}</span>` : ''}
-              ${k.zgoda_sms && k.telefon ? `<span class="chip bg-emerald-50 text-emerald-700">${icon('message-circle', 'w-3 h-3')} SMS włączone</span>` : `<span class="chip bg-slate-100 text-slate-500">${icon('message-circle-off', 'w-3 h-3')} bez SMS</span>`}
               ${k.cena != null ? `<span class="chip bg-sunny/15 text-sunny-dark">${esc(fmt.money(k.cena))} / lekcja</span>` : ''}
               ${k.aktywny ? '' : '<span class="chip bg-slate-200 text-slate-600">Archiwum</span>'}
             </div>
@@ -627,139 +637,243 @@
       <div class="space-y-2">${przeszle.length ? przeszle.map((l) => lessonRow(l, { showDate: true })).join('') : empty('Tu pojawią się odbyte lekcje z notatkami.')}</div>`;
   }
 
+  // --- Powiadomienia (Web Push) ----------------------------------------
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const unb64u = (s) => {
+    const b = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (s.length % 4)) % 4));
+    return Uint8Array.from(b, (c) => c.charCodeAt(0));
+  };
+  const nazwaUrzadzenia = () => {
+    const ua = navigator.userAgent;
+    const sprzet = /iPhone/.test(ua) ? 'iPhone' : (/iPad/.test(ua) || isIOS) ? 'iPad' : /Android/.test(ua) ? 'Android'
+      : /Mac/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Komputer';
+    const przegl = /Edg\//.test(ua) ? 'Edge' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) && !/CriOS/.test(ua) ? 'Chrome' : 'Safari';
+    return `${sprzet} · ${przegl}${standalone ? ' (aplikacja)' : ''}`;
+  };
+
+  // Treść jak w powiadomieniu z serwera (supabase/setup.sql → push_do_wyslania).
+  function trescPowiadomienia(l) {
+    const min = state.ust.push_minut_przed;
+    const godz = fmt.time(l.start);
+    const k = l.kursant || {};
+    const kiedy = min < 90 ? `Za ${min} min` : sameDay(l.start, new Date(new Date(l.start).getTime() - min * 60000)) ? `Dziś o ${godz}` : `Jutro o ${godz}`;
+    return {
+      title: `🐬 ${kiedy}: ${fullName(k)}`,
+      body: [godz, `${l.czas_min} min`, miejsceLekcji(l), k.telefon ? `tel. ${k.telefon}` : ''].filter(Boolean).join(' · '),
+    };
+  }
+
+  const push = {
+    wspierane: () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window,
+
+    async subskrypcja() {
+      if (!push.wspierane()) return null;
+      const reg = await navigator.serviceWorker.getRegistration();
+      return reg ? reg.pushManager.getSubscription() : null;
+    },
+
+    // wlaczone | wylaczone | zablokowane | ios-ekran | brak
+    async stan() {
+      if (demo) return { kod: state.demoPush ? 'wlaczone' : 'wylaczone' };
+      if (!push.wspierane()) return { kod: isIOS && !standalone ? 'ios-ekran' : 'brak' };
+      if (Notification.permission === 'denied') return { kod: 'zablokowane' };
+      const sub = await push.subskrypcja();
+      return { kod: sub && Notification.permission === 'granted' ? 'wlaczone' : 'wylaczone', sub };
+    },
+
+    async wlacz() {
+      // Zgoda musi paść od razu po kliknięciu (wymóg iOS), dlatego jest na początku.
+      const perm = 'Notification' in window ? await Notification.requestPermission() : 'default';
+      if (demo) {
+        state.demoPush = true;
+        await q(sb.from('push_subskrypcje').upsert({ endpoint: 'demo-' + nazwaUrzadzenia(), p256dh: '-', auth: '-', urzadzenie: nazwaUrzadzenia() }, { onConflict: 'endpoint' }));
+        return;
+      }
+      if (perm !== 'granted') {
+        throw new Error(perm === 'denied'
+          ? 'Powiadomienia są zablokowane. Włącz je w ustawieniach telefonu.'
+          : 'Nie udzielono zgody na powiadomienia.');
+      }
+      let key = await q(sb.rpc('push_klucz_publiczny'));
+      if (!key) {
+        const { data, error } = await sb.functions.invoke('powiadomienia', { body: { akcja: 'klucz' } });
+        if (error || !data?.publicKey) throw new Error('Funkcja „powiadomienia” nie odpowiada. Sprawdź krok 4 w instrukcji.');
+        key = data.publicKey;
+      }
+      const reg = await navigator.serviceWorker.register('sw.js');
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: unb64u(key) });
+      const j = sub.toJSON();
+      await q(sb.from('push_subskrypcje').upsert(
+        { endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, urzadzenie: nazwaUrzadzenia() },
+        { onConflict: 'endpoint' }));
+    },
+
+    async wylacz() {
+      if (demo) {
+        state.demoPush = false;
+        await q(sb.from('push_subskrypcje').delete().eq('endpoint', 'demo-' + nazwaUrzadzenia()));
+        return;
+      }
+      const sub = await push.subskrypcja();
+      if (sub) {
+        await q(sb.from('push_subskrypcje').delete().eq('endpoint', sub.endpoint));
+        await sub.unsubscribe();
+      }
+    },
+
+    async test() {
+      if (demo) {
+        const p = { title: '🐬 Powiadomienia działają!', body: 'Tak będą wyglądać przypomnienia o treningach.' };
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(p.title, { body: p.body, icon: '../assets/favicon.png' });
+          return 'Wysłano przykładowe powiadomienie.';
+        }
+        return 'W wersji demo powiadomienia z serwera nie przychodzą. Podgląd jest poniżej.';
+      }
+      const { data, error } = await sb.functions.invoke('powiadomienia', { body: { akcja: 'test' } });
+      if (error) throw new Error('Funkcja „powiadomienia” nie odpowiada. Sprawdź krok 4 w instrukcji.');
+      if (!data.urzadzenia) return 'Brak urządzeń z włączonymi powiadomieniami.';
+      return data.wyslane === data.urzadzenia
+        ? `Wysłano na ${data.wyslane} ${data.wyslane === 1 ? 'urządzenie' : 'urządzenia'} ✓`
+        : `Dotarło na ${data.wyslane} z ${data.urzadzenia} urządzeń. Szczegóły na liście urządzeń.`;
+    },
+  };
+
   // --- Ustawienia -----------------------------------------------------
-  const PRZYKLAD = { imie: 'Ania', data: 'wtorek 12.11', godzina: '17:00' };
-  const bezPolskich = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l').replace(/Ł/g, 'L');
-  const podglad = (szablon, miejsce) => szablon
-    .replaceAll('{imie}', PRZYKLAD.imie).replaceAll('{data}', PRZYKLAD.data)
-    .replaceAll('{godzina}', PRZYKLAD.godzina).replaceAll('{miejsce}', miejsce || 'basen');
-  const ileSms = (len) => len <= 160 ? 1 : Math.ceil(len / 153);
+  function pushStanHtml(kod) {
+    const box = (cls, html) => `<div class="rounded-2xl ${cls} p-3.5">${html}</div>`;
+    switch (kod) {
+      case 'wlaczone':
+        return box('bg-emerald-50', `
+          <div class="font-bold text-emerald-700 flex items-center gap-2">${icon('bell-ring', 'w-5 h-5')} Na tym urządzeniu włączone</div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button type="button" data-action="push-test" class="btn btn-sky py-2 text-sm">${icon('send')} Wyślij testowe</button>
+            <button type="button" data-action="push-off" class="btn btn-ghost py-2 text-sm">${icon('bell-off')} Wyłącz tutaj</button>
+          </div>`);
+      case 'wylaczone':
+        return box('bg-sunny/10', `
+          <p class="font-bold text-slate-700">Na tym urządzeniu powiadomienia są wyłączone.</p>
+          <button type="button" data-action="push-on" class="btn btn-primary w-full mt-3">${icon('bell-plus', 'w-5 h-5')} Włącz powiadomienia</button>`);
+      case 'zablokowane':
+        return box('bg-red-50', `
+          <p class="font-bold text-red-700">Powiadomienia są zablokowane.</p>
+          <p class="mt-1 text-sm text-slate-600">iPhone: <strong>Ustawienia → Powiadomienia → Delfinada → Pozwalaj na powiadomienia</strong>. Potem wróć tutaj.</p>`);
+      case 'ios-ekran':
+        return box('bg-sky-50', `
+          <p class="font-bold text-sky-700">Najpierw dodaj panel do ekranu początkowego</p>
+          <ol class="mt-2 space-y-1.5 text-sm text-slate-600 list-decimal pl-5">
+            <li>Otwórz tę stronę w <strong>Safari</strong>.</li>
+            <li>Stuknij <strong>Udostępnij</strong> ${icon('share', 'w-4 h-4 inline')} na dole ekranu.</li>
+            <li>Wybierz <strong>„Do ekranu początkowego”</strong> → Dodaj.</li>
+            <li>Otwórz <strong>Delfinadę z nowej ikony</strong>, wejdź w Ustawienia i włącz powiadomienia.</li>
+          </ol>
+          <p class="mt-2 text-xs font-semibold text-slate-500">Wymaga iOS 16.4 lub nowszego. Tak działa Apple: strona może wysyłać powiadomienia tylko z ikony na ekranie.</p>`);
+      default:
+        return box('bg-slate-100', `<p class="font-bold text-slate-600">Ta przeglądarka nie obsługuje powiadomień. Spróbuj w Safari na iPhonie (z ikony na ekranie) albo w Chrome.</p>`);
+    }
+  }
 
   async function viewUstawienia() {
     const u = state.ust;
-    try { await sb.rpc('odswiez_statusy_sms'); } catch (e) { /* bez znaczenia dla widoku */ }
-    const log = await q(sb.from('sms_log').select('*').order('created_at', { ascending: false }).limit(30));
+    const teraz = new Date();
+    const [stan, urzadzenia, nastepne] = await Promise.all([
+      push.stan().catch(() => ({ kod: 'brak' })),
+      q(sb.from('push_subskrypcje').select('id,endpoint,urzadzenie,created_at,ostatnio_ok_at,ostatni_blad').order('created_at')),
+      q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'zaplanowana').gte('start', teraz.toISOString()).order('start').limit(1)).then(remember),
+    ]);
+    const przyklad = trescPowiadomienia(nastepne[0] || {
+      start: new Date(teraz.getTime() + 86400000).setHours(18, 0, 0, 0), czas_min: u.domyslny_czas_min,
+      kursant: { imie: 'Marta', nazwisko: 'Wiśniewska', telefon: '601 234 567' }, miejsce: null,
+    });
+    const minuty = PUSH_MINUTY.includes(u.push_minut_przed) ? PUSH_MINUTY : [...PUSH_MINUTY, u.push_minut_przed].sort((a, b) => a - b);
     const opt = (vals, cur, suffix) => vals.map((v) => `<option value="${v}" ${Number(cur) === v ? 'selected' : ''}>${v} ${suffix}</option>`).join('');
-    const godzinyOpcje = [2, 3, 6, 12, 24, 48];
-    const minutyOpcje = [30, 60, 90, 120, 180];
-    if (!godzinyOpcje.includes(u.sms_klient_godzin_przed)) godzinyOpcje.push(u.sms_klient_godzin_przed);
-    if (!minutyOpcje.includes(u.sms_trener_minut_przed)) minutyOpcje.push(u.sms_trener_minut_przed);
+    const mojEndpoint = stan.sub?.endpoint || (demo ? 'demo-' + nazwaUrzadzenia() : '');
 
     return `
       <h1 class="font-display text-3xl font-extrabold text-sky-700">Ustawienia</h1>
+
+      <section class="mt-4 bg-white rounded-3xl card-shadow p-5 space-y-4">
+        <h2 class="font-display text-xl font-bold text-sky-700 flex items-center gap-2">${icon('bell', 'w-5 h-5')} Przypomnienia o treningach</h2>
+        ${pushStanHtml(stan.kod)}
+
+        <div>
+          <div class="label">Tak wygląda przypomnienie</div>
+          <div class="rounded-2xl bg-slate-800/90 text-white p-3 flex gap-3 items-start shadow-lg">
+            <img src="../assets/favicon.png" alt="" class="w-9 h-9 rounded-xl bg-white p-0.5 shrink-0" />
+            <div class="min-w-0 flex-1">
+              <div class="flex justify-between text-[11px] font-bold opacity-60"><span>DELFINADA</span><span>teraz</span></div>
+              <div class="font-bold text-sm leading-tight">${esc(przyklad.title)}</div>
+              <div class="text-sm opacity-90 leading-tight">${esc(przyklad.body)}</div>
+            </div>
+          </div>
+        </div>
+
+        ${urzadzenia.length ? `
+          <div>
+            <div class="label">Urządzenia z powiadomieniami</div>
+            <div class="space-y-2">
+              ${urzadzenia.map((d) => `
+                <div class="flex items-center gap-3 rounded-2xl bg-sky-50 p-3">
+                  ${icon(/iPhone|Android/.test(d.urzadzenie || '') ? 'smartphone' : 'monitor', 'w-5 h-5 text-sky-600 shrink-0')}
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold truncate">${esc(d.urzadzenie || 'Urządzenie')}${d.endpoint === mojEndpoint ? ' <span class="chip bg-white text-sky-600">to urządzenie</span>' : ''}</div>
+                    <div class="text-xs font-semibold ${d.ostatni_blad ? 'text-red-600' : 'text-slate-500'} truncate">${d.ostatni_blad ? 'Błąd: ' + esc(d.ostatni_blad) : d.ostatnio_ok_at ? 'Ostatnio dostarczone ' + esc(fmt.dateTime(d.ostatnio_ok_at)) : 'Dodane ' + esc(fmt.dateTime(d.created_at))}</div>
+                  </div>
+                  <button type="button" data-action="push-del" data-id="${d.id}" aria-label="Usuń urządzenie" class="w-9 h-9 rounded-full bg-white text-slate-400 hover:text-red-600 flex items-center justify-center shrink-0">${icon('x', 'w-4 h-4')}</button>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}
+      </section>
+
       <form id="ust-form" class="mt-4 space-y-4">
         <section class="bg-white rounded-3xl card-shadow p-5 space-y-4">
-          <h2 class="font-display text-xl font-bold text-sky-700">Twoje dane</h2>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="label" for="u-imie">Imię</label><input id="u-imie" name="imie" class="field" value="${esc(u.imie)}" /></div>
-            <div><label class="label" for="u-tel">Twój telefon</label><input id="u-tel" name="telefon" type="tel" class="field" value="${esc(u.telefon)}" placeholder="+48 ..." /></div>
+          <label class="flex items-center justify-between gap-3">
+            <span class="font-bold text-slate-700">Przypominaj o treningach</span>
+            <input type="checkbox" name="push_wlaczone" class="toggle" ${u.push_wlaczone ? 'checked' : ''} />
+          </label>
+          <div><label class="label" for="u-push">Kiedy</label>
+            <select id="u-push" name="push_minut_przed" class="field">${minuty.map((m) => `<option value="${m}" ${m === u.push_minut_przed ? 'selected' : ''}>${minutyTekst(m)}</option>`).join('')}</select>
           </div>
-          <div><label class="label" for="u-miejsce">Domyślne miejsce zajęć</label><input id="u-miejsce" name="domyslne_miejsce" class="field" value="${esc(u.domyslne_miejsce)}" placeholder="np. Basen Kapry, Pruszków" /></div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="label" for="u-cena">Domyślna cena (zł)</label><input id="u-cena" name="domyslna_cena" inputmode="decimal" class="field" value="${esc(u.domyslna_cena ?? '')}" /></div>
-            <div><label class="label" for="u-czas">Domyślny czas</label><select id="u-czas" name="domyslny_czas_min" class="field">${opt([30, 45, 60, 75, 90, 120], u.domyslny_czas_min, 'min')}</select></div>
-          </div>
+          <p class="text-xs font-semibold text-slate-500">Przypomnienie przychodzi przed każdą zaplanowaną lekcją. Dla odwołanych nie przychodzi, a po zmianie godziny przyjdzie o nowej porze.</p>
         </section>
 
         <section class="bg-white rounded-3xl card-shadow p-5 space-y-4">
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="font-display text-xl font-bold text-sky-700">SMS do kursantów</h2>
-            <input type="checkbox" name="sms_klient_wlaczone" class="toggle" ${u.sms_klient_wlaczone ? 'checked' : ''} aria-label="Włącz SMS do kursantów" />
+          <h2 class="font-display text-xl font-bold text-sky-700">Domyślne wartości lekcji</h2>
+          <div><label class="label" for="u-imie">Twoje imię</label><input id="u-imie" name="imie" class="field" value="${esc(u.imie)}" /></div>
+          <div><label class="label" for="u-miejsce">Miejsce zajęć</label><input id="u-miejsce" name="domyslne_miejsce" class="field" value="${esc(u.domyslne_miejsce)}" placeholder="np. Basen Kapry, Pruszków" /></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="label" for="u-cena">Cena (zł)</label><input id="u-cena" name="domyslna_cena" inputmode="decimal" class="field" value="${esc(u.domyslna_cena ?? '')}" /></div>
+            <div><label class="label" for="u-czas">Czas</label><select id="u-czas" name="domyslny_czas_min" class="field">${opt([30, 45, 60, 75, 90, 120], u.domyslny_czas_min, 'min')}</select></div>
           </div>
-          <div><label class="label" for="u-godz">Wyślij przed zajęciami</label><select id="u-godz" name="sms_klient_godzin_przed" class="field">${opt(godzinyOpcje.sort((a, b) => a - b), u.sms_klient_godzin_przed, 'h')}</select></div>
-          <div>
-            <label class="label" for="u-szablon">Treść</label>
-            <textarea id="u-szablon" name="sms_klient_szablon" rows="4" class="field">${esc(u.sms_klient_szablon)}</textarea>
-            <p class="mt-1 text-xs font-semibold text-slate-500">Wstawki: <code>{imie}</code> <code>{data}</code> <code>{godzina}</code> <code>{miejsce}</code></p>
-          </div>
-          <div class="rounded-2xl bg-sky-50 p-3">
-            <div class="label">Podgląd (tak dotrze do kursanta)</div>
-            <p id="u-podglad" class="text-sm font-semibold text-slate-700"></p>
-            <p id="u-dlugosc" class="mt-1 text-xs font-bold"></p>
-          </div>
-          <p class="text-xs font-semibold text-slate-500">SMS-y do kursantów wychodzą tylko między 8:00 a 21:00 i tylko do osób z zaznaczoną zgodą na SMS.</p>
         </section>
 
-        <section class="bg-white rounded-3xl card-shadow p-5 space-y-4">
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="font-display text-xl font-bold text-sky-700">Przypomnienie dla Ciebie</h2>
-            <input type="checkbox" name="sms_trener_wlaczone" class="toggle" ${u.sms_trener_wlaczone ? 'checked' : ''} aria-label="Włącz przypomnienia dla trenera" />
-          </div>
-          <div><label class="label" for="u-min">SMS na Twój telefon przed każdą lekcją</label><select id="u-min" name="sms_trener_minut_przed" class="field">${opt(minutyOpcje.sort((a, b) => a - b), u.sms_trener_minut_przed, 'min')}</select></div>
-        </section>
-
-        <section class="bg-white rounded-3xl card-shadow p-5 space-y-3">
-          <h2 class="font-display text-xl font-bold text-sky-700">Nadawca SMS</h2>
-          <input name="nadawca" maxlength="11" class="field" value="${esc(u.nadawca)}" placeholder="puste = domyślny nadawca SMSAPI" />
-          <p class="text-xs font-semibold text-slate-500">Nazwę (np. DELFINADA) trzeba najpierw zarejestrować w panelu SMSAPI. Na SMS z nazwą kursant nie może odpisać, dlatego w treści jest Twój numer.</p>
-        </section>
-
-        <div class="flex flex-wrap gap-2">
-          <button type="submit" class="btn btn-primary flex-1">${icon('save', 'w-5 h-5')} Zapisz ustawienia</button>
-          <button type="button" data-action="test-sms" class="btn btn-ghost">${icon('send')} Testowy SMS do mnie</button>
-        </div>
+        <button type="submit" class="btn btn-primary w-full">${icon('save', 'w-5 h-5')} Zapisz ustawienia</button>
       </form>
-
-      ${sectionTitle('Historia SMS', `<button data-action="refresh" class="chip bg-white text-sky-600 py-1">${icon('refresh-cw', 'w-3 h-3')} odśwież</button>`)}
-      <div class="space-y-2">
-        ${log.length ? log.map((s) => {
-          const st = SMS_STATUS[s.status] || SMS_STATUS.nieznany;
-          return `
-            <div class="rounded-2xl bg-white p-3 card-shadow-sm">
-              <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
-                <span>${esc(fmt.dateTime(s.created_at))}</span><span>·</span><span>${esc(SMS_TYP[s.typ] || s.typ)}</span><span>·</span><span>${esc(s.numer || '')}</span>
-                <span class="chip ${st.cls} ml-auto">${st.label}</span>
-              </div>
-              <p class="mt-1 text-sm">${esc(s.tresc)}</p>
-              ${s.status === 'blad' && s.odpowiedz ? `<p class="mt-1 text-xs font-bold text-red-600 break-all">${esc(s.odpowiedz)}</p>` : ''}
-            </div>`;
-        }).join('') : empty('Jeszcze nie wysłano żadnego SMS-a.')}
-      </div>
 
       ${sectionTitle('Konto')}
       <div class="bg-white rounded-3xl card-shadow p-5 flex items-center justify-between gap-3">
         <div class="min-w-0"><div class="label">Zalogowano jako</div><div class="font-bold truncate">${esc(state.user.email)}</div></div>
         <button data-action="logout" class="btn btn-ghost shrink-0">${icon('log-out')} Wyloguj</button>
-      </div>
-      <p class="mt-6 text-center text-xs font-semibold text-slate-400">Na telefonie: menu przeglądarki → „Dodaj do ekranu głównego”, żeby mieć panel jak aplikację.</p>`;
+      </div>`;
   }
 
   function bindUstawienia() {
     const form = $('#ust-form');
-    const upd = () => {
-      const tekst = bezPolskich(podglad(form.sms_klient_szablon.value, form.domyslne_miejsce.value.trim()));
-      const n = ileSms(tekst.length);
-      $('#u-podglad').textContent = tekst;
-      const d = $('#u-dlugosc');
-      d.textContent = `${tekst.length} znaków · ${n} ${n === 1 ? 'SMS' : 'SMS-y (droższa wiadomość)'}`;
-      d.className = `mt-1 text-xs font-bold ${n === 1 ? 'text-emerald-600' : 'text-coral'}`;
-    };
-    form.sms_klient_szablon.addEventListener('input', upd);
-    form.domyslne_miejsce.addEventListener('input', upd);
-    upd();
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const f = new FormData(form);
-      const tel = String(f.get('telefon') || '').trim();
-      if (tel && !telOk(tel)) return toast('Sprawdź swój numer telefonu.', 'error');
-      if (f.get('sms_trener_wlaczone') && !tel) return toast('Wpisz swój telefon, żeby dostawać przypomnienia.', 'error');
-      const szablon = String(f.get('sms_klient_szablon') || '').trim();
-      if (!szablon) return toast('Treść SMS-a nie może być pusta.', 'error');
       const cena = num(f.get('domyslna_cena'));
       if (cena != null && (isNaN(cena) || cena < 0)) return toast('Sprawdź domyślną cenę.', 'error');
       const dane = {
         imie: String(f.get('imie') || '').trim() || 'Ada',
-        telefon: tel || null,
         domyslne_miejsce: String(f.get('domyslne_miejsce') || '').trim() || null,
         domyslna_cena: cena,
         domyslny_czas_min: Number(f.get('domyslny_czas_min')),
-        sms_klient_wlaczone: !!f.get('sms_klient_wlaczone'),
-        sms_klient_godzin_przed: Number(f.get('sms_klient_godzin_przed')),
-        sms_klient_szablon: szablon,
-        sms_trener_wlaczone: !!f.get('sms_trener_wlaczone'),
-        sms_trener_minut_przed: Number(f.get('sms_trener_minut_przed')),
-        nadawca: String(f.get('nadawca') || '').trim() || null,
+        push_wlaczone: !!f.get('push_wlaczone'),
+        push_minut_przed: Number(f.get('push_minut_przed')),
         updated_at: new Date().toISOString(),
       };
       const btn = form.querySelector('[type=submit]');
@@ -767,7 +881,8 @@
       try {
         state.ust = await q(sb.from('ustawienia').update(dane).eq('trener_id', state.user.id).select().single());
         toast('Zapisano ustawienia ✓');
-      } finally { btn.disabled = false; }
+        render();
+      } catch (err) { showErr(err); btn.disabled = false; }
     });
   }
 
@@ -819,9 +934,6 @@
     const czas = l ? l.czas_min : state.ust.domyslny_czas_min;
     const czasy = [30, 45, 60, 75, 90, 120];
     if (!czasy.includes(czas)) czasy.push(czas);
-    const smsInfo = l ? (l.sms_klient_wyslany_at
-      ? `Przypomnienie wysłane ${esc(fmt.dateTime(l.sms_klient_wyslany_at))}.`
-      : (l.kursant?.zgoda_sms && l.kursant?.telefon ? 'Przypomnienie wyjdzie automatycznie.' : 'Kursant nie ma zgody na SMS lub numeru telefonu.')) : '';
 
     const body = openModal(`
       ${modalHeader(isNew ? 'Nowa lekcja' : 'Lekcja')}
@@ -871,12 +983,8 @@
           <textarea id="l-notatka" name="notatka" rows="3" class="field" placeholder="Co ćwiczyliście, postępy, na co zwrócić uwagę następnym razem">${esc(l?.notatka || '')}</textarea>
         </div>
 
-        ${!isNew ? `
-          <div class="rounded-2xl bg-mint/10 p-3 text-sm">
-            <div class="font-bold text-mint-dark flex items-center gap-1.5">${icon('message-circle', 'w-4 h-4')} SMS do kursanta</div>
-            <p class="mt-1 text-slate-600">${smsInfo}</p>
-            ${l.kursant?.zgoda_sms && l.kursant?.telefon ? `<button type="button" data-action="send-now" data-id="${l.id}" class="btn btn-ghost mt-2 py-1.5 text-sm">${icon('send')} Wyślij przypomnienie teraz</button>` : ''}
-          </div>` : ''}
+        ${!isNew && l.push_wyslany_at ? `
+          <p class="rounded-2xl bg-mint/10 p-3 text-sm font-semibold text-mint-dark flex items-center gap-1.5">${icon('bell-ring', 'w-4 h-4')} Przypomnienie wysłane ${esc(fmt.dateTime(l.push_wyslany_at))}</p>` : ''}
 
         <div class="flex gap-2 pt-1">
           <button type="submit" class="btn btn-primary flex-1">${icon('check', 'w-5 h-5')} Zapisz</button>
@@ -999,10 +1107,6 @@
           <div><label class="label" for="k-tel">Telefon</label><input id="k-tel" name="telefon" type="tel" class="field" value="${esc(k?.telefon)}" placeholder="600 000 000" /></div>
           <div><label class="label" for="k-cena">Cena lekcji (zł)</label><input id="k-cena" name="cena" inputmode="decimal" class="field" value="${esc(k?.cena ?? '')}" placeholder="${esc(state.ust.domyslna_cena ?? '')}" /></div>
         </div>
-        <label class="flex items-start justify-between gap-3 rounded-2xl bg-mint/10 p-3">
-          <span><span class="block font-bold text-mint-dark">Zgoda na przypomnienia SMS</span><span class="block text-xs font-semibold text-slate-500">Zaznacz tylko, jeśli kursant się zgodził.</span></span>
-          <input type="checkbox" name="zgoda_sms" class="toggle mt-1" ${k?.zgoda_sms ? 'checked' : ''} />
-        </label>
         <div><label class="label" for="k-email">E-mail</label><input id="k-email" name="email" type="email" class="field" value="${esc(k?.email)}" /></div>
         <div><label class="label" for="k-poziom">Poziom</label>
           <select id="k-poziom" name="poziom" class="field"><option value="">—</option>${POZIOMY.map((p) => `<option ${k?.poziom === p ? 'selected' : ''}>${p}</option>`).join('')}</select>
@@ -1026,7 +1130,6 @@
       const f = new FormData(form);
       const tel = String(f.get('telefon') || '').trim();
       if (tel && !telOk(tel)) return toast('Sprawdź numer telefonu.', 'error');
-      if (f.get('zgoda_sms') && !tel) return toast('Do przypomnień SMS potrzebny jest numer telefonu.', 'error');
       const cena = num(f.get('cena'));
       if (cena != null && (isNaN(cena) || cena < 0)) return toast('Sprawdź cenę.', 'error');
       const dane = {
@@ -1034,7 +1137,6 @@
         nazwisko: String(f.get('nazwisko') || '').trim() || null,
         telefon: tel || null,
         email: String(f.get('email') || '').trim() || null,
-        zgoda_sms: !!f.get('zgoda_sms'),
         cena,
         poziom: f.get('poziom') || null,
         cel: String(f.get('cel') || '').trim() || null,
@@ -1135,24 +1237,23 @@
       }
       case 'show-unpaid':
         return showUnpaid();
-      case 'send-now':
+      case 'push-on':
+      case 'push-off':
+      case 'push-test':
+      case 'push-del':
         el.disabled = true;
         try {
-          await q(sb.rpc('wyslij_przypomnienie_teraz', { p_lekcja: id }));
-          toast('Przypomnienie wysłane do bramki ✓');
-          closeModal();
-          render();
-        } catch (err) { showErr(err); el.disabled = false; }
-        return;
-      case 'test-sms':
-        el.disabled = true;
-        try {
-          await q(sb.rpc('wyslij_test_sms'));
-          toast('Wysłano. Status pojawi się w historii za kilka sekund.');
-          setTimeout(() => { if (state.tab === 'ustawienia') render(); }, 5000);
+          if (action === 'push-on') { await push.wlacz(); toast('Powiadomienia włączone ✓'); }
+          if (action === 'push-off') { await push.wylacz(); toast('Wyłączono na tym urządzeniu'); }
+          if (action === 'push-test') toast(await push.test());
+          if (action === 'push-del') {
+            await q(sb.from('push_subskrypcje').delete().eq('id', id));
+            if (demo) state.demoPush = false;
+            toast('Usunięto urządzenie');
+          }
         } catch (err) { showErr(err); }
         el.disabled = false;
-        return;
+        return action === 'push-test' ? undefined : render();
       case 'refresh':
         return render();
       case 'new-kursant':
