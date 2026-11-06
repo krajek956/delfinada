@@ -1,0 +1,13 @@
+{
+  "name": "DELFINADA — Panel trenera",
+  "short_name": "Delfinada",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eafafc",
+  "theme_color": "#0e7c8b",
+  "lang": "pl",
+  "icons": [
+    { "src": "../assets/favicon.png", "sizes": "443x443", "type": "image/png" }
+  ]
+}

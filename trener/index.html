@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0e7c8b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Delfinada" />
+  <title>DELFINADA — Panel trenera</title>
+
+  <link rel="icon" type="image/png" href="../assets/favicon.png" />
+  <link rel="apple-touch-icon" href="../assets/favicon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script defer src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
+  <script src="config.js"></script>
+  <script src="demo.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    if (window.tailwind) tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            sky: { 50:'#eafafc',100:'#d2f2f6',200:'#a6e5ec',300:'#6fd2dd',400:'#33b7c7',500:'#189aad',600:'#0e7c8b',700:'#0b6270' },
+            coral: { light:'#ffb26b', DEFAULT:'#ff8826', dark:'#e5720f' },
+            sunny: { light:'#ffc98a', DEFAULT:'#ff9d40', dark:'#f07f1a' },
+            mint:  { light:'#bdeef0', DEFAULT:'#22b8c0', dark:'#0e9aa2' },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background:#eafafc; -webkit-tap-highlight-color:transparent; }
+    .bg-app {
+      background:
+        radial-gradient(70px 70px at 8% 6%, rgba(255,136,38,.18), transparent 70%),
+        radial-gradient(110px 110px at 92% 4%, rgba(34,184,192,.18), transparent 70%),
+        linear-gradient(180deg,#d2f2f6 0%,#eafafc 40%,#f7fdfe 100%);
+      min-height:100vh;
+    }
+    .card-shadow { box-shadow:0 14px 34px -18px rgba(14,124,139,.38); }
+    .card-shadow-sm { box-shadow:0 6px 18px -12px rgba(14,124,139,.45); }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    .field { width:100%; border-radius:1rem; border:2px solid #d2f2f6; background:#fff; padding:.65rem .9rem; font-weight:600; color:#334155; outline:none; }
+    .field:focus { border-color:#33b7c7; }
+    .label { display:block; font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:#0e7c8b; margin-bottom:.3rem; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; border-radius:9999px; font-weight:800; padding:.7rem 1.2rem; transition:transform .15s, background-color .15s; }
+    .btn:active { transform:scale(.97); }
+    .btn-primary { background:#ff8826; color:#fff; box-shadow:0 10px 22px -10px rgba(255,136,38,.8); }
+    .btn-primary:hover { background:#e5720f; }
+    .btn-sky { background:#0e7c8b; color:#fff; }
+    .btn-sky:hover { background:#0b6270; }
+    .btn-ghost { background:#fff; color:#0e7c8b; border:2px solid #d2f2f6; }
+    .btn-ghost:hover { border-color:#6fd2dd; }
+    .btn-danger { background:#fff; color:#dc2626; border:2px solid #fecaca; }
+    .btn[disabled] { opacity:.55; pointer-events:none; }
+    .chip { display:inline-flex; align-items:center; gap:.25rem; border-radius:9999px; padding:.15rem .6rem; font-size:.72rem; font-weight:800; }
+    .toggle { appearance:none; width:2.9rem; height:1.65rem; border-radius:9999px; background:#cbd5e1; position:relative; transition:background .2s; cursor:pointer; flex-shrink:0; }
+    .toggle::after { content:''; position:absolute; top:.2rem; left:.2rem; width:1.25rem; height:1.25rem; border-radius:9999px; background:#fff; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
+    .toggle:checked { background:#22b8c0; }
+    .toggle:checked::after { transform:translateX(1.25rem); }
+    .act { display:flex; flex-direction:column; align-items:center; gap:.15rem; border-radius:1rem; padding:.45rem .2rem; font-size:.7rem; font-weight:800; color:#64748b; background:#f1f5f9; }
+    .act.on-odbyta { background:#d1fae5; color:#047857; }
+    .act.on-nieobecnosc { background:#ffedd5; color:#c2410c; }
+    .act.on-odwolana { background:#e2e8f0; color:#334155; }
+    .act.on-oplacona { background:#d2f2f6; color:#0b6270; }
+    .fade-in { animation: fade .25s ease-out both; }
+    @keyframes fade { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    .spinner { width:2rem; height:2rem; border-radius:9999px; border:4px solid #d2f2f6; border-top-color:#22b8c0; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body class="font-sans text-slate-700">
+  <div class="bg-app">
+    <div id="app" class="mx-auto max-w-2xl px-4 pt-5 pb-32"></div>
+  </div>
+
+  <!-- dolna nawigacja -->
+  <nav id="nav" hidden class="fixed bottom-0 inset-x-0 z-30 bg-white/90 backdrop-blur border-t border-sky-100 safe-bottom">
+    <div class="mx-auto max-w-2xl grid grid-cols-4">
+      <button data-action="tab" data-tab="dzis" class="nav-btn flex flex-col items-center gap-0.5 py-2.5 text-xs font-extrabold"><i data-lucide="sun" class="w-6 h-6"></i>Dziś</button>
+      <button data-action="tab" data-tab="kalendarz" class="nav-btn flex flex-col items-center gap-0.5 py-2.5 text-xs font-extrabold"><i data-lucide="calendar-days" class="w-6 h-6"></i>Kalendarz</button>
+      <button data-action="tab" data-tab="kursanci" class="nav-btn flex flex-col items-center gap-0.5 py-2.5 text-xs font-extrabold"><i data-lucide="users" class="w-6 h-6"></i>Kursanci</button>
+      <button data-action="tab" data-tab="ustawienia" class="nav-btn flex flex-col items-center gap-0.5 py-2.5 text-xs font-extrabold"><i data-lucide="settings" class="w-6 h-6"></i>Ustawienia</button>
+    </div>
+  </nav>
+
+  <!-- przycisk dodawania lekcji -->
+  <button id="fab" hidden data-action="new-lesson" aria-label="Dodaj lekcję"
+    class="fixed z-30 right-5 bottom-24 w-16 h-16 rounded-full bg-coral text-white shadow-xl shadow-coral/40 flex items-center justify-center hover:bg-coral-dark active:scale-95 transition">
+    <i data-lucide="plus" class="w-8 h-8"></i>
+  </button>
+
+  <!-- okno modalne -->
+  <div id="modal" hidden class="fixed inset-0 z-40 flex items-end sm:items-center justify-center">
+    <div data-action="close-modal" class="absolute inset-0 bg-sky-700/40 backdrop-blur-sm"></div>
+    <div id="modal-body" class="relative w-full sm:max-w-lg max-h-[92vh] overflow-y-auto bg-white rounded-t-[2rem] sm:rounded-[2rem] p-5 pb-8 fade-in"></div>
+  </div>
+
+  <div id="toast" class="fixed z-50 top-4 inset-x-0 flex justify-center pointer-events-none"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  // =====================================================================
+  //  Pomocnicze
+  // =====================================================================
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const icon = (name, cls = 'w-4 h-4') => `<i data-lucide="${name}" class="${cls}"></i>`;
+  const refreshIcons = () => { if (window.lucide) window.lucide.createIcons(); };
+  window.addEventListener('load', refreshIcons);
+
+  const pad = (n) => String(n).padStart(2, '0');
+  const startOfDay = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+  const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const startOfWeek = (d) => { const x = startOfDay(d); return addDays(x, -((x.getDay() + 6) % 7)); };
+  const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+  const sameDay = (a, b) => startOfDay(a).getTime() === startOfDay(b).getTime();
+  const inputDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const inputTime = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const fromInputs = (date, time) => {
+    const [y, m, dd] = date.split('-').map(Number);
+    const [h, mi] = time.split(':').map(Number);
+    return new Date(y, m - 1, dd, h, mi);
+  };
+  const fmt = {
+    time: (d) => new Date(d).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }),
+    dayLong: (d) => new Date(d).toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' }),
+    dayShort: (d) => new Date(d).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric', month: '2-digit' }),
+    date: (d) => new Date(d).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' }),
+    dateTime: (d) => new Date(d).toLocaleString('pl-PL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+    money: (v) => (v == null || v === '') ? '' : Number(v).toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 2 }),
+  };
+  const fullName = (k) => [k?.imie, k?.nazwisko].filter(Boolean).join(' ') || 'Kursant';
+  const num = (v) => (v === '' || v == null) ? null : Number(String(v).replace(',', '.'));
+  const telOk = (t) => { const d = String(t || '').replace(/\D/g, '').replace(/^00/, ''); return d.length === 9 || (d.length >= 10 && d.length <= 15); };
+  const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  const STATUS = {
+    zaplanowana: { label: 'Zaplanowana', cls: 'bg-sky-100 text-sky-700', dot: 'bg-sky-400' },
+    odbyta:      { label: 'Odbyta',      cls: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
+    nieobecnosc: { label: 'Nieobecność', cls: 'bg-orange-100 text-orange-700', dot: 'bg-coral' },
+    odwolana:    { label: 'Odwołana',    cls: 'bg-slate-200 text-slate-600', dot: 'bg-slate-400' },
+  };
+  const POZIOMY = ['Początkujący', 'Średniozaawansowany', 'Zaawansowany'];
+  const PUSH_MINUTY = [15, 30, 45, 60, 90, 120, 180, 1440];
+  const minutyTekst = (m) => m >= 1440 ? 'dzień wcześniej' : m >= 60 ? `${m / 60} h przed` : `${m} min przed`;
+
+  function toast(msg, type = 'ok') {
+    const el = document.createElement('div');
+    el.className = `pointer-events-auto fade-in mx-4 rounded-2xl px-4 py-3 font-bold shadow-xl ${type === 'error' ? 'bg-red-600 text-white' : 'bg-sky-700 text-white'}`;
+    el.textContent = msg;
+    const box = $('#toast');
+    box.innerHTML = '';
+    box.appendChild(el);
+    setTimeout(() => el.remove(), type === 'error' ? 6000 : 3000);
+  }
+
+  // =====================================================================
+  //  Supabase
+  // =====================================================================
+  const cfg = window.DELFINADA_CONFIG || {};
+  const configured = cfg.supabaseUrl && cfg.supabaseAnonKey && !/TWOJ/.test(cfg.supabaseUrl + cfg.supabaseAnonKey);
+  // Tryb demo (adres z ?demo): przykładowe dane w pamięci, bez Supabase.
+  const demo = new URLSearchParams(location.search).has('demo') && !!window.DELFINADA_DEMO;
+  const sb = demo ? window.DELFINADA_DEMO.createClient()
+    : (configured && window.supabase) ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
+
+  async function q(promise) {
+    const { data, error } = await promise;
+    if (error) {
+      console.error(error);
+      toast(error.message || 'Coś poszło nie tak', 'error');
+      error.shown = true;
+      throw error;
+    }
+    return data;
+  }
+  // Błędy spoza Supabase (np. w kodzie) też mają być widoczne dla użytkownika.
+  const showErr = (err) => { if (!err?.shown) { console.error(err); toast('Coś poszło nie tak: ' + (err?.message || err), 'error'); } };
+  const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
+    : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
+
+  const LEKCJA_SELECT = '*, kursant:kursanci(id,imie,nazwisko,telefon,cena)';
+  const cache = new Map();
+  const remember = (rows) => { (rows || []).forEach((l) => cache.set(l.id, l)); return rows || []; };
+
+  const db = {
+    lekcjeMiedzy: async (from, to) => remember(await q(
+      sb.from('lekcje').select(LEKCJA_SELECT).gte('start', from.toISOString()).lt('start', to.toISOString()).order('start'))),
+    lekcja: async (id) => remember([await q(sb.from('lekcje').select(LEKCJA_SELECT).eq('id', id).single())])[0],
+    kursanci: async () => q(sb.from('kursanci').select('*').order('imie').order('nazwisko')),
+  };
+
+  // =====================================================================
+  //  Stan
+  // =====================================================================
+  const state = {
+    user: null,
+    ust: null,
+    kursanci: [],
+    tab: 'dzis',
+    kursantId: null,
+    weekStart: startOfWeek(new Date()),
+    szukaj: '',
+    afterKursant: null,
+  };
+  let renderToken = 0;
+
+  const kursant = (id) => state.kursanci.find((k) => k.id === id);
+  const miejsceLekcji = (l) => l.miejsce || state.ust?.domyslne_miejsce || 'basen';
+
+  // =====================================================================
+  //  Start i logowanie
+  // =====================================================================
+  async function boot() {
+    if (demo) {
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div class="sticky top-0 z-20 bg-sky-700 text-white text-center text-xs sm:text-sm font-bold py-1.5 px-3">🐬 Wersja demo: przykładowe dane, zmiany znikną po odświeżeniu strony</div>');
+    }
+    if (!configured && !demo) return renderNoConfig();
+    if (!sb) return renderFatal('Nie udało się załadować biblioteki Supabase. Sprawdź połączenie z internetem i odśwież stronę.');
+
+    const { data: { session } } = await sb.auth.getSession();
+    sb.auth.onAuthStateChange((event, s) => {
+      if (event === 'SIGNED_OUT') { state.user = null; renderLogin(); }
+      // setTimeout: Supabase odradza wywoływanie zapytań bezpośrednio w tym callbacku
+      if (event === 'SIGNED_IN' && !state.user && s) setTimeout(() => start(s.user), 0);
+    });
+    if (session) start(session.user); else renderLogin();
+  }
+
+  async function start(user) {
+    state.user = user;
+    showLoader();
+    try {
+      state.ust = await q(sb.from('ustawienia').select('*').eq('trener_id', user.id).maybeSingle());
+      if (!state.ust) return renderNotTrainer();
+      state.kursanci = await db.kursanci();
+      render();
+      // Telefon może po cichu zmienić adres powiadomień; zapisujemy aktualny.
+      if (!demo) push.stan().then((s) => {
+        if (!s.sub) return;
+        const j = s.sub.toJSON();
+        return sb.from('push_subskrypcje').upsert(
+          { endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, urzadzenie: nazwaUrzadzenia() }, { onConflict: 'endpoint' });
+      }).catch(() => {});
+    } catch (e) {
+      renderFatal('Nie udało się wczytać danych. Odśwież stronę.');
+    }
+  }
+
+  function chrome(visible) {
+    $('#nav').hidden = !visible;
+    $('#fab').hidden = !visible || state.tab === 'ustawienia' || (state.tab === 'kursanci' && !state.kursantId);
+    document.querySelectorAll('.nav-btn').forEach((b) => {
+      const on = b.dataset.tab === state.tab;
+      b.classList.toggle('text-coral', on);
+      b.classList.toggle('text-slate-400', !on);
+    });
+  }
+
+  function showLoader() {
+    chrome(!!state.ust);
+    $('#app').innerHTML = `<div class="flex justify-center pt-32"><div class="spinner"></div></div>`;
+  }
+
+  function logoHeader(sub = '') {
+    return `
+      <div class="text-center mb-6">
+        <img src="../assets/logo-delfinada.png" alt="DELFINADA" class="mx-auto h-24 w-auto" />
+        ${sub ? `<p class="mt-1 font-display text-xl font-bold text-sky-600">${sub}</p>` : ''}
+      </div>`;
+  }
+
+  function renderNoConfig() {
+    chrome(false);
+    $('#app').innerHTML = `
+      <div class="pt-10 fade-in">${logoHeader('Panel trenera')}
+        <div class="bg-white rounded-3xl card-shadow p-6">
+          <h1 class="font-display text-2xl font-bold text-sky-700">Brak konfiguracji</h1>
+          <p class="mt-2">Uzupełnij plik <code class="bg-sky-50 px-1.5 rounded">trener/config.js</code> adresem projektu Supabase i kluczem publicznym (Publishable / anon key). Instrukcja jest w <code class="bg-sky-50 px-1.5 rounded">trener/README.md</code>.</p>
+          <a href="?demo" class="btn btn-primary mt-4">${icon('play', 'w-5 h-5')} Zobacz wersję demo</a>
+        </div>
+      </div>`;
+    refreshIcons();
+  }
+
+  function renderFatal(msg) {
+    chrome(false);
+    $('#app').innerHTML = `<div class="pt-10">${logoHeader()}<div class="bg-white rounded-3xl card-shadow p-6 font-bold text-red-600">${esc(msg)}</div></div>`;
+  }
+
+  function renderLogin() {
+    chrome(false);
+    $('#app').innerHTML = `
+      <div class="pt-8 fade-in">${logoHeader('Panel trenera')}
+        <form id="login-form" class="bg-white rounded-3xl card-shadow p-6 space-y-4">
+          <div><label class="label" for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="username" required class="field" /></div>
+          <div><label class="label" for="haslo">Hasło</label><input id="haslo" name="haslo" type="password" autocomplete="current-password" required class="field" /></div>
+          <p id="login-err" class="text-sm font-bold text-red-600" hidden></p>
+          <button class="btn btn-primary w-full text-lg">${icon('log-in', 'w-5 h-5')} Zaloguj się</button>
+        </form>
+      </div>`;
+    refreshIcons();
+    $('#login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const btn = e.target.querySelector('button');
+      btn.disabled = true;
+      const { error } = await sb.auth.signInWithPassword({ email: f.get('email').trim(), password: f.get('haslo') });
+      btn.disabled = false;
+      if (error) {
+        const err = $('#login-err');
+        err.hidden = false;
+        err.textContent = /invalid/i.test(error.message) ? 'Nieprawidłowy e-mail lub hasło.' : error.message;
+      }
+    });
+  }
+
+  function renderNotTrainer() {
+    chrome(false);
+    $('#app').innerHTML = `
+      <div class="pt-8">${logoHeader('Panel trenera')}
+        <div class="bg-white rounded-3xl card-shadow p-6">
+          <h1 class="font-display text-2xl font-bold text-sky-700">To konto nie ma dostępu</h1>
+          <p class="mt-2">Zalogowano jako <strong>${esc(state.user.email)}</strong>, ale konto nie jest kontem trenera. Wykonaj „krok ręczny” z instrukcji (dodanie wiersza w tabeli <code>ustawienia</code>).</p>
+          <button data-action="logout" class="btn btn-ghost mt-4">${icon('log-out')} Wyloguj</button>
+        </div>
+      </div>`;
+    refreshIcons();
+  }
+
+  // =====================================================================
+  //  Widoki
+  // =====================================================================
+  async function render() {
+    const token = ++renderToken;
+    chrome(true);
+    const views = { dzis: viewDzis, kalendarz: viewKalendarz, kursanci: state.kursantId ? viewKursant : viewKursanci, ustawienia: viewUstawienia };
+    try {
+      const html = await views[state.tab]();
+      if (token !== renderToken) return;
+      $('#app').innerHTML = `<div class="fade-in">${html}</div>`;
+      refreshIcons();
+      afterRender();
+    } catch (e) {
+      console.error(e);
+      if (token === renderToken) $('#app').innerHTML = `<div class="bg-white rounded-3xl card-shadow p-6 font-bold text-red-600">Nie udało się wczytać widoku. Spróbuj ponownie.</div>`;
+    }
+  }
+
+  function afterRender() {
+    if (state.tab === 'ustawienia') bindUstawienia();
+    if (state.tab === 'kursanci' && !state.kursantId) {
+      const s = $('#szukaj');
+      if (s) s.addEventListener('input', () => { state.szukaj = s.value; filtrujKursantow(); });
+    }
+  }
+
+  // --- elementy wspólne -----------------------------------------------
+  function statusChip(l) {
+    const s = STATUS[l.status] || STATUS.zaplanowana;
+    return `<span class="chip ${s.cls}">${s.label}</span>`;
+  }
+
+  // Znaczek przypomnienia: kiedy przyjdzie powiadomienie o tej lekcji.
+  function pushChip(l) {
+    if (l.status !== 'zaplanowana' || new Date(l.start) < new Date()) return '';
+    if (l.push_wyslany_at) return `<span class="chip bg-emerald-50 text-emerald-700">${icon('bell-ring', 'w-3 h-3')} przypomniano</span>`;
+    if (!state.ust.push_wlaczone) return '';
+    const kiedy = new Date(new Date(l.start).getTime() - state.ust.push_minut_przed * 60000);
+    const tekst = sameDay(kiedy, l.start) ? fmt.time(kiedy) : `${fmt.dayShort(kiedy)} ${fmt.time(kiedy)}`;
+    return `<span class="chip bg-sky-50 text-sky-600">${icon('bell', 'w-3 h-3')} ${esc(tekst)}</span>`;
+  }
+
+  function paidChip(l) {
+    if (l.status === 'odwolana') return '';
+    if (l.oplacona) return `<span class="chip bg-sky-100 text-sky-700">${icon('wallet', 'w-3 h-3')} Opłacona</span>`;
+    if (l.status === 'odbyta') return `<span class="chip bg-sunny/20 text-sunny-dark">${icon('wallet', 'w-3 h-3')} Do zapłaty ${esc(fmt.money(l.cena))}</span>`;
+    return '';
+  }
+
+  function lessonCard(l, { showDate = false, highlight = '' } = {}) {
+    const k = l.kursant || {};
+    const act = (action, value, label, ic, on) =>
+      `<button data-action="${action}" data-id="${l.id}" data-value="${value}" class="act ${on ? 'on-' + value : ''}">${icon(ic, 'w-5 h-5')}${label}</button>`;
+    return `
+      <article class="bg-white rounded-3xl card-shadow p-4 ${l.status === 'odwolana' ? 'opacity-70' : ''} ${highlight ? 'ring-4 ring-coral/40' : ''}">
+        ${highlight ? `<div class="mb-2 chip bg-coral text-white">${esc(highlight)}</div>` : ''}
+        <div class="flex items-start gap-3">
+          <div class="shrink-0 w-[4.5rem] text-center rounded-2xl bg-sky-50 py-2">
+            <div class="font-display text-xl font-extrabold text-sky-700 leading-none">${fmt.time(l.start)}</div>
+            <div class="text-xs font-bold text-slate-400 mt-1">${l.czas_min} min</div>
+          </div>
+          <div class="flex-1 min-w-0">
+            ${showDate ? `<div class="text-xs font-extrabold uppercase text-coral">${esc(fmt.dayShort(l.start))}</div>` : ''}
+            <button data-action="edit-lesson" data-id="${l.id}" class="block w-full text-left font-display text-lg font-bold text-slate-800 truncate hover:text-sky-600">${esc(fullName(k))}</button>
+            <div class="text-sm text-slate-500 truncate flex items-center gap-1">${icon('map-pin', 'w-3.5 h-3.5 shrink-0')} ${esc(miejsceLekcji(l))}</div>
+            <div class="mt-2 flex flex-wrap gap-1.5">${statusChip(l)}${paidChip(l)}${pushChip(l)}</div>
+          </div>
+          ${k.telefon ? `<a href="tel:${esc(k.telefon)}" aria-label="Zadzwoń" class="shrink-0 w-11 h-11 rounded-full bg-mint/15 text-mint-dark flex items-center justify-center">${icon('phone', 'w-5 h-5')}</a>` : ''}
+        </div>
+        ${l.notatka ? `<p class="mt-3 text-sm bg-sunny/10 rounded-2xl px-3 py-2 text-slate-600 whitespace-pre-line">${esc(l.notatka)}</p>` : ''}
+        <div class="mt-3 grid grid-cols-5 gap-1.5">
+          ${act('status', 'odbyta', 'Odbyta', 'check', l.status === 'odbyta')}
+          ${act('status', 'nieobecnosc', 'Nie było', 'user-x', l.status === 'nieobecnosc')}
+          ${act('status', 'odwolana', 'Odwołana', 'calendar-x', l.status === 'odwolana')}
+          ${act('paid', 'oplacona', 'Opłacona', 'wallet', l.oplacona)}
+          <button data-action="note" data-id="${l.id}" class="act">${icon('notebook-pen', 'w-5 h-5')}Notatka</button>
+        </div>
+      </article>`;
+  }
+
+  function lessonRow(l, { showDate = false } = {}) {
+    const s = STATUS[l.status] || STATUS.zaplanowana;
+    return `
+      <button data-action="edit-lesson" data-id="${l.id}" class="w-full flex items-center gap-3 rounded-2xl bg-white px-3 py-2.5 card-shadow-sm text-left hover:bg-sky-50">
+        <span class="w-2.5 h-2.5 rounded-full ${s.dot} shrink-0"></span>
+        <span class="font-display font-bold text-sky-700 w-12 shrink-0">${fmt.time(l.start)}</span>
+        <span class="flex-1 min-w-0">
+          <span class="block truncate font-bold text-slate-700">${showDate ? esc(fmt.dayShort(l.start)) + ' · ' : ''}${esc(fullName(l.kursant))}</span>
+          ${l.notatka ? `<span class="block truncate text-xs text-slate-500">${esc(l.notatka)}</span>` : ''}
+        </span>
+        <span class="chip ${s.cls} shrink-0">${s.label}</span>
+        ${l.oplacona ? `<span class="text-sky-600 shrink-0" title="Opłacona">${icon('wallet', 'w-4 h-4')}</span>` : ''}
+      </button>`;
+  }
+
+  const sectionTitle = (t, extra = '') => `<div class="flex items-center justify-between mt-7 mb-3"><h2 class="font-display text-xl font-bold text-sky-700">${t}</h2>${extra}</div>`;
+  const empty = (t) => `<div class="rounded-3xl border-2 border-dashed border-sky-200 bg-white/60 p-5 text-center font-semibold text-slate-500">${t}</div>`;
+
+  // --- Dziś -------------------------------------------------------------
+  async function viewDzis() {
+    const now = new Date();
+    const today = startOfDay(now);
+    const [dwaDni, zaleglosci, nieoplacone, miesiac, pushTu] = await Promise.all([
+      db.lekcjeMiedzy(today, addDays(today, 2)),
+      q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'zaplanowana').lt('start', today.toISOString()).order('start')).then(remember),
+      q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'odbyta').eq('oplacona', false).order('start')).then(remember),
+      q(sb.from('lekcje').select('cena,status').eq('status', 'odbyta').gte('start', startOfMonth(now).toISOString()).lt('start', startOfMonth(addDays(startOfMonth(now), 32)).toISOString())),
+      push.stan().catch(() => null),
+    ]);
+    const dzis = dwaDni.filter((l) => sameDay(l.start, now));
+    const jutro = dwaDni.filter((l) => !sameDay(l.start, now));
+
+    const nastepna = dzis.find((l) => l.status === 'zaplanowana' && new Date(l.start).getTime() + l.czas_min * 60000 > now.getTime());
+    const badge = (l) => {
+      if (l !== nastepna) return '';
+      const min = Math.round((new Date(l.start) - now) / 60000);
+      if (min <= 0) return 'Trwa teraz';
+      if (min < 60) return `Za ${min} min`;
+      return `Następna · za ${Math.floor(min / 60)} h ${min % 60 ? (min % 60) + ' min' : ''}`.trim();
+    };
+
+    const sumaDoZaplaty = nieoplacone.reduce((s, l) => s + Number(l.cena || 0), 0);
+    const sumaMiesiac = miesiac.reduce((s, l) => s + Number(l.cena || 0), 0);
+    const nazwaMiesiaca = now.toLocaleDateString('pl-PL', { month: 'long' });
+
+    return `
+      <header class="flex items-center gap-3">
+        <img src="../assets/favicon.png" alt="" class="w-12 h-12 rounded-2xl bg-white p-1 card-shadow-sm" />
+        <div>
+          <h1 class="font-display text-3xl font-extrabold text-sky-700 leading-tight">Cześć, ${esc(state.ust.imie || 'Trenerze')}! 🐬</h1>
+          <p class="font-bold text-slate-500">${esc(capital(fmt.dayLong(now)))}</p>
+        </div>
+      </header>
+
+      ${pushTu && pushTu.kod !== 'wlaczone' && state.ust.push_wlaczone ? `
+        <button data-action="tab" data-tab="ustawienia" class="mt-5 w-full text-left flex items-center gap-3 rounded-3xl bg-white p-4 card-shadow ring-4 ring-coral/30">
+          <span class="w-12 h-12 rounded-2xl bg-coral text-white flex items-center justify-center shrink-0">${icon('bell-plus', 'w-6 h-6')}</span>
+          <span class="flex-1"><span class="block font-display text-lg font-bold text-slate-800">Włącz przypomnienia o treningach</span>
+          <span class="block text-sm font-semibold text-slate-500">Na tym urządzeniu powiadomienia są wyłączone. Kliknij, żeby je włączyć.</span></span>
+          ${icon('chevron-right', 'w-5 h-5 text-slate-300')}
+        </button>` : ''}
+
+      <div class="mt-5 grid grid-cols-2 gap-3">
+        <div class="rounded-3xl bg-gradient-to-br from-mint to-sky-600 text-white p-4 card-shadow">
+          <div class="text-xs font-extrabold uppercase opacity-80">${esc(capital(nazwaMiesiaca))}</div>
+          <div class="font-display text-3xl font-extrabold leading-tight">${miesiac.length} <span class="text-lg">lekcji</span></div>
+          <div class="font-bold opacity-90">${esc(fmt.money(sumaMiesiac) || '0 zł')}</div>
+        </div>
+        <button data-action="show-unpaid" class="text-left rounded-3xl ${nieoplacone.length ? 'bg-gradient-to-br from-sunny to-coral' : 'bg-white'} ${nieoplacone.length ? 'text-white' : 'text-slate-500'} p-4 card-shadow">
+          <div class="text-xs font-extrabold uppercase opacity-80">Do zapłaty</div>
+          <div class="font-display text-3xl font-extrabold leading-tight">${nieoplacone.length} <span class="text-lg">lekcji</span></div>
+          <div class="font-bold opacity-90">${nieoplacone.length ? esc(fmt.money(sumaDoZaplaty)) + ' · pokaż' : 'wszystko opłacone'}</div>
+        </button>
+      </div>
+
+      ${zaleglosci.length ? `
+        ${sectionTitle(`${icon('triangle-alert', 'w-5 h-5 inline text-coral')} Do uzupełnienia`)}
+        <p class="-mt-2 mb-3 text-sm font-semibold text-slate-500">Te lekcje już minęły. Zaznacz, czy się odbyły.</p>
+        <div class="space-y-3">${zaleglosci.map((l) => lessonCard(l, { showDate: true })).join('')}</div>` : ''}
+
+      ${sectionTitle('Dziś', `<span class="chip bg-white text-sky-600">${dzis.length}</span>`)}
+      <div class="space-y-3">${dzis.length ? dzis.map((l) => lessonCard(l, { highlight: badge(l) })).join('') : empty('Dziś nie masz zajęć. Czas na odpoczynek! 🏖️')}</div>
+
+      ${sectionTitle('Jutro', `<span class="chip bg-white text-sky-600">${jutro.length}</span>`)}
+      <div class="space-y-2">${jutro.length ? jutro.map((l) => lessonRow(l)).join('') : empty('Jutro wolne.')}</div>`;
+  }
+
+  // --- Kalendarz ------------------------------------------------------
+  async function viewKalendarz() {
+    const ws = state.weekStart;
+    const lekcje = await db.lekcjeMiedzy(ws, addDays(ws, 7));
+    const today = new Date();
+    const aktywne = lekcje.filter((l) => l.status !== 'odwolana');
+    const plan = aktywne.reduce((s, l) => s + Number(l.cena || 0), 0);
+    const zakres = `${ws.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })} – ${addDays(ws, 6).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+
+    const dni = Array.from({ length: 7 }, (_, i) => {
+      const d = addDays(ws, i);
+      const lista = lekcje.filter((l) => sameDay(l.start, d));
+      const isToday = sameDay(d, today);
+      return `
+        <section class="rounded-3xl ${isToday ? 'bg-white ring-4 ring-mint/30' : 'bg-white/70'} p-3 card-shadow-sm">
+          <div class="flex items-center justify-between mb-2 px-1">
+            <h3 class="font-display font-bold ${isToday ? 'text-coral' : 'text-sky-700'}">${esc(capital(d.toLocaleDateString('pl-PL', { weekday: 'long' })))} <span class="text-slate-400 font-sans text-sm">${d.getDate()}.${pad(d.getMonth() + 1)}</span>${isToday ? ' <span class="chip bg-coral text-white ml-1">dziś</span>' : ''}</h3>
+            <button data-action="new-lesson" data-date="${inputDate(d)}" aria-label="Dodaj lekcję" class="w-8 h-8 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center hover:bg-sky-100">${icon('plus', 'w-4 h-4')}</button>
+          </div>
+          <div class="space-y-2">${lista.length ? lista.map((l) => lessonRow(l)).join('') : '<p class="px-1 pb-1 text-sm text-slate-400 font-semibold">—</p>'}</div>
+        </section>`;
+    }).join('');
+
+    return `
+      <header class="flex items-center justify-between gap-2">
+        <button data-action="week" data-value="-1" aria-label="Poprzedni tydzień" class="w-11 h-11 rounded-full bg-white card-shadow-sm text-sky-700 flex items-center justify-center">${icon('chevron-left', 'w-6 h-6')}</button>
+        <div class="text-center">
+          <h1 class="font-display text-2xl font-extrabold text-sky-700 leading-tight">${esc(zakres)}</h1>
+          <p class="text-sm font-bold text-slate-500">${aktywne.length} lekcji · ${esc(fmt.money(plan) || '0 zł')}</p>
+        </div>
+        <button data-action="week" data-value="1" aria-label="Następny tydzień" class="w-11 h-11 rounded-full bg-white card-shadow-sm text-sky-700 flex items-center justify-center">${icon('chevron-right', 'w-6 h-6')}</button>
+      </header>
+      ${sameDay(ws, startOfWeek(today)) ? '' : `<div class="text-center mt-3"><button data-action="week" data-value="0" class="btn btn-ghost py-1.5 text-sm">${icon('calendar-check')} Wróć do bieżącego tygodnia</button></div>`}
+      <div class="mt-5 space-y-3">${dni}</div>`;
+  }
+
+  // --- Kursanci -------------------------------------------------------
+  function kursantCard(k) {
+    return `
+      <button data-action="open-kursant" data-id="${k.id}" data-szukaj="${esc((fullName(k) + ' ' + (k.telefon || '')).toLowerCase())}" class="kursant-item w-full flex items-center gap-3 rounded-3xl bg-white p-3.5 card-shadow-sm text-left hover:bg-sky-50 ${k.aktywny ? '' : 'opacity-60'}">
+        <span class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sunny to-coral text-white font-display text-xl font-extrabold flex items-center justify-center shrink-0">${esc((k.imie || '?').charAt(0).toUpperCase())}</span>
+        <span class="flex-1 min-w-0">
+          <span class="block font-display text-lg font-bold text-slate-800 truncate">${esc(fullName(k))}</span>
+          <span class="block text-sm text-slate-500 truncate">${esc(k.telefon || 'brak telefonu')}${k.poziom ? ' · ' + esc(k.poziom) : ''}</span>
+        </span>
+        ${icon('chevron-right', 'w-5 h-5 text-slate-300')}
+      </button>`;
+  }
+
+  async function viewKursanci() {
+    const aktywni = state.kursanci.filter((k) => k.aktywny);
+    const archiwum = state.kursanci.filter((k) => !k.aktywny);
+    return `
+      <header class="flex items-center justify-between">
+        <h1 class="font-display text-3xl font-extrabold text-sky-700">Kursanci</h1>
+        <button data-action="new-kursant" class="btn btn-primary">${icon('user-plus', 'w-5 h-5')} Dodaj</button>
+      </header>
+      ${state.kursanci.length ? `
+        <div class="relative mt-4">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">${icon('search', 'w-5 h-5')}</span>
+          <input id="szukaj" type="search" value="${esc(state.szukaj)}" placeholder="Szukaj po imieniu lub telefonie" class="field pl-11" />
+        </div>` : ''}
+      <div id="lista-kursantow" class="mt-4 space-y-2.5">
+        ${aktywni.length ? aktywni.map(kursantCard).join('') : empty('Nie masz jeszcze kursantów. Dodaj pierwszego!')}
+      </div>
+      ${archiwum.length ? `${sectionTitle('Archiwum')}<div class="space-y-2.5">${archiwum.map(kursantCard).join('')}</div>` : ''}`;
+  }
+
+  function filtrujKursantow() {
+    const s = state.szukaj.trim().toLowerCase();
+    document.querySelectorAll('.kursant-item').forEach((el) => { el.hidden = !!s && !el.dataset.szukaj.includes(s); });
+  }
+
+  async function viewKursant() {
+    const k = kursant(state.kursantId);
+    if (!k) { state.kursantId = null; return viewKursanci(); }
+    const lekcje = remember(await q(sb.from('lekcje').select(LEKCJA_SELECT).eq('kursant_id', k.id).order('start', { ascending: false })));
+    const now = new Date();
+    const przyszle = lekcje.filter((l) => new Date(l.start) >= now && l.status === 'zaplanowana').reverse();
+    const przeszle = lekcje.filter((l) => !przyszle.includes(l));
+    const ile = (st) => lekcje.filter((l) => l.status === st).length;
+    const doZaplaty = lekcje.filter((l) => l.status === 'odbyta' && !l.oplacona);
+    const stat = (v, label, cls = 'text-sky-700') => `<div class="rounded-2xl bg-white p-3 text-center card-shadow-sm"><div class="font-display text-2xl font-extrabold ${cls}">${v}</div><div class="text-xs font-bold text-slate-500">${label}</div></div>`;
+
+    return `
+      <button data-action="back-kursanci" class="inline-flex items-center gap-1 font-bold text-sky-600 mb-3">${icon('arrow-left')} Kursanci</button>
+      <section class="bg-white rounded-3xl card-shadow p-5">
+        <div class="flex items-start gap-4">
+          <span class="w-16 h-16 rounded-3xl bg-gradient-to-br from-sunny to-coral text-white font-display text-3xl font-extrabold flex items-center justify-center shrink-0">${esc((k.imie || '?').charAt(0).toUpperCase())}</span>
+          <div class="flex-1 min-w-0">
+            <h1 class="font-display text-2xl font-extrabold text-slate-800 leading-tight">${esc(fullName(k))}</h1>
+            <div class="mt-1 flex flex-wrap gap-1.5">
+              ${k.poziom ? `<span class="chip bg-sky-100 text-sky-700">${esc(k.poziom)}</span>` : ''}
+              ${k.cena != null ? `<span class="chip bg-sunny/15 text-sunny-dark">${esc(fmt.money(k.cena))} / lekcja</span>` : ''}
+              ${k.aktywny ? '' : '<span class="chip bg-slate-200 text-slate-600">Archiwum</span>'}
+            </div>
+          </div>
+          <button data-action="edit-kursant" data-id="${k.id}" aria-label="Edytuj" class="w-10 h-10 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">${icon('pencil', 'w-4 h-4')}</button>
+        </div>
+        ${k.cel ? `<div class="mt-4"><div class="label">Cel</div><p class="font-semibold">${esc(k.cel)}</p></div>` : ''}
+        ${k.notatki ? `<div class="mt-3"><div class="label">Notatki</div><p class="whitespace-pre-line">${esc(k.notatki)}</p></div>` : ''}
+        <div class="mt-4 flex flex-wrap gap-2">
+          ${k.telefon ? `<a href="tel:${esc(k.telefon)}" class="btn btn-sky py-2">${icon('phone')} Zadzwoń</a><a href="sms:${esc(k.telefon)}" class="btn btn-ghost py-2">${icon('message-square')} SMS</a>` : ''}
+          ${k.email ? `<a href="mailto:${esc(k.email)}" class="btn btn-ghost py-2">${icon('mail')} E-mail</a>` : ''}
+          <button data-action="new-lesson" data-kursant="${k.id}" class="btn btn-primary py-2">${icon('calendar-plus')} Lekcja</button>
+        </div>
+      </section>
+
+      <div class="mt-4 grid grid-cols-4 gap-2">
+        ${stat(ile('odbyta'), 'odbyte')}
+        ${stat(ile('nieobecnosc'), 'nieobecn.', 'text-coral')}
+        ${stat(ile('odwolana'), 'odwołane', 'text-slate-500')}
+        ${stat(doZaplaty.length, 'do zapłaty', doZaplaty.length ? 'text-sunny-dark' : 'text-slate-400')}
+      </div>
+
+      ${sectionTitle('Najbliższe lekcje')}
+      <div class="space-y-2">${przyszle.length ? przyszle.map((l) => lessonRow(l, { showDate: true })).join('') : empty('Brak zaplanowanych lekcji.')}</div>
+
+      ${sectionTitle('Historia i postępy')}
+      <div class="space-y-2">${przeszle.length ? przeszle.map((l) => lessonRow(l, { showDate: true })).join('') : empty('Tu pojawią się odbyte lekcje z notatkami.')}</div>`;
+  }
+
+  // --- Powiadomienia (Web Push) ----------------------------------------
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const unb64u = (s) => {
+    const b = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (s.length % 4)) % 4));
+    return Uint8Array.from(b, (c) => c.charCodeAt(0));
+  };
+  const nazwaUrzadzenia = () => {
+    const ua = navigator.userAgent;
+    const sprzet = /iPhone/.test(ua) ? 'iPhone' : (/iPad/.test(ua) || isIOS) ? 'iPad' : /Android/.test(ua) ? 'Android'
+      : /Mac/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Komputer';
+    const przegl = /Edg\//.test(ua) ? 'Edge' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) && !/CriOS/.test(ua) ? 'Chrome' : 'Safari';
+    return `${sprzet} · ${przegl}${standalone ? ' (aplikacja)' : ''}`;
+  };
+
+  // Treść jak w powiadomieniu z serwera (supabase/setup.sql → push_do_wyslania).
+  function trescPowiadomienia(l) {
+    const min = state.ust.push_minut_przed;
+    const godz = fmt.time(l.start);
+    const k = l.kursant || {};
+    const kiedy = min < 90 ? `Za ${min} min` : sameDay(l.start, new Date(new Date(l.start).getTime() - min * 60000)) ? `Dziś o ${godz}` : `Jutro o ${godz}`;
+    return {
+      title: `🐬 ${kiedy}: ${fullName(k)}`,
+      body: [godz, `${l.czas_min} min`, miejsceLekcji(l), k.telefon ? `tel. ${k.telefon}` : ''].filter(Boolean).join(' · '),
+    };
+  }
+
+  const push = {
+    wspierane: () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window,
+
+    async subskrypcja() {
+      if (!push.wspierane()) return null;
+      const reg = await navigator.serviceWorker.getRegistration();
+      return reg ? reg.pushManager.getSubscription() : null;
+    },
+
+    // wlaczone | wylaczone | zablokowane | ios-ekran | brak
+    async stan() {
+      if (demo) return { kod: state.demoPush ? 'wlaczone' : 'wylaczone' };
+      if (!push.wspierane()) return { kod: isIOS && !standalone ? 'ios-ekran' : 'brak' };
+      if (Notification.permission === 'denied') return { kod: 'zablokowane' };
+      const sub = await push.subskrypcja();
+      return { kod: sub && Notification.permission === 'granted' ? 'wlaczone' : 'wylaczone', sub };
+    },
+
+    async wlacz() {
+      // Zgoda musi paść od razu po kliknięciu (wymóg iOS), dlatego jest na początku.
+      const perm = 'Notification' in window ? await Notification.requestPermission() : 'default';
+      if (demo) {
+        state.demoPush = true;
+        await q(sb.from('push_subskrypcje').upsert({ endpoint: 'demo-' + nazwaUrzadzenia(), p256dh: '-', auth: '-', urzadzenie: nazwaUrzadzenia() }, { onConflict: 'endpoint' }));
+        return;
+      }
+      if (perm !== 'granted') {
+        throw new Error(perm === 'denied'
+          ? 'Powiadomienia są zablokowane. Włącz je w ustawieniach telefonu.'
+          : 'Nie udzielono zgody na powiadomienia.');
+      }
+      let key = await q(sb.rpc('push_klucz_publiczny'));
+      if (!key) {
+        const { data, error } = await sb.functions.invoke('powiadomienia', { body: { akcja: 'klucz' } });
+        if (error || !data?.publicKey) throw new Error('Funkcja „powiadomienia” nie odpowiada. Sprawdź krok 4 w instrukcji.');
+        key = data.publicKey;
+      }
+      const reg = await navigator.serviceWorker.register('sw.js');
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: unb64u(key) });
+      const j = sub.toJSON();
+      await q(sb.from('push_subskrypcje').upsert(
+        { endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, urzadzenie: nazwaUrzadzenia() },
+        { onConflict: 'endpoint' }));
+    },
+
+    async wylacz() {
+      if (demo) {
+        state.demoPush = false;
+        await q(sb.from('push_subskrypcje').delete().eq('endpoint', 'demo-' + nazwaUrzadzenia()));
+        return;
+      }
+      const sub = await push.subskrypcja();
+      if (sub) {
+        await q(sb.from('push_subskrypcje').delete().eq('endpoint', sub.endpoint));
+        await sub.unsubscribe();
+      }
+    },
+
+    async test() {
+      if (demo) {
+        const p = { title: '🐬 Powiadomienia działają!', body: 'Tak będą wyglądać przypomnienia o treningach.' };
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(p.title, { body: p.body, icon: '../assets/favicon.png' });
+          return 'Wysłano przykładowe powiadomienie.';
+        }
+        return 'W wersji demo powiadomienia z serwera nie przychodzą. Podgląd jest poniżej.';
+      }
+      const { data, error } = await sb.functions.invoke('powiadomienia', { body: { akcja: 'test' } });
+      if (error) throw new Error('Funkcja „powiadomienia” nie odpowiada. Sprawdź krok 4 w instrukcji.');
+      if (!data.urzadzenia) return 'Brak urządzeń z włączonymi powiadomieniami.';
+      return data.wyslane === data.urzadzenia
+        ? `Wysłano na ${data.wyslane} ${data.wyslane === 1 ? 'urządzenie' : 'urządzenia'} ✓`
+        : `Dotarło na ${data.wyslane} z ${data.urzadzenia} urządzeń. Szczegóły na liście urządzeń.`;
+    },
+  };
+
+  // --- Ustawienia -----------------------------------------------------
+  function pushStanHtml(kod) {
+    const box = (cls, html) => `<div class="rounded-2xl ${cls} p-3.5">${html}</div>`;
+    switch (kod) {
+      case 'wlaczone':
+        return box('bg-emerald-50', `
+          <div class="font-bold text-emerald-700 flex items-center gap-2">${icon('bell-ring', 'w-5 h-5')} Na tym urządzeniu włączone</div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button type="button" data-action="push-test" class="btn btn-sky py-2 text-sm">${icon('send')} Wyślij testowe</button>
+            <button type="button" data-action="push-off" class="btn btn-ghost py-2 text-sm">${icon('bell-off')} Wyłącz tutaj</button>
+          </div>`);
+      case 'wylaczone':
+        return box('bg-sunny/10', `
+          <p class="font-bold text-slate-700">Na tym urządzeniu powiadomienia są wyłączone.</p>
+          <button type="button" data-action="push-on" class="btn btn-primary w-full mt-3">${icon('bell-plus', 'w-5 h-5')} Włącz powiadomienia</button>`);
+      case 'zablokowane':
+        return box('bg-red-50', `
+          <p class="font-bold text-red-700">Powiadomienia są zablokowane.</p>
+          <p class="mt-1 text-sm text-slate-600">iPhone: <strong>Ustawienia → Powiadomienia → Delfinada → Pozwalaj na powiadomienia</strong>. Potem wróć tutaj.</p>`);
+      case 'ios-ekran':
+        return box('bg-sky-50', `
+          <p class="font-bold text-sky-700">Najpierw dodaj panel do ekranu początkowego</p>
+          <ol class="mt-2 space-y-1.5 text-sm text-slate-600 list-decimal pl-5">
+            <li>Otwórz tę stronę w <strong>Safari</strong>.</li>
+            <li>Stuknij <strong>Udostępnij</strong> ${icon('share', 'w-4 h-4 inline')} na dole ekranu.</li>
+            <li>Wybierz <strong>„Do ekranu początkowego”</strong> → Dodaj.</li>
+            <li>Otwórz <strong>Delfinadę z nowej ikony</strong>, wejdź w Ustawienia i włącz powiadomienia.</li>
+          </ol>
+          <p class="mt-2 text-xs font-semibold text-slate-500">Wymaga iOS 16.4 lub nowszego. Tak działa Apple: strona może wysyłać powiadomienia tylko z ikony na ekranie.</p>`);
+      default:
+        return box('bg-slate-100', `<p class="font-bold text-slate-600">Ta przeglądarka nie obsługuje powiadomień. Spróbuj w Safari na iPhonie (z ikony na ekranie) albo w Chrome.</p>`);
+    }
+  }
+
+  async function viewUstawienia() {
+    const u = state.ust;
+    const teraz = new Date();
+    const [stan, urzadzenia, nastepne] = await Promise.all([
+      push.stan().catch(() => ({ kod: 'brak' })),
+      q(sb.from('push_subskrypcje').select('id,endpoint,urzadzenie,created_at,ostatnio_ok_at,ostatni_blad').order('created_at')),
+      q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'zaplanowana').gte('start', teraz.toISOString()).order('start').limit(1)).then(remember),
+    ]);
+    const przyklad = trescPowiadomienia(nastepne[0] || {
+      start: new Date(teraz.getTime() + 86400000).setHours(18, 0, 0, 0), czas_min: u.domyslny_czas_min,
+      kursant: { imie: 'Marta', nazwisko: 'Wiśniewska', telefon: '601 234 567' }, miejsce: null,
+    });
+    const minuty = PUSH_MINUTY.includes(u.push_minut_przed) ? PUSH_MINUTY : [...PUSH_MINUTY, u.push_minut_przed].sort((a, b) => a - b);
+    const opt = (vals, cur, suffix) => vals.map((v) => `<option value="${v}" ${Number(cur) === v ? 'selected' : ''}>${v} ${suffix}</option>`).join('');
+    const mojEndpoint = stan.sub?.endpoint || (demo ? 'demo-' + nazwaUrzadzenia() : '');
+
+    return `
+      <h1 class="font-display text-3xl font-extrabold text-sky-700">Ustawienia</h1>
+
+      <section class="mt-4 bg-white rounded-3xl card-shadow p-5 space-y-4">
+        <h2 class="font-display text-xl font-bold text-sky-700 flex items-center gap-2">${icon('bell', 'w-5 h-5')} Przypomnienia o treningach</h2>
+        ${pushStanHtml(stan.kod)}
+
+        <div>
+          <div class="label">Tak wygląda przypomnienie</div>
+          <div class="rounded-2xl bg-slate-800/90 text-white p-3 flex gap-3 items-start shadow-lg">
+            <img src="../assets/favicon.png" alt="" class="w-9 h-9 rounded-xl bg-white p-0.5 shrink-0" />
+            <div class="min-w-0 flex-1">
+              <div class="flex justify-between text-[11px] font-bold opacity-60"><span>DELFINADA</span><span>teraz</span></div>
+              <div class="font-bold text-sm leading-tight">${esc(przyklad.title)}</div>
+              <div class="text-sm opacity-90 leading-tight">${esc(przyklad.body)}</div>
+            </div>
+          </div>
+        </div>
+
+        ${urzadzenia.length ? `
+          <div>
+            <div class="label">Urządzenia z powiadomieniami</div>
+            <div class="space-y-2">
+              ${urzadzenia.map((d) => `
+                <div class="flex items-center gap-3 rounded-2xl bg-sky-50 p-3">
+                  ${icon(/iPhone|Android/.test(d.urzadzenie || '') ? 'smartphone' : 'monitor', 'w-5 h-5 text-sky-600 shrink-0')}
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold truncate">${esc(d.urzadzenie || 'Urządzenie')}${d.endpoint === mojEndpoint ? ' <span class="chip bg-white text-sky-600">to urządzenie</span>' : ''}</div>
+                    <div class="text-xs font-semibold ${d.ostatni_blad ? 'text-red-600' : 'text-slate-500'} truncate">${d.ostatni_blad ? 'Błąd: ' + esc(d.ostatni_blad) : d.ostatnio_ok_at ? 'Ostatnio dostarczone ' + esc(fmt.dateTime(d.ostatnio_ok_at)) : 'Dodane ' + esc(fmt.dateTime(d.created_at))}</div>
+                  </div>
+                  <button type="button" data-action="push-del" data-id="${d.id}" aria-label="Usuń urządzenie" class="w-9 h-9 rounded-full bg-white text-slate-400 hover:text-red-600 flex items-center justify-center shrink-0">${icon('x', 'w-4 h-4')}</button>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}
+      </section>
+
+      <form id="ust-form" class="mt-4 space-y-4">
+        <section class="bg-white rounded-3xl card-shadow p-5 space-y-4">
+          <label class="flex items-center justify-between gap-3">
+            <span class="font-bold text-slate-700">Przypominaj o treningach</span>
+            <input type="checkbox" name="push_wlaczone" class="toggle" ${u.push_wlaczone ? 'checked' : ''} />
+          </label>
+          <div><label class="label" for="u-push">Kiedy</label>
+            <select id="u-push" name="push_minut_przed" class="field">${minuty.map((m) => `<option value="${m}" ${m === u.push_minut_przed ? 'selected' : ''}>${minutyTekst(m)}</option>`).join('')}</select>
+          </div>
+          <p class="text-xs font-semibold text-slate-500">Przypomnienie przychodzi przed każdą zaplanowaną lekcją. Dla odwołanych nie przychodzi, a po zmianie godziny przyjdzie o nowej porze.</p>
+        </section>
+
+        <section class="bg-white rounded-3xl card-shadow p-5 space-y-4">
+          <h2 class="font-display text-xl font-bold text-sky-700">Domyślne wartości lekcji</h2>
+          <div><label class="label" for="u-imie">Twoje imię</label><input id="u-imie" name="imie" class="field" value="${esc(u.imie)}" /></div>
+          <div><label class="label" for="u-miejsce">Miejsce zajęć</label><input id="u-miejsce" name="domyslne_miejsce" class="field" value="${esc(u.domyslne_miejsce)}" placeholder="np. Basen Kapry, Pruszków" /></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="label" for="u-cena">Cena (zł)</label><input id="u-cena" name="domyslna_cena" inputmode="decimal" class="field" value="${esc(u.domyslna_cena ?? '')}" /></div>
+            <div><label class="label" for="u-czas">Czas</label><select id="u-czas" name="domyslny_czas_min" class="field">${opt([30, 45, 60, 75, 90, 120], u.domyslny_czas_min, 'min')}</select></div>
+          </div>
+        </section>
+
+        <button type="submit" class="btn btn-primary w-full">${icon('save', 'w-5 h-5')} Zapisz ustawienia</button>
+      </form>
+
+      ${sectionTitle('Konto')}
+      <div class="bg-white rounded-3xl card-shadow p-5 flex items-center justify-between gap-3">
+        <div class="min-w-0"><div class="label">Zalogowano jako</div><div class="font-bold truncate">${esc(state.user.email)}</div></div>
+        <button data-action="logout" class="btn btn-ghost shrink-0">${icon('log-out')} Wyloguj</button>
+      </div>`;
+  }
+
+  function bindUstawienia() {
+    const form = $('#ust-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = new FormData(form);
+      const cena = num(f.get('domyslna_cena'));
+      if (cena != null && (isNaN(cena) || cena < 0)) return toast('Sprawdź domyślną cenę.', 'error');
+      const dane = {
+        imie: String(f.get('imie') || '').trim() || 'Ada',
+        domyslne_miejsce: String(f.get('domyslne_miejsce') || '').trim() || null,
+        domyslna_cena: cena,
+        domyslny_czas_min: Number(f.get('domyslny_czas_min')),
+        push_wlaczone: !!f.get('push_wlaczone'),
+        push_minut_przed: Number(f.get('push_minut_przed')),
+        updated_at: new Date().toISOString(),
+      };
+      const btn = form.querySelector('[type=submit]');
+      btn.disabled = true;
+      try {
+        state.ust = await q(sb.from('ustawienia').update(dane).eq('trener_id', state.user.id).select().single());
+        toast('Zapisano ustawienia ✓');
+        render();
+      } catch (err) { showErr(err); btn.disabled = false; }
+    });
+  }
+
+  // =====================================================================
+  //  Okna modalne
+  // =====================================================================
+  function openModal(html) {
+    $('#modal-body').innerHTML = html;
+    $('#modal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    refreshIcons();
+    return $('#modal-body');
+  }
+  function closeModal() {
+    $('#modal').hidden = true;
+    $('#modal-body').innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  const modalHeader = (t) => `
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-display text-2xl font-extrabold text-sky-700">${t}</h2>
+      <button type="button" data-action="close-modal" aria-label="Zamknij" class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">${icon('x', 'w-5 h-5')}</button>
+    </div>`;
+
+  // --- Lekcja -----------------------------------------------------------
+  function nastepnyTermin(date) {
+    const now = new Date();
+    if (date) {
+      const d = fromInputs(date, '17:00');
+      return d;
+    }
+    const d = new Date(now);
+    d.setMinutes(0, 0, 0);
+    d.setHours(d.getHours() + 1);
+    return d;
+  }
+
+  function openLessonForm(l = null, preset = {}) {
+    const isNew = !l;
+    const aktywni = state.kursanci.filter((k) => k.aktywny || (l && k.id === l.kursant_id));
+    if (!aktywni.length) {
+      state.afterKursant = { preset };
+      return openKursantForm(null, 'Najpierw dodaj kursanta, potem zaplanujesz lekcję.');
+    }
+    const start = l ? new Date(l.start) : nastepnyTermin(preset.date);
+    const kId = l ? l.kursant_id : (preset.kursantId || (aktywni.length === 1 ? aktywni[0].id : ''));
+    const k0 = kursant(kId);
+    const cena = l ? l.cena : (k0?.cena ?? state.ust.domyslna_cena ?? '');
+    const czas = l ? l.czas_min : state.ust.domyslny_czas_min;
+    const czasy = [30, 45, 60, 75, 90, 120];
+    if (!czasy.includes(czas)) czasy.push(czas);
+
+    const body = openModal(`
+      ${modalHeader(isNew ? 'Nowa lekcja' : 'Lekcja')}
+      <form id="lesson-form" class="space-y-4">
+        <div>
+          <label class="label" for="l-kursant">Kursant</label>
+          <div class="flex gap-2">
+            <select id="l-kursant" name="kursant_id" required class="field">
+              <option value="">— wybierz —</option>
+              ${aktywni.map((k) => `<option value="${k.id}" ${k.id === kId ? 'selected' : ''}>${esc(fullName(k))}</option>`).join('')}
+            </select>
+            <button type="button" data-action="new-kursant-from-lesson" aria-label="Nowy kursant" class="shrink-0 w-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">${icon('user-plus', 'w-5 h-5')}</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="label" for="l-data">Data</label><input id="l-data" name="data" type="date" required class="field" value="${inputDate(start)}" /></div>
+          <div><label class="label" for="l-godz">Godzina</label><input id="l-godz" name="godzina" type="time" step="300" required class="field" value="${inputTime(start)}" /></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="label" for="l-czas">Czas</label><select id="l-czas" name="czas_min" class="field">${czasy.sort((a, b) => a - b).map((v) => `<option value="${v}" ${v === czas ? 'selected' : ''}>${v} min</option>`).join('')}</select></div>
+          <div><label class="label" for="l-cena">Cena (zł)</label><input id="l-cena" name="cena" inputmode="decimal" class="field" value="${esc(cena ?? '')}" /></div>
+        </div>
+        <div><label class="label" for="l-miejsce">Miejsce</label><input id="l-miejsce" name="miejsce" class="field" value="${esc(l ? (l.miejsce || '') : (state.ust.domyslne_miejsce || ''))}" placeholder="${esc(state.ust.domyslne_miejsce || 'np. Basen Kapry')}" /></div>
+
+        ${isNew ? `
+          <div class="rounded-2xl bg-sky-50 p-3 space-y-3">
+            <label class="flex items-center justify-between gap-3 font-bold text-sky-700">
+              <span>${icon('repeat', 'w-4 h-4 inline')} Powtarzaj co tydzień</span>
+              <input type="checkbox" name="powtarzaj" class="toggle" />
+            </label>
+            <div id="l-powt" hidden>
+              <label class="label" for="l-tygodnie">Ile tygodni (łącznie z tą lekcją)</label>
+              <input id="l-tygodnie" name="tygodnie" type="number" min="2" max="52" value="10" class="field" />
+            </div>
+          </div>` : `
+          <div><label class="label" for="l-status">Status</label>
+            <select id="l-status" name="status" class="field">${Object.entries(STATUS).map(([v, s]) => `<option value="${v}" ${v === l.status ? 'selected' : ''}>${s.label}</option>`).join('')}</select>
+          </div>`}
+
+        <label class="flex items-center justify-between gap-3 font-bold text-slate-700">
+          <span>${icon('wallet', 'w-4 h-4 inline text-sky-600')} Opłacona</span>
+          <input type="checkbox" name="oplacona" class="toggle" ${l?.oplacona ? 'checked' : ''} />
+        </label>
+
+        <div>
+          <label class="label" for="l-notatka">Notatka z zajęć</label>
+          <textarea id="l-notatka" name="notatka" rows="3" class="field" placeholder="Co ćwiczyliście, postępy, na co zwrócić uwagę następnym razem">${esc(l?.notatka || '')}</textarea>
+        </div>
+
+        ${!isNew && l.push_wyslany_at ? `
+          <p class="rounded-2xl bg-mint/10 p-3 text-sm font-semibold text-mint-dark flex items-center gap-1.5">${icon('bell-ring', 'w-4 h-4')} Przypomnienie wysłane ${esc(fmt.dateTime(l.push_wyslany_at))}</p>` : ''}
+
+        <div class="flex gap-2 pt-1">
+          <button type="submit" class="btn btn-primary flex-1">${icon('check', 'w-5 h-5')} Zapisz</button>
+          ${!isNew ? `<button type="button" data-action="delete-lesson" data-id="${l.id}" class="btn btn-danger">${icon('trash-2')}</button>` : ''}
+        </div>
+      </form>`);
+
+    const form = $('#lesson-form', body);
+    form.kursant_id.addEventListener('change', () => {
+      const k = kursant(form.kursant_id.value);
+      if (k && k.cena != null) form.cena.value = k.cena;
+    });
+    if (form.powtarzaj) form.powtarzaj.addEventListener('change', () => { $('#l-powt').hidden = !form.powtarzaj.checked; });
+    if (preset.focusNote) setTimeout(() => form.notatka.focus(), 50);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = new FormData(form);
+      if (!f.get('kursant_id')) return toast('Wybierz kursanta.', 'error');
+      const startD = fromInputs(f.get('data'), f.get('godzina'));
+      if (isNaN(startD)) return toast('Sprawdź datę i godzinę.', 'error');
+      const cenaV = num(f.get('cena'));
+      if (cenaV != null && (isNaN(cenaV) || cenaV < 0)) return toast('Sprawdź cenę.', 'error');
+      const dane = {
+        kursant_id: f.get('kursant_id'),
+        czas_min: Number(f.get('czas_min')),
+        cena: cenaV,
+        miejsce: String(f.get('miejsce') || '').trim() || null,
+        oplacona: !!f.get('oplacona'),
+        notatka: String(f.get('notatka') || '').trim() || null,
+      };
+      const btn = form.querySelector('[type=submit]');
+      btn.disabled = true;
+      try {
+        if (isNew) {
+          const tygodnie = f.get('powtarzaj') ? Math.min(52, Math.max(2, Number(f.get('tygodnie')) || 2)) : 1;
+          const seria = tygodnie > 1 ? uuid() : null;
+          const [h, mi] = String(f.get('godzina')).split(':').map(Number);
+          const rows = Array.from({ length: tygodnie }, (_, i) => {
+            const d = addDays(startD, i * 7);
+            d.setHours(h, mi, 0, 0);
+            return { ...dane, start: d.toISOString(), seria_id: seria, oplacona: i === 0 ? dane.oplacona : false, notatka: i === 0 ? dane.notatka : null };
+          });
+          await q(sb.from('lekcje').insert(rows));
+          toast(tygodnie > 1 ? `Dodano ${tygodnie} lekcji ✓` : 'Dodano lekcję ✓');
+        } else {
+          await q(sb.from('lekcje').update({ ...dane, start: startD.toISOString(), status: f.get('status') }).eq('id', l.id));
+          toast('Zapisano ✓');
+        }
+        closeModal();
+        render();
+      } catch (err) {
+        showErr(err);
+        btn.disabled = false;
+      }
+    });
+  }
+
+  async function deleteLesson(id) {
+    const l = cache.get(id);
+    if (!l) return;
+    const body = openModal(`
+      ${modalHeader('Usunąć lekcję?')}
+      <p class="font-semibold">${esc(fullName(l.kursant))}, ${esc(fmt.dayLong(l.start))} o ${fmt.time(l.start)}.</p>
+      <p class="mt-1 text-sm text-slate-500">Jeśli kursant tylko odwołał zajęcia, lepiej ustaw status „Odwołana”, wtedy zostanie ślad w historii.</p>
+      <div class="mt-5 space-y-2">
+        <button data-del="one" class="btn btn-danger w-full">${icon('trash-2')} Usuń tę lekcję</button>
+        ${l.seria_id ? `<button data-del="series" class="btn btn-danger w-full">${icon('trash-2')} Usuń tę i kolejne z serii</button>` : ''}
+        <button data-action="close-modal" class="btn btn-ghost w-full">Anuluj</button>
+      </div>`);
+    body.addEventListener('click', async (e) => {
+      const b = e.target.closest('[data-del]');
+      if (!b) return;
+      b.disabled = true;
+      try {
+        if (b.dataset.del === 'series') {
+          await q(sb.from('lekcje').delete().eq('seria_id', l.seria_id).gte('start', l.start));
+        } else {
+          await q(sb.from('lekcje').delete().eq('id', l.id));
+        }
+        cache.delete(id);
+        toast('Usunięto');
+        closeModal();
+        render();
+      } catch (err) { showErr(err); b.disabled = false; }
+    });
+  }
+
+  async function showUnpaid() {
+    const lista = await q(sb.from('lekcje').select(LEKCJA_SELECT).eq('status', 'odbyta').eq('oplacona', false).order('start')).then(remember);
+    const suma = lista.reduce((s, l) => s + Number(l.cena || 0), 0);
+    openModal(`
+      ${modalHeader('Do zapłaty')}
+      ${lista.length ? `
+        <p class="mb-3 font-bold text-slate-500">${lista.length} lekcji · ${esc(fmt.money(suma))}</p>
+        <div class="space-y-2">
+          ${lista.map((l) => `
+            <div class="flex items-center gap-3 rounded-2xl bg-sky-50 p-3">
+              <div class="flex-1 min-w-0">
+                <div class="font-bold truncate">${esc(fullName(l.kursant))}</div>
+                <div class="text-sm text-slate-500">${esc(fmt.dayShort(l.start))}, ${fmt.time(l.start)} · ${esc(fmt.money(l.cena) || 'brak ceny')}</div>
+              </div>
+              <button data-action="paid" data-id="${l.id}" data-from="unpaid" class="btn btn-sky py-1.5 text-sm">${icon('check')} Opłacona</button>
+            </div>`).join('')}
+        </div>` : empty('Wszystko opłacone 🎉')}`);
+  }
+
+  // --- Kursant ----------------------------------------------------------
+  function openKursantForm(k = null, info = '') {
+    const isNew = !k;
+    const body = openModal(`
+      ${modalHeader(isNew ? 'Nowy kursant' : 'Edytuj kursanta')}
+      ${info ? `<p class="-mt-2 mb-4 rounded-2xl bg-sunny/15 p-3 text-sm font-bold text-sunny-dark">${esc(info)}</p>` : ''}
+      <form id="kursant-form" class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="label" for="k-imie">Imię *</label><input id="k-imie" name="imie" required class="field" value="${esc(k?.imie)}" /></div>
+          <div><label class="label" for="k-nazwisko">Nazwisko</label><input id="k-nazwisko" name="nazwisko" class="field" value="${esc(k?.nazwisko)}" /></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="label" for="k-tel">Telefon</label><input id="k-tel" name="telefon" type="tel" class="field" value="${esc(k?.telefon)}" placeholder="600 000 000" /></div>
+          <div><label class="label" for="k-cena">Cena lekcji (zł)</label><input id="k-cena" name="cena" inputmode="decimal" class="field" value="${esc(k?.cena ?? '')}" placeholder="${esc(state.ust.domyslna_cena ?? '')}" /></div>
+        </div>
+        <div><label class="label" for="k-email">E-mail</label><input id="k-email" name="email" type="email" class="field" value="${esc(k?.email)}" /></div>
+        <div><label class="label" for="k-poziom">Poziom</label>
+          <select id="k-poziom" name="poziom" class="field"><option value="">—</option>${POZIOMY.map((p) => `<option ${k?.poziom === p ? 'selected' : ''}>${p}</option>`).join('')}</select>
+        </div>
+        <div><label class="label" for="k-cel">Cel</label><input id="k-cel" name="cel" class="field" value="${esc(k?.cel)}" placeholder="np. nauczyć się kraula, triathlon, oswojenie z wodą" /></div>
+        <div><label class="label" for="k-notatki">Notatki</label><textarea id="k-notatki" name="notatki" rows="3" class="field" placeholder="Zdrowie, obawy, preferowane terminy...">${esc(k?.notatki)}</textarea></div>
+        ${!isNew ? `
+          <label class="flex items-center justify-between gap-3 font-bold text-slate-700">
+            <span>Aktywny kursant</span>
+            <input type="checkbox" name="aktywny" class="toggle" ${k.aktywny ? 'checked' : ''} />
+          </label>` : ''}
+        <div class="flex gap-2 pt-1">
+          <button type="submit" class="btn btn-primary flex-1">${icon('check', 'w-5 h-5')} Zapisz</button>
+          ${!isNew ? `<button type="button" data-action="delete-kursant" data-id="${k.id}" class="btn btn-danger">${icon('trash-2')}</button>` : ''}
+        </div>
+      </form>`);
+
+    const form = $('#kursant-form', body);
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = new FormData(form);
+      const tel = String(f.get('telefon') || '').trim();
+      if (tel && !telOk(tel)) return toast('Sprawdź numer telefonu.', 'error');
+      const cena = num(f.get('cena'));
+      if (cena != null && (isNaN(cena) || cena < 0)) return toast('Sprawdź cenę.', 'error');
+      const dane = {
+        imie: String(f.get('imie') || '').trim(),
+        nazwisko: String(f.get('nazwisko') || '').trim() || null,
+        telefon: tel || null,
+        email: String(f.get('email') || '').trim() || null,
+        cena,
+        poziom: f.get('poziom') || null,
+        cel: String(f.get('cel') || '').trim() || null,
+        notatki: String(f.get('notatki') || '').trim() || null,
+      };
+      if (!dane.imie) return toast('Podaj imię.', 'error');
+      if (!isNew) dane.aktywny = !!f.get('aktywny');
+      const btn = form.querySelector('[type=submit]');
+      btn.disabled = true;
+      try {
+        const zapisany = isNew
+          ? await q(sb.from('kursanci').insert(dane).select().single())
+          : await q(sb.from('kursanci').update(dane).eq('id', k.id).select().single());
+        state.kursanci = await db.kursanci();
+        toast(isNew ? 'Dodano kursanta ✓' : 'Zapisano ✓');
+        closeModal();
+        if (state.afterKursant) {
+          const { preset } = state.afterKursant;
+          state.afterKursant = null;
+          openLessonForm(null, { ...preset, kursantId: zapisany.id });
+        }
+        render();
+      } catch (err) { showErr(err); btn.disabled = false; }
+    });
+  }
+
+  function deleteKursant(id) {
+    const k = kursant(id);
+    if (!k) return;
+    const body = openModal(`
+      ${modalHeader('Usunąć kursanta?')}
+      <p class="font-semibold">${esc(fullName(k))} zostanie usunięty razem z <strong>całą historią lekcji i notatkami</strong>. Tego nie da się cofnąć.</p>
+      <p class="mt-2 text-sm text-slate-500">Jeśli kursant tylko skończył zajęcia, odznacz „Aktywny kursant”. Trafi do archiwum, a historia zostanie.</p>
+      <div class="mt-5 space-y-2">
+        <button data-del="1" class="btn btn-danger w-full">${icon('trash-2')} Usuń na zawsze</button>
+        <button data-action="close-modal" class="btn btn-ghost w-full">Anuluj</button>
+      </div>`);
+    body.addEventListener('click', async (e) => {
+      const b = e.target.closest('[data-del]');
+      if (!b) return;
+      b.disabled = true;
+      try {
+        await q(sb.from('kursanci').delete().eq('id', id));
+        state.kursanci = await db.kursanci();
+        state.kursantId = null;
+        toast('Usunięto kursanta');
+        closeModal();
+        render();
+      } catch (err) { showErr(err); b.disabled = false; }
+    });
+  }
+
+  // =====================================================================
+  //  Akcje (jeden nasłuch kliknięć)
+  // =====================================================================
+  document.addEventListener('click', async (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const { action, id, value } = el.dataset;
+
+    switch (action) {
+      case 'tab':
+        state.tab = el.dataset.tab;
+        state.kursantId = null;
+        window.scrollTo(0, 0);
+        return render();
+      case 'week':
+        state.weekStart = value === '0' ? startOfWeek(new Date()) : addDays(state.weekStart, 7 * Number(value));
+        return render();
+      case 'close-modal':
+        state.afterKursant = null;
+        return closeModal();
+      case 'new-lesson':
+        return openLessonForm(null, { date: el.dataset.date, kursantId: el.dataset.kursant || (state.tab === 'kursanci' ? state.kursantId : null) });
+      case 'edit-lesson': {
+        const l = cache.get(id) || await db.lekcja(id);
+        return openLessonForm(l);
+      }
+      case 'note': {
+        const l = cache.get(id) || await db.lekcja(id);
+        return openLessonForm(l, { focusNote: true });
+      }
+      case 'delete-lesson':
+        return deleteLesson(id);
+      case 'status': {
+        const l = cache.get(id);
+        const nowy = l && l.status === value ? 'zaplanowana' : value;
+        el.disabled = true;
+        try { await q(sb.from('lekcje').update({ status: nowy }).eq('id', id)); } catch (err) { showErr(err); el.disabled = false; return; }
+        return render();
+      }
+      case 'paid': {
+        const l = cache.get(id);
+        el.disabled = true;
+        try { await q(sb.from('lekcje').update({ oplacona: !(l && l.oplacona) }).eq('id', id)); } catch (err) { showErr(err); el.disabled = false; return; }
+        if (el.dataset.from === 'unpaid') { await showUnpaid(); }
+        return render();
+      }
+      case 'show-unpaid':
+        return showUnpaid();
+      case 'push-on':
+      case 'push-off':
+      case 'push-test':
+      case 'push-del':
+        el.disabled = true;
+        try {
+          if (action === 'push-on') { await push.wlacz(); toast('Powiadomienia włączone ✓'); }
+          if (action === 'push-off') { await push.wylacz(); toast('Wyłączono na tym urządzeniu'); }
+          if (action === 'push-test') toast(await push.test());
+          if (action === 'push-del') {
+            await q(sb.from('push_subskrypcje').delete().eq('id', id));
+            if (demo) state.demoPush = false;
+            toast('Usunięto urządzenie');
+          }
+        } catch (err) { showErr(err); }
+        el.disabled = false;
+        return action === 'push-test' ? undefined : render();
+      case 'refresh':
+        return render();
+      case 'new-kursant':
+        return openKursantForm();
+      case 'new-kursant-from-lesson': {
+        const form = $('#lesson-form');
+        state.afterKursant = { preset: { date: form?.data.value } };
+        return openKursantForm();
+      }
+      case 'open-kursant':
+        state.kursantId = id;
+        window.scrollTo(0, 0);
+        return render();
+      case 'back-kursanci':
+        state.kursantId = null;
+        return render();
+      case 'edit-kursant':
+        return openKursantForm(kursant(id));
+      case 'delete-kursant':
+        return deleteKursant(id);
+      case 'logout':
+        await sb.auth.signOut();
+        state.ust = null;
+        state.kursanci = [];
+        cache.clear();
+        return renderLogin();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) closeModal(); });
+
+  // Odświeżenie widoku „Dziś” po powrocie do aplikacji (np. rano).
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && state.ust && state.tab === 'dzis' && $('#modal').hidden) render();
+  });
+
+  boot();
+})();
+</script>
+</body>
+</html>
