@@ -1,10 +1,8 @@
 User-agent: *
 Allow: /
 
-# Panel aplikacji (prywatny) — nie indeksuj
-Disallow: /app-login.html
-Disallow: /app-admin.html
-Disallow: /app-postepy.html
-Disallow: /app-trener.html
+# Panel aplikacji (app-*.html) nie trafia do wyników wyszukiwania dzięki tagowi
+# <meta name="robots" content="noindex"> w samych plikach. Nie blokujemy ich tutaj,
+# bo wyszukiwarka musi pobrać stronę, żeby zobaczyć ten tag.
 
 Sitemap: https://www.delfinada.pl/sitemap.xml
